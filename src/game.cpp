@@ -13,6 +13,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
     isRunning = true;
 
+    TTF_Init();
+
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
         std::cout << "Subsystems initialized..." << std::endl;
@@ -44,7 +46,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
     }
     else
     {
-        std::cout << "Rendere created..." << std::endl;
+        std::cout << "Renderer created..." << std::endl;
     }
 
     isRunning = true;
@@ -75,7 +77,8 @@ void Game::render()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
-    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    text(renderer, std::to_string(time(0)), 100, 100);
 
     SDL_RenderPresent(renderer);
 }
