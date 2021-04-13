@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include <iostream>
+#include "./utils/draw.hpp"
 
 class Game{
 
