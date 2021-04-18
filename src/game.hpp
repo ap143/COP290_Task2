@@ -31,3 +31,57 @@ private:
 };
 
 #endif
+
+
+/*
+
+Maze(int n);
+
+int n;
+
+bool maze[n][n][4];
+
+void generate()
+{
+    maze generartion();
+}
+
+void show()
+{
+    // draw maze on screen;
+}
+
+prop
+{
+    health
+    speed
+    damage
+}
+
+map<type, struct prop>
+
+Character(Name, Type)
+
+health
+
+show()
+{
+
+}
+
+born(int i, int j)
+{
+
+}
+
+kill()
+{
+
+}
+
+move()
+{
+    
+}
+
+*/
