@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include <iostream>
+#include "network.hpp"
 
 Game* game = nullptr;
 
