@@ -2,6 +2,7 @@
 
 Game::Game()
 {
+    game_maze = new Maze();
 }
 
 Game::~Game()
@@ -49,6 +50,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
         std::cout << "Renderer created..." << std::endl;
     }
 
+    game_maze->generate();
+    std::cout << "Maze generated..." << std::endl;
+
     isRunning = true;
 }
 
@@ -65,8 +69,8 @@ void Game::handleEvents()
         default:
             break;
     }
-
 }
+
 
 void Game::update()
 {
@@ -77,8 +81,11 @@ void Game::render()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    text(renderer, std::to_string(time(0)), 100, 100);
+
+    game_maze->show(renderer, window);
+    //std::cout << "Maze displayed..." << std::endl;
 
     SDL_RenderPresent(renderer);
 }

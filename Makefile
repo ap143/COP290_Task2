@@ -1,4 +1,4 @@
-OUT = MazeRunner
+OUT = MazeWars
 
 CC := g++
 
@@ -6,7 +6,7 @@ OUTPUT_DIR := ./output
 SRC_DIR := ./src
 UTILS_DIR := utils
 
-OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o 
+OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_DIR)/maze.o
 
 COMMON_FLAGS := `pkg-config --cflags --libs sdl2` -lSDL2_ttf
 
