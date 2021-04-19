@@ -4,6 +4,7 @@
 
 Game* game = nullptr;
 
+
 int main()
 {
 
@@ -15,7 +16,7 @@ int main()
 
     game = new Game();
 
-    game->init("Maze Wars", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600);
+    game->init("Maze Wars", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000);
 
     while (game->running())
     {

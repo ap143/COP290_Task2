@@ -4,6 +4,24 @@
 #include "SDL.h"
 #include <iostream>
 #include "./utils/draw.hpp"
+#include <vector>
+#include <set>
+
+
+class Maze{
+public:
+    bool*** maze;
+    Maze();
+    Maze(int n);
+    void generate();
+    void show(SDL_Renderer* renderer, SDL_Window* window);
+
+private:
+    int n = 50;
+    void dfs(std::vector<std::vector<bool>> &cells, int i, int j);
+};
+
+
 
 class Game{
 
@@ -24,11 +42,14 @@ public:
 private:
 
     bool isRunning;
-
+    Maze* game_maze;
     SDL_Window* window;
     SDL_Renderer* renderer;
 
 };
+
+
+
 
 #endif
 
