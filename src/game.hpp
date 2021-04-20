@@ -17,7 +17,7 @@ public:
     void show(SDL_Renderer* renderer, SDL_Window* window);
 
 private:
-    int n = 50;
+    int n = 25;
     void dfs(std::vector<std::vector<bool>> &cells, int i, int j);
 };
 
