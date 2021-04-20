@@ -10,8 +10,54 @@
 #include <string.h>
 #include <string>
 #include <ifaddrs.h>
+#include "utils/helper.hpp"
 
-void client(int argc, char* argv[]);
-void server(int argc, char* argv[]);
+class Client
+{
+private:
+
+    const static int BUFFER_WIDTH = 1024;
+
+    std::string ip;
+    int port;
+    char buffer[Client::BUFFER_WIDTH];
+
+    int sock;
+    struct sockaddr_in serv, client;
+    socklen_t l, m;
+
+public:
+
+    Client(std::string ip);
+    void send(std::string message);
+    std::string get();
+    void end();
+
+};
+
+class Server
+{
+private:
+
+    const static int BUFFER_WIDTH = 1024;
+
+    std::string ip;
+    int port;
+    char buffer[Server::BUFFER_WIDTH];
+
+    int sock;
+    struct sockaddr_in serv, client;
+    socklen_t l;
+
+public:
+
+    Server(std::string ip);
+    void send(std::string message);
+    std::string get();
+    void end();
+
+};
+
+void connectFirst(std::string arg);
 
 #endif
