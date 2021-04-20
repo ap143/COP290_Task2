@@ -6,7 +6,7 @@ OUTPUT_DIR := ./output
 SRC_DIR := ./src
 UTILS_DIR := utils
 
-OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_DIR)/maze.o
+OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_DIR)/maze.o $(OUTPUT_DIR)/client.o $(OUTPUT_DIR)/server.o $(OUTPUT_DIR)/helper.o
 
 COMMON_FLAGS := `pkg-config --cflags --libs sdl2` -lSDL2_ttf
 
