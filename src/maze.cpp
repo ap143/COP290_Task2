@@ -51,6 +51,9 @@ void Maze::dfs(std::vector<std::vector<bool>> &cells, int i, int j)
         s.push_back(k);
 
     random_shuffle(s.begin(), s.end(), myrandom);
+    
+    // for (int k = 0; k<4;k++) std::cout<< s[k] << " ";
+    // std::cout <<std::endl;
 
     for (int k = 0; k < s.size(); k++)
     {
@@ -119,20 +122,19 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
 
     //SDL_GetWindowSize(window, w, h);
 
-    int cell_size = (19 * (h) / 20) / n;
-    int grid_length = 19 * (h) / 20;
+    float cell_size = (float)(19*(h)/20)/n;
 
-    rect(renderer, (w) / 2 - grid_length / 2, (h) / 2 - grid_length / 2, grid_length, grid_length, 0);
+    float grid_length = (float)19*(h)/20;
 
-    int ox = (w) / 2 - grid_length / 2;
-    int oy = (h) / 2 - grid_length / 2;
-
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            for (int k = 0; k < 4; k++)
-            {
+    rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
+    
+    float ox =(float) (w)/2- (float)grid_length/2;
+    float oy = (float)(h)/2- (float)grid_length/2;
+    
+    
+    for (int i = 0;i<n; i++){
+        for (int j = 0; j<n; j++) {
+            for (int k = 0; k<4; k++) {
                 // std::cout<<maze[i][j][k]<<std::endl;
                 // std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                 if (!maze[i][j][k])
