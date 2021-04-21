@@ -58,6 +58,4 @@ public:
 
 };
 
-void connectFirst(std::string arg);
-
 #endif
