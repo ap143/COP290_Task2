@@ -11,6 +11,8 @@
 class Maze{
 public:
     bool*** maze;
+    SDL_Texture* wall;
+    SDL_Texture* grass;
     Maze();
     Maze(int n);
     void generate();
@@ -22,6 +24,17 @@ private:
 };
 
 
+class Character{
+    public:
+    int level; // level 0/1/2/3
+    int power;
+    int health;
+    int speed;
+    int range;
+    SDL_Texture* tex;
+
+    Character();
+};
 
 class Game{
 
