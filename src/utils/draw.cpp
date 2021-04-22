@@ -48,3 +48,13 @@ void text(SDL_Renderer* renderer, std::string text_to_display, float x, float y)
 {
     text(renderer, text_to_display, x, y, 24);
 }
+
+SDL_Texture* loadTexture (const char* texture, SDL_Renderer* ren)
+{
+    SDL_Surface* tempSurface = IMG_Load(texture);
+    if (tempSurface == NULL) std::cout<< "surface loading failed" <<std::endl;
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, tempSurface);
+    SDL_FreeSurface(tempSurface);
+    return tex;
+}
+

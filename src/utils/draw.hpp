@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "SDL_image.h"
 #include <iostream>
 #include "helper.hpp"
 
@@ -15,5 +16,7 @@ void rect(SDL_Renderer* renderer, float x, float y, float width, float height, b
 void text(SDL_Renderer* renderer, std::string text_to_display, float x, float y, unsigned int size);
 
 void text(SDL_Renderer* renderer, std::string text_to_display, float x, float y);
+
+SDL_Texture* loadTexture (const char* texture, SDL_Renderer* ren);
 
 #endif

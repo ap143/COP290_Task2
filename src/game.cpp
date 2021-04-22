@@ -50,6 +50,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
         std::cout << "Renderer created..." << std::endl;
     }
 
+
+    game_maze->wall = loadTexture("assets/images/wall.png", renderer);
+    game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
+    if (game_maze->wall == NULL) std::cout << "failed loading texture" <<std::endl;
     game_maze->generate();
     std::cout << "Maze generated..." << std::endl;
 
@@ -85,7 +89,6 @@ void Game::render()
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     game_maze->show(renderer, window);
-    //std::cout << "Maze displayed..." << std::endl;
 
     SDL_RenderPresent(renderer);
 }
