@@ -52,6 +52,8 @@ public:
 
     bool running() {return isRunning;};
 
+    void loadAllTextures();
+
 private:
 
     bool isRunning;

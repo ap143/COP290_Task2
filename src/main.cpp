@@ -14,10 +14,10 @@ std::string oponent_name;
 int main(int argc, char* argv[])
 {
 
-    // if (start(argc, argv) == 0)
-    // {
-    //     return 0;
-    // }
+    if (start(argc, argv) == 0)
+    {
+        return 0;
+    }
 
     const int FPS = 30;
     const int frameDelay = 1000 / FPS;

@@ -51,7 +51,7 @@ void Maze::dfs(std::vector<std::vector<bool>> &cells, int i, int j)
         s.push_back(k);
 
     random_shuffle(s.begin(), s.end(), myrandom);
-    
+
     // for (int k = 0; k<4;k++) std::cout<< s[k] << " ";
     // std::cout <<std::endl;
 
@@ -117,76 +117,78 @@ void Maze::dfs(std::vector<std::vector<bool>> &cells, int i, int j)
 void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
 {
 
-    int w = 1200;
-    int h = 1000;
+    int w, h;
 
-    //SDL_GetWindowSize(window, w, h);
+    SDL_GetWindowSize(window, &w, &h);
 
-    float cell_size = (float)(19*(h)/20)/n;
+    float cell_size = (float)(19 * (h) / 20) / n;
 
-    float grid_length = (float)19*(h)/20;
+    float grid_length = (float)19 * (h) / 20;
 
-    SDL_Rect background;
-    background.x = 0;
-    background.y = 0;
-    background.w = w;
-    background.h = h;   
-    SDL_RenderCopy(renderer, grass, NULL, &background);
+    backgroundImage(renderer, grass);
     //rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
-    
-    float ox =(float) (w)/2- (float)grid_length/2;
-    float oy = (float)(h)/2- (float)grid_length/2;
+
+    float ox = (float)(w) / 2 - (float)grid_length / 2;
+    float oy = (float)(h) / 2 - (float)grid_length / 2;
 
     SDL_Rect DestR;
     float ww = cell_size;
-    float wh = 2*cell_size/5;
+    float wh = 2 * cell_size / 5;
 
     SDL_Point centre;
-    
-    for (int i = 0;i<n; i++){
-        for (int j = 0; j<n; j++) {
-            for (int k = 0; k<4; k++) {
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
                 // std::cout<<maze[i][j][k]<<std::endl;
                 // std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                 if (!maze[i][j][k])
                 {
                     if (k == 0)
                     {
-                        DestR.x = ox + cell_size * j;
-                        DestR.y = oy + cell_size * i;
-                        DestR.w = ww;
-                        DestR.h = wh;
-                        SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL,  SDL_FLIP_NONE);
+                        // DestR.x = ox + cell_size * j;
+                        // DestR.y = oy + cell_size * i;
+                        // DestR.w = ww;
+                        // DestR.h = wh;
+                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL,  SDL_FLIP_NONE);
+                        image(renderer, wall, ox + cell_size * j, oy + cell_size * i, 
+                            ww, wh, 0, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * j, oy + cell_size * i, ox + cell_size * (j + 1), oy + cell_size * i);
                     }
                     else if (k == 1)
                     {
-                        DestR.x = ox + cell_size * (j+1) - cell_size / 2;
-                        DestR.y = oy + cell_size * i + cell_size / 2;
-                        DestR.w = ww;
-                        DestR.h = wh;
-                        SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
+                        // DestR.x = ox + cell_size * (j+1) - cell_size / 2;
+                        // DestR.y = oy + cell_size * i + cell_size / 2;
+                        // DestR.w = ww;
+                        // DestR.h = wh;
+                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
+                        image(renderer, wall, ox + cell_size * (j + 1) - cell_size / 2, oy + cell_size * i + cell_size / 2, 
+                            ww, wh, 270, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * (j + 1), oy + cell_size * i, ox + cell_size * (j + 1), oy + cell_size * (i + 1));
                     }
                     else if (k == 2)
                     {
-                        DestR.x = ox + cell_size * j;
-                        DestR.y = oy + cell_size * (i + 1);
-                        DestR.w = ww;
-                        DestR.h = wh;
-                        SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL, SDL_FLIP_NONE);
+                        // DestR.x = ox + cell_size * j;
+                        // DestR.y = oy + cell_size * (i + 1);
+                        // DestR.w = ww;
+                        // DestR.h = wh;
+                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL, SDL_FLIP_NONE);
+                        image(renderer, wall, ox + cell_size * j, oy + cell_size * (i + 1), 
+                            ww, wh, 0, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * j, oy + cell_size * (i + 1), ox + cell_size * (j + 1), oy + cell_size * (i + 1));
-                        
                     }
                     else
                     {
-                        DestR.x = ox + cell_size * j - cell_size / 2;
-                        DestR.y = oy + cell_size * i + cell_size / 2;
-                        DestR.w = ww;
-                        DestR.h = wh;
-                        centre.x =ox + cell_size * j; 
-                        centre.y = oy + cell_size * i;
-                        SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
+                        // DestR.x = ox + cell_size * j - cell_size / 2;
+                        // DestR.y = oy + cell_size * i + cell_size / 2;
+                        // DestR.w = ww;
+                        // DestR.h = wh;
+                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
+                        image(renderer, wall, ox + cell_size * j - cell_size / 2, oy + cell_size * i + cell_size / 2, 
+                            ww, wh, 270, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * j, oy + cell_size * (i + 1), ox + cell_size * j, oy + cell_size * i);
                     }
                 }
