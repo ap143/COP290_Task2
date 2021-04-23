@@ -58,3 +58,41 @@ SDL_Texture* loadTexture (const char* texture, SDL_Renderer* ren)
     return tex;
 }
 
+void image(SDL_Renderer *renderer, SDL_Texture *texture, float sx, float sy, float sw, float sh, float dx,
+           float dy, float dw, float dh, float angle, SDL_RendererFlip flip)
+{
+    SDL_Rect src = getSDLRect(sx, sy, sw, sh);
+    SDL_FRect dst = getSDLFRect(dx, dy, dw, dh);
+
+    SDL_RenderCopyExF(renderer, texture, &src, &dst, angle, NULL, flip);
+}
+
+void image(SDL_Renderer *renderer, SDL_Texture *texture, float dx,
+           float dy, float dw, float dh, float angle, SDL_RendererFlip flip)
+{
+    SDL_FRect dst = getSDLFRect(dx, dy, dw, dh);
+
+    SDL_RenderCopyExF(renderer, texture, NULL, &dst, angle, NULL, flip);
+}
+
+void image(SDL_Renderer *renderer, SDL_Texture *texture, float angle, SDL_RendererFlip flip)
+{
+    SDL_RenderCopyEx(renderer, texture, NULL, NULL, angle, NULL, flip);
+}
+
+void backgroundImage(SDL_Renderer *renderer, SDL_Texture *texture)
+{
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+}
+
+SDL_FRect getSDLFRect(float x, float y, float width, float height)
+{
+    SDL_FRect rect = {.x = x, .y = y, .w = width, .h = height};
+    return rect;
+}
+
+SDL_Rect getSDLRect(float x, float y, float width, float height)
+{
+    SDL_Rect rect = {.x = (int) x, .y = (int) y, .w = (int) width, .h = (int) height};
+    return rect;   
+}

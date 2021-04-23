@@ -50,10 +50,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
         std::cout << "Renderer created..." << std::endl;
     }
 
+    loadAllTextures();
 
-    game_maze->wall = loadTexture("assets/images/wall.png", renderer);
-    game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
-    if (game_maze->wall == NULL) std::cout << "failed loading texture" <<std::endl;
     game_maze->generate();
     std::cout << "Maze generated..." << std::endl;
 
@@ -67,14 +65,13 @@ void Game::handleEvents()
 
     switch (event.type)
     {
-        case SDL_QUIT:
-            isRunning = false;
-            break;
-        default:
-            break;
+    case SDL_QUIT:
+        isRunning = false;
+        break;
+    default:
+        break;
     }
 }
-
 
 void Game::update()
 {
@@ -84,7 +81,6 @@ void Game::render()
 {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
-
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -102,5 +98,13 @@ void Game::clean()
     SDL_Quit();
 
     std::cout << "Game cleaned!" << std::endl;
+}
 
+void Game::loadAllTextures()
+{
+    game_maze->wall = loadTexture("assets/images/wall.png", renderer);
+    if (game_maze->wall == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+    game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
+    if (game_maze->grass == NULL) {std::cout << "Failed loading texture" << std::endl;}
 }
