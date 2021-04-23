@@ -25,3 +25,8 @@ $(OUTPUT_DIR)/%.o: $(SRC_DIR)/%.cpp
 $(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
+# libsdl2-dev
+# libsdl2-*-dev
+# libgtk-3-dev
+
+
