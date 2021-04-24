@@ -7,7 +7,6 @@
 #include <vector>
 #include <set>
 #include <map>
-#include <pair>
 #include "gui.hpp"
 
 
@@ -36,7 +35,7 @@ struct properties {
 
 
 // Properties of different character levels
-std::map<enum Type, struct properties> charProp;
+std::map<enum Level, struct properties> charProp;
 
 
 
@@ -70,7 +69,45 @@ public:
 
     Character(int level, struct properties p);
     ~Character();
+
+    void updatePos(); 
+    /*
+     1. Calculate new position using djkstra
+     2. update the prevPos and currPos
+     3. Called in for every frame in Game->update
+    */
+
+    void move(SDL_Renderer ren);
+    /*
+     1. animate sprite according to prevPos and currPos
+     2. Called in Game->render.
+    */
+
+    void attack();
+    /*
+     1. Check opponent in current cell and attack.
+    */
+
+    void fight();
+    /*
+     1. Sprite animation of fight scene
+    */
+
+    bool isAlive();
+    /*
+     1. if health <=0 then destroy character
+    */
+
+    static Character born(int level, struct properties p);
+    /*
+     1. When mouse event of creating a new character then this is called.
+     2. calls contructor.
+     3. marks the cell in which it is intiated.
+    */
+
+    void show();
 };
+
 
 class Game{
 
@@ -107,6 +144,7 @@ private:
     *   3: Show random place to match => Generate maze and draw it
     *   4: Ready to play => Countdown to 3
     *   5: Game start
+    *   6: Game ends/one player quits => Display winner and new game option
     */
 
 };
