@@ -6,9 +6,9 @@ OUTPUT_DIR := ./output
 SRC_DIR := ./src
 UTILS_DIR := utils
 
-OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_DIR)/maze.o $(OUTPUT_DIR)/client.o $(OUTPUT_DIR)/server.o $(OUTPUT_DIR)/helper.o $(OUTPUT_DIR)/start.o
+OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_DIR)/maze.o $(OUTPUT_DIR)/client.o $(OUTPUT_DIR)/server.o $(OUTPUT_DIR)/helper.o $(OUTPUT_DIR)/start.o $(OUTPUT_DIR)/gui.o
 
-COMMON_FLAGS := `pkg-config --cflags --libs sdl2 gtk+-3.0` -pthread -lSDL2_ttf -lSDL2_image
+COMMON_FLAGS := `pkg-config --cflags --libs sdl2` -pthread -lSDL2_ttf -lSDL2_image
 
 # output
 build: $(OBJS)
@@ -26,7 +26,5 @@ $(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
 # libsdl2-dev
-# libsdl2-*-dev
-# libgtk-3-dev
 
 

@@ -50,6 +50,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
         std::cout << "Renderer created..." << std::endl;
     }
 
+    gui = new Gui(window, renderer);
+
     loadAllTextures();
 
     game_maze->generate();
@@ -68,6 +70,8 @@ void Game::handleEvents()
     case SDL_QUIT:
         isRunning = false;
         break;
+    case SDL_KEYDOWN:
+        gui->event(event.key.keysym.sym, state);
     default:
         break;
     }
@@ -82,9 +86,14 @@ void Game::render()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-    game_maze->show(renderer, window);
+    if (state < 4)
+    {
+        gui->show(state);
+    }
+    else
+    {
+        game_maze->show(renderer, window);
+    }
 
     SDL_RenderPresent(renderer);
 }
