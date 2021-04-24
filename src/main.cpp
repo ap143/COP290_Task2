@@ -14,10 +14,12 @@ std::string oponent_name;
 int main(int argc, char* argv[])
 {
 
-    if (start(argc, argv) == 0)
-    {
-        return 0;
-    }
+    // if (start(argc, argv) == 0)
+    // {
+    //     return 0;
+    // }
+
+    // start(argc, argv);
 
     const int FPS = 30;
     const int frameDelay = 1000 / FPS;
@@ -27,7 +29,7 @@ int main(int argc, char* argv[])
 
     game = new Game();
 
-    game->init("Maze Wars", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 1000);
+    game->init("Maze Wars", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600);
 
     while (game->running())
     {

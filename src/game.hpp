@@ -6,7 +6,7 @@
 #include "./utils/draw.hpp"
 #include <vector>
 #include <set>
-
+#include "gui.hpp"
 
 class Maze{
 public:
@@ -60,6 +60,18 @@ private:
     Maze* game_maze;
     SDL_Window* window;
     SDL_Renderer* renderer;
+
+    Gui* gui;
+
+    int state;
+    /*
+    *   0: Get user name
+    *   1: Generate/Check passcode => connect
+    *   2: Connected state: Select team => Load all character textures and make objects
+    *   3: Show random place to match => Generate maze and draw it
+    *   4: Ready to play => Countdown to 3
+    *   5: Game start
+    */
 
 };
 
