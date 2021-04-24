@@ -6,7 +6,39 @@
 #include "./utils/draw.hpp"
 #include <vector>
 #include <set>
+#include <map>
+#include <pair>
 #include "gui.hpp"
+
+
+// Character level type
+enum Level {
+    LEVEL1 = 1,
+    LEVEL2 = 2,
+    LEVEL3 = 3,
+    LEADER = 0
+};
+
+
+// Character properties
+struct properties {
+    int health;
+    int range;
+    int speed;
+
+    properties (int h, int r, int s)
+    {
+        health = h;
+        range = r;
+        speed = s;
+    }
+};
+
+
+// Properties of different character levels
+std::map<enum Type, struct properties> charProp;
+
+
 
 class Maze{
 public:
@@ -25,7 +57,7 @@ private:
 
 
 class Character{
-    public:
+public:
     int level; // level 0/1/2/3
     int power;
     int health;
@@ -33,7 +65,11 @@ class Character{
     int range;
     SDL_Texture* tex;
 
-    Character();
+    int currPos[2];
+    int prevPos[2];
+
+    Character(int level, struct properties p);
+    ~Character();
 };
 
 class Game{
