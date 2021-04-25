@@ -7,6 +7,30 @@ Uint8 _g = 0;
 Uint8 _b = 0;
 Uint8 _a = 255;
 
+void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+    _r = r;
+    _g = g;
+    _b = b;
+    _a = a;
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+}
+
+void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b)
+{
+    color(renderer, r, g, b, 255);
+}
+
+void color(SDL_Renderer* renderer, Uint8 grey, Uint8 alpha)
+{
+    color(renderer, grey, grey, grey, alpha);
+}
+
+void color(SDL_Renderer* renderer, Uint8 grey)
+{
+    color(renderer, grey, grey, grey, 255);
+}
+
 void line(SDL_Renderer* renderer, float x1, float y1, float x2, float y2)
 {
     SDL_RenderDrawLineF(renderer, x1, y1, x2, y2);
@@ -30,23 +54,19 @@ void rect(SDL_Renderer* renderer, float x, float y, float width, float height, b
     }
 }
 
-void text(SDL_Renderer* renderer, std::string text_to_display, float x, float y, unsigned int size)
+SDL_Texture* text(SDL_Renderer* renderer, std::string text_to_display, unsigned int size)
 {
     TTF_Font* font = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", size);
     SDL_Color fontColor = {.r = _r, .g = _g, .b = _b, .a = _a};
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text_to_display.c_str(), fontColor);
     SDL_Texture* text = SDL_CreateTextureFromSurface(renderer, textSurface);
-    int text_width = textSurface->w;
-    int text_height = textSurface->h;
     SDL_FreeSurface(textSurface);
-    SDL_Rect renderQuad = {.x = (int) x, .y = (int) y, .w = text_width, .h = text_height};
-    SDL_RenderCopy(renderer, text, NULL, &renderQuad);
-    SDL_DestroyTexture(text);
+    return text;
 }
 
-void text(SDL_Renderer* renderer, std::string text_to_display, float x, float y)
+SDL_Texture* text(SDL_Renderer* renderer, std::string text_to_display)
 {
-    text(renderer, text_to_display, x, y, 24);
+    return text(renderer, text_to_display, 24);
 }
 
 SDL_Texture* loadTexture (const char* texture, SDL_Renderer* ren)
@@ -56,6 +76,14 @@ SDL_Texture* loadTexture (const char* texture, SDL_Renderer* ren)
     SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, tempSurface);
     SDL_FreeSurface(tempSurface);
     return tex;
+}
+
+void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, float x, float y)
+{
+    int width, height;
+    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+    SDL_FRect rect = getSDLFRect(x - width/2, y - height/2, width, height);
+    SDL_RenderCopyF(renderer, texture, NULL, &rect);
 }
 
 void image(SDL_Renderer *renderer, SDL_Texture *texture, float sx, float sy, float sw, float sh, float dx,
@@ -73,6 +101,15 @@ void image(SDL_Renderer *renderer, SDL_Texture *texture, float dx,
     SDL_FRect dst = getSDLFRect(dx, dy, dw, dh);
 
     SDL_RenderCopyExF(renderer, texture, NULL, &dst, angle, NULL, flip);
+}
+
+void image(SDL_Renderer *renderer, SDL_Texture *texture, float dx,
+           float dy, float angle, SDL_RendererFlip flip)
+{
+    int width, height;
+    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+    SDL_FRect rect = getSDLFRect(dx, dy, width, height);
+    SDL_RenderCopyExF(renderer, texture, NULL, &rect, angle, NULL, flip);
 }
 
 void image(SDL_Renderer *renderer, SDL_Texture *texture, float angle, SDL_RendererFlip flip)

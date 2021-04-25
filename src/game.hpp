@@ -21,6 +21,7 @@ public:
 private:
     int n = 25;
     void dfs(std::vector<std::vector<bool>> &cells, int i, int j);
+
 };
 
 
@@ -63,6 +64,7 @@ private:
 
     Gui* gui;
 
+    int keySpeedLimit = 0;
     int state;
     /*
     *   0: Get user name

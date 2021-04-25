@@ -11,6 +11,9 @@ Client* client;
 std::string user_name;
 std::string oponent_name;
 
+const int gui_width = 640;
+const int gui_height = 480;
+
 int main(int argc, char* argv[])
 {
 
@@ -29,7 +32,7 @@ int main(int argc, char* argv[])
 
     game = new Game();
 
-    game->init("Maze Wars", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600);
+    game->init("Maze Wars", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, gui_width, gui_height);
 
     while (game->running())
     {

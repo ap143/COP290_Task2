@@ -3,6 +3,7 @@
 Game::Game()
 {
     game_maze = new Maze();
+    state = 0;
 }
 
 Game::~Game()
@@ -52,10 +53,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
     gui = new Gui(window, renderer);
 
-    loadAllTextures();
+    // loadAllTextures();
 
-    game_maze->generate();
-    std::cout << "Maze generated..." << std::endl;
+    // game_maze->generate();
+    // std::cout << "Maze generated..." << std::endl;
 
     isRunning = true;
 }
@@ -69,11 +70,21 @@ void Game::handleEvents()
     {
     case SDL_QUIT:
         isRunning = false;
-        break;
-    case SDL_KEYDOWN:
-        gui->event(event.key.keysym.sym, state);
+        return;
     default:
         break;
+    }
+
+    if (keySpeedLimit != 0)
+    {
+        keySpeedLimit--;
+        return;
+    }
+
+    if (state < 4 && (event.type == SDL_TEXTINPUT || event.key.keysym.sym == SDLK_BACKSPACE || event.key.keysym.scancode == SDL_SCANCODE_RETURN))
+    {
+        keySpeedLimit = 3;
+        gui->event(event, state);
     }
 }
 
