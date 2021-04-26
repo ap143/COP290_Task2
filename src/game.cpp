@@ -1,5 +1,18 @@
 #include "game.hpp"
 
+std::map<int, properties> Game::charProp = 
+{
+    std::make_pair(0, properties(5, 12, 8, 2)),
+    std::make_pair(1, properties(2, 5, 4, 6)),
+    std::make_pair(2, properties(4, 8, 7, 4)),
+    std::make_pair(3, properties(6, 10, 5, 3))
+};
+
+std::map<int, std::vector<std::string>> Game::textureMap = 
+{
+
+};
+
 Game::Game()
 {
     game_maze = new Maze();
@@ -53,10 +66,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
     gui = new Gui(window, renderer);
 
-    // loadAllTextures();
+    loadAllTextures();
 
-    // game_maze->generate();
-    // std::cout << "Maze generated..." << std::endl;
+    game_maze->generate();
+    std::cout << "Maze generated..." << std::endl;
 
     isRunning = true;
 }
@@ -127,4 +140,11 @@ void Game::loadAllTextures()
 
     game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
     if (game_maze->grass == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+
+}
+
+void Game::loadCharacters(int teamA, int teamB)
+{
+    
 }

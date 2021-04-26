@@ -39,4 +39,6 @@ SDL_FRect getSDLFRect(float x, float y, float width, float height);
 
 SDL_Rect getSDLRect(float x, float y, float width, float height);
 
+void loadSpritesTexture(SDL_Texture* spriteSheet, SDL_Texture texs[4][3]);
+
 #endif

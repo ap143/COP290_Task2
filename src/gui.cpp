@@ -7,7 +7,7 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
 
     this->gui_bg = loadTexture("./assets/images/bg.png", this->renderer);
 
-    this->live_text = "LOL";
+    this->live_text = "";
 
     this->live_text_texture = text(renderer, live_text, live_text_font);
 }
@@ -81,6 +81,7 @@ void Gui::event_username(SDL_Event event, int &state)
         if (live_text.length() > 0)
         {
             live_text = live_text.substr(0, live_text.length() - 1);
+            SDL_DestroyTexture(live_text_texture);
             live_text_texture = text(renderer, live_text, live_text_font);
         }
     }
@@ -92,6 +93,7 @@ void Gui::event_username(SDL_Event event, int &state)
     else if (event.type = SDL_TEXTINPUT)
     {
         live_text += event.text.text;
+        SDL_DestroyTexture(live_text_texture);
         live_text_texture = text(renderer, live_text, live_text_font);
     }
 }
