@@ -25,6 +25,9 @@ SDL_Texture* text(SDL_Renderer *renderer, std::string text_to_display);
 SDL_Texture *loadTexture(const char *texture, SDL_Renderer *ren);
 
 void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, float x, float y);
+
+void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, SDL_Rect* src, float x, float y, float width, float height);
+
 void image(SDL_Renderer *renderer, SDL_Texture *texture, float sx, float sy, float sw, float sh, float dx,
            float dy, float dw, float dh, float angle, SDL_RendererFlip flip);
 void image(SDL_Renderer *renderer, SDL_Texture *texture, float dx,
