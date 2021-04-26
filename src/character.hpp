@@ -6,6 +6,7 @@
 #include "./utils/draw.hpp"
 #include <vector>
 #include <map>
+#include "maze.hpp"
 
 // Character properties
 struct properties
@@ -17,7 +18,6 @@ struct properties
 
     properties()
     {
-        
     }
 
     properties(int p, int h, int r, int s)
@@ -32,17 +32,22 @@ struct properties
 class Character
 {
 public:
+    Maze* gameMaze;
+
     int level; // level 0/1/2/3
     bool team;
     properties prop;
 
     SDL_Texture *spriteSheet;
+    SDL_Renderer *renderer;
 
     float dx = 0;
     float dy = 0;
 
     int currPos[2];
     int vel[2];
+
+    Character();
 
     Character(int level, bool team);
     ~Character();
@@ -84,8 +89,16 @@ public:
 
     void show();
 
+    void setupSprite(SDL_Texture* tex, SDL_Renderer* ren);
+
 private:
-    float velConst = 0.1;
+    float velConst = 0.01;
+    int currSprite = 0;
+
+    SDL_Rect spriteRect;
+    SDL_FRect posRect;
+
+    void drawCurrSprite(int dir);
 };
 
 #endif

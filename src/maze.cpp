@@ -13,7 +13,7 @@ Maze::Maze()
     }
 }
 
-Maze::Maze(int size)
+Maze::Maze(int size, int w, int h)
 {
     n = size;
     maze = new bool **[n];
@@ -25,6 +25,14 @@ Maze::Maze(int size)
             maze[i][j] = new bool[4];
         }
     }
+
+    cell_size = (float)(19 * (h) / 20) / n;
+
+    grid_length = (float)19 * (h) / 20;
+    //rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
+
+    ox = (float)(w) / 2 - (float)grid_length / 2;
+    oy = (float)(h) / 2 - (float)grid_length / 2;
 }
 
 void Maze::generate()
@@ -116,19 +124,7 @@ void Maze::dfs(std::vector<std::vector<bool>> &cells, int i, int j)
 void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
 {
 
-    int w, h;
-
-    SDL_GetWindowSize(window, &w, &h);
-
-    float cell_size = (float)(19 * (h) / 20) / n;
-
-    float grid_length = (float)19 * (h) / 20;
-
     backgroundImage(renderer, grass);
-    //rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
-
-    float ox = (float)(w) / 2 - (float)grid_length / 2;
-    float oy = (float)(h) / 2 - (float)grid_length / 2;
 
     SDL_Rect DestR;
     float ww = cell_size;

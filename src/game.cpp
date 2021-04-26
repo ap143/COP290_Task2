@@ -15,8 +15,9 @@ std::map<int, std::vector<std::string>> Game::textureMap =
 
 Game::Game()
 {
-    game_maze = new Maze();
-    state = 0;
+    game_maze = new Maze(20, gui_width, gui_height);
+    cap = new Character(0, true);
+    state = 4;
 }
 
 Game::~Game()
@@ -71,6 +72,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
     game_maze->generate();
     std::cout << "Maze generated..." << std::endl;
 
+    cap->gameMaze = game_maze;
+    SDL_Texture* temp = loadTexture("assets/images/characters/temp.png", renderer);
+    cap->setupSprite(temp, renderer);
+    cap->show();
+
     isRunning = true;
 }
 
@@ -103,6 +109,7 @@ void Game::handleEvents()
 
 void Game::update()
 {
+    cap->updatePos();
 }
 
 void Game::render()
@@ -117,6 +124,7 @@ void Game::render()
     else
     {
         game_maze->show(renderer, window);
+        cap->move(renderer);
     }
 
     SDL_RenderPresent(renderer);
@@ -140,6 +148,8 @@ void Game::loadAllTextures()
 
     game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
     if (game_maze->grass == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+    
 
 
 }

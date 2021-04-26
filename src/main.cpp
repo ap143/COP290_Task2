@@ -11,8 +11,8 @@ Client* client;
 std::string user_name;
 std::string oponent_name;
 
-const int gui_width = 640;
-const int gui_height = 480;
+const int gui_width = 1200;
+const int gui_height = 1000;
 
 int main(int argc, char* argv[])
 {
