@@ -1,5 +1,4 @@
-#include "game.hpp"
-#include <algorithm>
+#include "maze.hpp"
 
 Maze::Maze()
 {
