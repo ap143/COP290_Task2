@@ -61,7 +61,6 @@ private:
     std::string passCode;
 
     // Connection variables
-    SDL_Thread *connectionThread;
 
     SDL_Texture *pass_code_texture;
     SDL_Texture *waiting_texture;
@@ -78,6 +77,7 @@ public:
     void show(int state);
 
     bool abort;
+    SDL_Thread *connectionThread;
 
 };
 
