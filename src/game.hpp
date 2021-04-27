@@ -42,7 +42,6 @@ private:
 
     Gui *gui;
 
-    int keySpeedLimit = 0;
     int state;
     /*
     *   0: Get user name

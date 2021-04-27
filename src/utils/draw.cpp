@@ -54,9 +54,22 @@ void rect(SDL_Renderer* renderer, float x, float y, float width, float height, b
     }
 }
 
+void rectCenter(SDL_Renderer* renderer, float cx, float cy, float width, float height, float scale, bool filled)
+{
+    SDL_FRect rect = getSDLFRect(cx - width / 2 * scale, cy - height / 2 * scale, width * scale, height * scale);
+    if (filled)
+    {
+        SDL_RenderFillRectF(renderer, &rect);
+    }
+    else
+    {
+        SDL_RenderDrawRectF(renderer, &rect);
+    }
+}
+
 SDL_Texture* text(SDL_Renderer* renderer, std::string text_to_display, unsigned int size)
 {
-    static TTF_Font* font = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", size);
+    TTF_Font* font = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", size);
     SDL_Color fontColor = {.r = _r, .g = _g, .b = _b, .a = _a};
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text_to_display.c_str(), fontColor);
     SDL_Texture* text = SDL_CreateTextureFromSurface(renderer, textSurface);

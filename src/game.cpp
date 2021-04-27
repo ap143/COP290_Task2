@@ -64,6 +64,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
         std::cout << "Renderer created..." << std::endl;
     }
 
+    SDL_StartTextInput();
+
     gui = new Gui(window, renderer);
 
     loadAllTextures();
@@ -76,29 +78,24 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
 void Game::handleEvents()
 {
+
+    SDL_FlushEvent(SDL_MOUSEMOTION);
+
     SDL_Event event;
     SDL_PollEvent(&event);
 
-    switch (event.type)
+    if (event.type == SDL_QUIT)
     {
-    case SDL_QUIT:
         isRunning = false;
-        return;
-    default:
-        break;
-    }
-
-    if (keySpeedLimit != 0)
-    {
-        keySpeedLimit--;
+        state = -1;
         return;
     }
 
-    if (state < 4 && (event.type == SDL_TEXTINPUT || event.key.keysym.sym == SDLK_BACKSPACE || event.key.keysym.scancode == SDL_SCANCODE_RETURN))
+    if (state < 4)
     {
-        keySpeedLimit = 3;
         gui->event(event, state);
     }
+
 }
 
 void Game::update()
@@ -124,6 +121,8 @@ void Game::render()
 
 void Game::clean()
 {
+
+    delete gui;
 
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
