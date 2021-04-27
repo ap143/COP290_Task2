@@ -17,7 +17,7 @@ Game::Game()
 {
     game_maze = new Maze(20, gui_width, gui_height);
     cap = new Character(0, true);
-    state = 4;
+    state = 0;
 }
 
 Game::~Game()
