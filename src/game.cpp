@@ -17,7 +17,7 @@ Game::Game()
 {
     game_maze = new Maze(20, gui_width, gui_height);
     cap = new Character(0, true);
-    state = 4;
+    state = 0;
 }
 
 Game::~Game()
@@ -130,6 +130,8 @@ void Game::render()
 void Game::clean()
 {
 
+    SDL_DetachThread(gui->connectionThread);
+
     delete gui;
 
     SDL_DestroyWindow(window);
@@ -147,10 +149,6 @@ void Game::loadAllTextures()
 
     game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
     if (game_maze->grass == NULL) {std::cout << "Failed loading texture" << std::endl;}
-
-    
-
-
 }
 
 void Game::loadCharacters(int teamA, int teamB)
