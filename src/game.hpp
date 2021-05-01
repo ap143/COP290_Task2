@@ -17,8 +17,6 @@ public:
     Game();
     ~Game();
 
-    Character* cap;
-
     static std::map<int, properties> charProp;
     static std::map<int, std::vector<std::string>> textureMap;
     static std::vector<Character> chars;
