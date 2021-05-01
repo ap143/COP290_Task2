@@ -1,7 +1,6 @@
 #include "game.hpp"
 #include <iostream>
 #include "utils/helper.hpp"
-#include "start.hpp"
 
 Game* game = nullptr;
 
@@ -13,6 +12,9 @@ std::string oponent_name;
 
 const int gui_width = 640;
 const int gui_height = 480;
+
+int teamNum = -1;
+int oppenentNum = -1;
 
 int main(int argc, char* argv[])
 {
