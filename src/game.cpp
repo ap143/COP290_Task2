@@ -8,15 +8,11 @@ std::map<int, properties> Game::charProp =
     std::make_pair(3, properties(6, 10, 5, 3))
 };
 
-std::map<int, std::vector<std::string>> Game::textureMap = 
-{
-
-};
 
 Game::Game()
 {
     game_maze = new Maze(20, gui_width, gui_height);
-    state = 0;
+    state = 2;
 }
 
 Game::~Game()

@@ -4,6 +4,8 @@
 #include "SDL.h"
 #include "./utils/draw.hpp"
 #include "network.hpp"
+#include <vector>
+#include <string>
 
 extern Server *serv;
 extern Client *client;
@@ -13,6 +15,9 @@ extern std::string oponent_name;
 
 extern const int gui_width;
 extern const int gui_height;
+
+extern int teamNum;
+extern int oppenentNum;
 
 class Gui
 {
@@ -35,6 +40,7 @@ private:
 
     void setInfo();
     static int initialConnection(void* a);
+    void reel(bool direction);
 
     // Username properties
     Uint8 textBoxColor[4] = {255, 255, 255, 255};
@@ -66,6 +72,25 @@ private:
     SDL_Texture *waiting_texture;
 
     bool connected;
+
+    // Team Selection Variables
+    int const totalTeams = 10;
+
+    std::vector<SDL_Texture*> teams;
+    std::vector<SDL_Texture*> player_names;
+
+    int currTeam = 0;
+    int const centreBoxLength = 175;
+    int const sideBoxLength = 100;
+
+    int const text_size = 32;
+
+    bool movedLeft;
+    bool movedRight;
+    bool animate = false;
+
+    std::string players[10][4] = {{"Team Thor", "Groot", "Loki", "Hulk"},  {"Team Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Team Captain America", "Antman", "Hawkeye", "Falcon"}, {"Team Thanos", "Hydra", "Red Skull", "Ultron"}, {"Team Doctor Strange", "Pietro", "Natasha", "Wanda"}, {"Team Captain MArvel", "Skrulls", "Nick Fury", "Monica"}, {"Team Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Jean", "Cyclops", "Storm", "Logan"}, {"Team Gamora", "Drax", "Rocket", "Star Lord"}, {"Team Magneto", "Iceman", "Deadpool", "Mystique"}};
+    
 
 public:
     Gui(SDL_Window *window, SDL_Renderer *renderer);
