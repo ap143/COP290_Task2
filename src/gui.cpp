@@ -22,7 +22,7 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     this->waiting_texture = text(renderer, "Waiting...", live_text_font);
 
     for (int i = 0; i<10; i++) {
-        teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i+1) + "l0.png").c_str(), this->renderer));
+        teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i+1) + ".png").c_str(), this->renderer));
     }
 
     player_names.push_back(text(renderer, players[currTeam][0], text_size));
@@ -169,7 +169,7 @@ void Gui::show_teamselect()
     // Centre Box
     imageCenter(renderer, teams[currTeam], NULL,  gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength);
     
-    color (renderer, 0, 134);
+    color (renderer, 0, 200);
 
     // Left Box
     imageCenter(renderer, teams[(totalTeams + currTeam - 1)%totalTeams], NULL,  gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
