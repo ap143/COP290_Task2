@@ -10,8 +10,8 @@ Client* client;
 std::string user_name;
 std::string oponent_name;
 
-const int gui_width = 640;
-const int gui_height = 480;
+int gui_width = 4;
+int gui_height = 3;
 
 int teamNum = -1;
 int oppenentNum = -1;
@@ -19,12 +19,23 @@ int oppenentNum = -1;
 int main(int argc, char* argv[])
 {
 
-    // if (start(argc, argv) == 0)
-    // {
-    //     return 0;
-    // }
+    TTF_Init();
 
-    // start(argc, argv);
+    if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+    {
+        std::cout << "Subsystems initialized..." << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error initializing..." << std::endl;
+        exit(-1);
+    }
+
+    SDL_DisplayMode DM;
+    SDL_GetDesktopDisplayMode(0, &DM);
+
+    gui_width = gui_width * DM.w * 240 / 1920;
+    gui_height = gui_height * DM.h * 240 / 1080;
 
     const int FPS = 30;
     const int frameDelay = 1000 / FPS;
