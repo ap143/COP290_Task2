@@ -42,19 +42,21 @@ Gui::~Gui()
     SDL_DestroyTexture(pass_code_texture);
     SDL_DestroyTexture(waiting_texture);
 
-    for (int i = 0; i<4; i++)
+    for (SDL_Texture *tex: teams)
     {
-        SDL_DestroyTexture(player_names[i]);
+        SDL_DestroyTexture(tex);
     }
 
-    for (int i = 0; i<10; i++)
+    for (SDL_Texture *tex: player_names)
     {
-        SDL_DestroyTexture(teams[i]);
+        SDL_DestroyTexture(tex);
     }
 
     abort = true;
-    SDL_WaitThread(connectionThread, NULL);
-
+    if (connectionThread != nullptr)
+    {
+        SDL_WaitThread(connectionThread, NULL);
+    }
 }
 
 void Gui::event(SDL_Event event, int &state)

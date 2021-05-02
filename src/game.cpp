@@ -24,18 +24,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
     isRunning = true;
 
-    TTF_Init();
-
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
-    {
-        std::cout << "Subsystems initialized..." << std::endl;
-    }
-    else
-    {
-        std::cerr << "Error initializing..." << std::endl;
-        exit(-1);
-    }
-
     window = SDL_CreateWindow(title, xpos, ypos, width, height, 0);
 
     if (window == NULL)

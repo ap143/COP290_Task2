@@ -25,6 +25,9 @@ $(OUTPUT_DIR)/%.o: $(SRC_DIR)/%.cpp
 $(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
+clean:
+	$(RM) $(OUTPUT_DIR)/*.o
+
 # libsdl2-dev
 
 

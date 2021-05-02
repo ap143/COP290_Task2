@@ -13,8 +13,8 @@ extern Client *client;
 extern std::string user_name;
 extern std::string oponent_name;
 
-extern const int gui_width;
-extern const int gui_height;
+extern int gui_width;
+extern int gui_height;
 
 extern int teamNum;
 extern int oppenentNum;
@@ -80,8 +80,8 @@ private:
     std::vector<SDL_Texture*> player_names;
 
     int currTeam = 0;
-    int const centreBoxLength = 175;
-    int const sideBoxLength = 100;
+    int const centreBoxLength = 300;
+    int const sideBoxLength = 150;
 
     int const text_size = 32;
 
@@ -102,7 +102,7 @@ public:
     void show(int state);
 
     bool abort;
-    SDL_Thread *connectionThread;
+    SDL_Thread *connectionThread = nullptr;
 
 };
 
