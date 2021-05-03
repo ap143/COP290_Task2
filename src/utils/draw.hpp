@@ -19,7 +19,7 @@ void point(SDL_Renderer *renderer, float x, float y);
 void rect(SDL_Renderer *renderer, float x, float y, float width, float height, bool filled);
 void rectCenter(SDL_Renderer* renderer, float cx, float cy, float width, float height, float scale, bool filled);
 
-SDL_Texture* text(SDL_Renderer *renderer, std::string text_to_display, unsigned int size);
+SDL_Texture* text(SDL_Renderer *renderer, std::string text_to_display, float size);
 
 SDL_Texture* text(SDL_Renderer *renderer, std::string text_to_display);
 

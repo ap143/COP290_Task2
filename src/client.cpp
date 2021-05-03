@@ -13,6 +13,8 @@ Client::Client(std::string ip)
 
     l = sizeof(client);
     m = sizeof(serv);
+
+    active =  true;
 }
 
 void Client::send(std::string message)
@@ -29,5 +31,11 @@ std::string Client::get()
 
 void Client::end()
 {
+    active = false;
     close(sock);
+}
+
+bool Client::isActive()
+{
+    return active;
 }

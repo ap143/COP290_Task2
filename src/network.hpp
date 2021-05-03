@@ -18,6 +18,8 @@ private:
 
     const static int BUFFER_WIDTH = 1024;
 
+    bool active;
+
     std::string ip;
     int port;
     char buffer[Client::BUFFER_WIDTH];
@@ -32,7 +34,7 @@ public:
     void send(std::string message);
     std::string get();
     void end();
-
+    bool isActive();
 };
 
 class Server
@@ -40,6 +42,8 @@ class Server
 private:
 
     const static int BUFFER_WIDTH = 1024;
+
+    bool active;
 
     std::string ip;
     int port;
@@ -55,7 +59,7 @@ public:
     void send(std::string message);
     std::string get();
     void end();
-
+    bool isActive();
 };
 
 #endif
