@@ -13,6 +13,10 @@ extern Client *client;
 extern std::string user_name;
 extern std::string oponent_name;
 
+extern float scale_width;
+extern float scale_height;
+extern float scale;
+
 extern int gui_width;
 extern int gui_height;
 
@@ -45,20 +49,21 @@ private:
     // Username properties
     Uint8 textBoxColor[4] = {255, 255, 255, 255};
     std::string live_text;
-    const int live_text_font = 32;
-    const int textBoxWidth = 320;
-    const int textBoxHeight = 32;
-    const int maxUserNameLength = 12;
+    const float live_text_font = 48 * scale;
+    const float textBoxWidth = 480 * scale_width;
+    const float textBoxHeight = 48 * scale_height;
+    
+    int maxUserNameLength = 12;
 
     SDL_Texture *live_text_texture;
     SDL_Texture *host_button;
     SDL_Texture *join_button;
     SDL_Texture *user_name_message;
 
-    const int buttonWidth = 160;
-    const int buttonHeight = 48;
-    const int buttonMargin = 100;
-    const int buttonPosY = 360;
+    const float buttonWidth = 240 * scale_width;
+    const float buttonHeight = 72 * scale_height;
+    const float buttonMargin = 150 * scale_width;
+    const float buttonPosY = 480 * scale_height;
 
     bool onButtonHost;
     bool onButtonJoin;
@@ -70,6 +75,7 @@ private:
 
     SDL_Texture *pass_code_texture;
     SDL_Texture *waiting_texture;
+    SDL_Texture *input_code;
 
     bool connected;
 
@@ -80,16 +86,16 @@ private:
     std::vector<SDL_Texture*> player_names;
 
     int currTeam = 0;
-    int const centreBoxLength = 300;
-    int const sideBoxLength = 150;
+    const float centreBoxLength = 300 * scale_width;
+    const float sideBoxLength = 150 * scale_height;
 
-    int const text_size = 32;
+    const float text_size = 48 * scale;
 
     bool movedLeft;
     bool movedRight;
     bool animate = false;
 
-    std::string players[10][4] = {{"Team Thor", "Groot", "Loki", "Hulk"},  {"Team Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Team Captain America", "Antman", "Hawkeye", "Falcon"}, {"Team Thanos", "Hydra", "Red Skull", "Ultron"}, {"Team Doctor Strange", "Pietro", "Natasha", "Wanda"}, {"Team Captain MArvel", "Skrulls", "Nick Fury", "Monica"}, {"Team Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Jean", "Cyclops", "Storm", "Logan"}, {"Team Gamora", "Drax", "Rocket", "Star Lord"}, {"Team Magneto", "Iceman", "Deadpool", "Mystique"}};
+    std::string players[10][4] = {{"Team Thor", "Groot", "Loki", "Hulk"},  {"Team Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Team Captain America", "Antman", "Hawkeye", "Falcon"}, {"Team Thanos", "Hydra", "Red Skull", "Ultron"}, {"Team Doctor Strange", "Pietro", "Natasha", "Wanda"}, {"Team Captain MArvel", "Skrulls", "Nick Fury", "Monica"}, {"Team Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Team Jean", "Cyclops", "Storm", "Logan"}, {"Team Gamora", "Drax", "Rocket", "Star Lord"}, {"Team Magneto", "Iceman", "Deadpool", "Mystique"}};
     
 
 public:

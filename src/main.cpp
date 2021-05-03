@@ -4,14 +4,17 @@
 
 Game* game = nullptr;
 
-Server* serv;
-Client* client;
+Server* serv = nullptr;
+Client* client = nullptr;
 
 std::string user_name;
 std::string oponent_name;
 
 int gui_width = 4;
 int gui_height = 3;
+
+float scale_width, scale_height;
+float scale;
 
 int teamNum = -1;
 int oppenentNum = -1;
@@ -34,8 +37,12 @@ int main(int argc, char* argv[])
     SDL_DisplayMode DM;
     SDL_GetDesktopDisplayMode(0, &DM);
 
-    gui_width = gui_width * DM.w * 240 / 1920;
-    gui_height = gui_height * DM.h * 240 / 1080;
+    scale_width = (float) DM.w / 1920;
+    scale_height = (float) DM.h / 1080;
+    scale = std::min(scale_height, scale_width);
+
+    gui_width = (int) (gui_width * scale_width) * 240;
+    gui_height = (int) (gui_height * scale_height) * 240;
 
     const int FPS = 30;
     const int frameDelay = 1000 / FPS;

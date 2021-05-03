@@ -12,7 +12,7 @@ std::map<int, properties> Game::charProp =
 Game::Game()
 {
     game_maze = new Maze(20, gui_width, gui_height);
-    state = 2;
+    state = 0;
 }
 
 Game::~Game()
@@ -106,8 +106,6 @@ void Game::render()
 
 void Game::clean()
 {
-    SDL_DetachThread(gui->connectionThread);
-
     delete gui;
 
     SDL_DestroyWindow(window);

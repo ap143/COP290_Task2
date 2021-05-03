@@ -16,6 +16,8 @@ Server::Server(std::string ip)
         error("Error binding socket...");
     }
 
+    active = true;
+
     l = sizeof(client);
 }
 
@@ -36,5 +38,11 @@ std::string Server::get()
 
 void Server::end()
 {
+    active = false;
     close(sock);
+}
+
+bool Server::isActive()
+{
+    return active;
 }
