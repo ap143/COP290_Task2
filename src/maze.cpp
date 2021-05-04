@@ -1,30 +1,5 @@
 #include "maze.hpp"
 
-Maze::Maze()
-{
-    maze = new bool **[n];
-    for (int i = 0; i < n; i++)
-    {
-        maze[i] = new bool *[n];
-        for (int j = 0; j < n; j++)
-        {
-            maze[i][j] = new bool[4]();
-        }
-    }
-    
-    // Memeset
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            for (int k = 0; k < 4; k++)
-            {
-                maze[i][j][k] = false;
-            }
-        }
-    }
-}
-
 Maze::Maze(int size, int w, int h)
 {
     n = size;
@@ -32,19 +7,22 @@ Maze::Maze(int size, int w, int h)
     for (int i = 0; i < n; i++)
     {
         maze[i] = new bool *[n];
+        //charMap[i] = new std::set<Character*> [n]; 
         for (int j = 0; j < n; j++)
         {
             maze[i][j] = new bool[4];
         }
+
     }
 
-    cell_size = (float)(19 * (h) / 20) / n;
+    h = std::min(w, h);
 
-    grid_length = (float)19 * (h) / 20;
+    cell_size = (19 * ((float)h) / 20) / n;
+
+    grid_length = 19 * ((float)h) / 20;
     //rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
 
-    ox = (float)(w) / 2 - (float)grid_length / 2;
-    oy = (float)(h) / 2 - (float)grid_length / 2;
+    ox = oy = (float)(h) / 2 - (float)grid_length / 2;
 
     // Memeset
     for (int i = 0; i < n; i++)

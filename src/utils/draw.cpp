@@ -106,6 +106,12 @@ void imageCenter(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *src, fl
     SDL_RenderCopyF(renderer, texture, src, &rect);
 }
 
+void imageCenter(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *src, float x, float y, float width, float height, float scale)
+{
+    SDL_FRect rect = getSDLFRect(x - width * scale / 2, y - height * scale / 2, width * scale, height * scale);
+    SDL_RenderCopyF(renderer, texture, src, &rect);
+}
+
 void image(SDL_Renderer *renderer, SDL_Texture *texture, float sx, float sy, float sw, float sh, float dx,
            float dy, float dw, float dh, float angle, SDL_RendererFlip flip)
 {
