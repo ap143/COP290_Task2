@@ -22,6 +22,9 @@ int opponentTeamNum = -2;
 int main(int argc, char* argv[])
 {
 
+    std::cout << Teamview::lol << std::endl;
+    Teamview temp(nullptr, nullptr, 0, 0);
+
     TTF_Init();
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)

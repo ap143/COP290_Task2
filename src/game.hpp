@@ -1,14 +1,11 @@
 #ifndef GAME
 #define GAME
 
-#include "SDL.h"
 #include <iostream>
-#include "./utils/draw.hpp"
 #include <vector>
 #include <map>
 #include "gui.hpp"
-#include "character.hpp"
-#include "maze.hpp"
+#include "teamView.hpp"
 
 class Game
 {
@@ -22,8 +19,9 @@ public:
     bool opponentReady = false;
 
     static std::map<int, properties> charProp;
-    static std::map<int, std::vector<std::string>> textureMap;
-    static std::vector<Character> chars;
+
+    Teamview *myTeam;
+    Teamview *opponentTeam;
 
     int state;
     /*
@@ -47,21 +45,18 @@ public:
 
     void loadAllTextures();
 
-    void loadCharacters(int teamA, int teamB);
-
 private:
     bool isRunning;
-    
+
     SDL_Window *window;
     SDL_Renderer *renderer;
 
     Gui *gui;
- 
+
     void drawMazeLoad();
     const float font_size = 24 * scale;
     const float loading_width = gui_width * 2 / 3;
     const float loading_height = loading_width / 20;
-
 };
 
 extern Game *game;

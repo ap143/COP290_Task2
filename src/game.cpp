@@ -107,8 +107,16 @@ void Game::update()
         {
             sendMessage(READY+std::string("0"));
         }
-    }else if (state == 5 && opponentReady && curRowToSend == game_maze->n)
+    }
+    else if (state == 5 && opponentReady && curRowToSend == game_maze->n)
     {
+        state++;
+    }
+    else if (state == 6)
+    {
+        std::cout << "state 6" << std::endl;
+        myTeam = new Teamview(renderer, game_maze, teamNum, true);
+        opponentTeam = new Teamview(renderer, game_maze, opponentTeamNum, false);
         state++;
     }
 }
@@ -131,10 +139,14 @@ void Game::render()
         drawMazeLoad();
     }
     else if (state == 6)
+    {   
+        drawMazeLoad();
+    }
+    else if (state == 7)
     {
         game_maze->show(renderer, window);
+        // myTeam->show();
     }
-
     SDL_RenderPresent(renderer);
 }
 
@@ -157,11 +169,6 @@ void Game::loadAllTextures()
 
     game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
     if (game_maze->grass == NULL) {std::cout << "Failed loading texture" << std::endl;}
-}
-
-void Game::loadCharacters(int teamA, int teamB)
-{
-    
 }
 
 void Game::drawMazeLoad()

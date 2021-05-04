@@ -6,7 +6,6 @@
 #include "./utils/draw.hpp"
 #include <vector>
 #include <map>
-#include "maze.hpp"
 
 // Character properties
 struct properties
@@ -32,10 +31,11 @@ struct properties
 class Character
 {
 public:
-    Maze* gameMaze;
 
+    int team;
     int level; // level 0/1/2/3
-    bool team;
+    bool isMyTeam; // 1 -> my team
+
     properties prop;
 
     SDL_Texture *spriteSheet;
@@ -49,47 +49,10 @@ public:
 
     Character();
 
-    Character(int level, bool team);
+    Character(int teamNum, int level, bool team);
     ~Character();
 
-    void updatePos();
-    /*
-     1. Calculate new position using djkstra
-     2. update the prevPos and currPos
-     3. Called in for every frame in Game->update
-    */
-
-    void move(SDL_Renderer *ren);
-    /*
-     1. animate sprite according to prevPos and currPos
-     2. Called in Game->render.
-    */
-
-    void attack();
-    /*
-     1. Check opponent in current cell and attack.
-    */
-
-    void fight();
-    /*
-     1. Sprite animation of fight scene
-    */
-
-    bool isAlive();
-    /*
-     1. if health <=0 then destroy character
-    */
-
-    static Character born(int level, struct properties p);
-    /*
-     1. When mouse event of creating a new character then this is called.
-     2. calls contructor.
-     3. marks the cell in which it is intiated.
-    */
-
     void show();
-
-    void setupSprite(SDL_Texture* tex, SDL_Renderer* ren);
 
 private:
     float velConst = 0.01;
@@ -98,7 +61,6 @@ private:
     SDL_Rect spriteRect;
     SDL_FRect posRect;
 
-    void drawCurrSprite(int dir);
 };
 
 #endif
