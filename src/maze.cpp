@@ -11,6 +11,18 @@ Maze::Maze()
             maze[i][j] = new bool[4]();
         }
     }
+    
+    // Memeset
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                maze[i][j][k] = false;
+            }
+        }
+    }
 }
 
 Maze::Maze(int size, int w, int h)
@@ -33,6 +45,18 @@ Maze::Maze(int size, int w, int h)
 
     ox = (float)(w) / 2 - (float)grid_length / 2;
     oy = (float)(h) / 2 - (float)grid_length / 2;
+
+    // Memeset
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                maze[i][j][k] = 0;
+            }
+        }
+    }
 }
 
 void Maze::generate()

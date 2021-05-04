@@ -87,18 +87,6 @@ Gui::~Gui()
     }
 }
 
-void Gui::sendMessage(std::string message)
-{
-    if (isHost)
-    {
-        serv->send(message);
-    }
-    else
-    {
-        client->send(message);
-    }
-}
-
 void Gui::event(SDL_Event event, int &state)
 {
     switch (state)
@@ -382,8 +370,8 @@ void Gui::event_teamselect(SDL_Event event, int &state)
         if (currTeam != opponentTeamNum)
         {
             teamNum = currTeam;
-            sendMessage(std::to_string(teamNum));
-            state++;
+            sendMessage(TEAM_SELECT + std::to_string(teamNum));
+            state += 2;
         }
     }
 }
@@ -485,7 +473,7 @@ int Gui::runGame(void *a)
         while (serv->isActive())
         {
             response = serv->get();
-            opponentTeamNum = std::stoi(response);
+            respond(response);
         }
     }
     else
@@ -493,7 +481,7 @@ int Gui::runGame(void *a)
         while (client->isActive())
         {
             response = client->get();
-            opponentTeamNum = std::stoi(response);
+            respond(response);
         }
     }
 

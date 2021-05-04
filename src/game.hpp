@@ -17,9 +17,24 @@ public:
     Game();
     ~Game();
 
+    Maze *game_maze;
+    int curRowToSend;
+    bool opponentReady = false;
+
     static std::map<int, properties> charProp;
     static std::map<int, std::vector<std::string>> textureMap;
     static std::vector<Character> chars;
+
+    int state;
+    /*
+    *   0: Get user name
+    *   1: Generate/Check passcode => connect
+    *   2: Connected state: Select team => Load all character textures and make objects
+    *   3: Show random place to match => Generate maze and draw it
+    *   4: Generate Maze
+    *   5: Send Maze
+    *   6: Load characters
+    */
 
     void init(const char *title, int xpos, int ypos, int width, int height);
 
@@ -36,22 +51,19 @@ public:
 
 private:
     bool isRunning;
-    Maze *game_maze;
+    
     SDL_Window *window;
     SDL_Renderer *renderer;
 
     Gui *gui;
+ 
+    void drawMazeLoad();
+    const float font_size = 24 * scale;
+    const float loading_width = gui_width * 2 / 3;
+    const float loading_height = loading_width / 20;
 
-    int state;
-    /*
-    *   0: Get user name
-    *   1: Generate/Check passcode => connect
-    *   2: Connected state: Select team => Load all character textures and make objects
-    *   3: Show random place to match => Generate maze and draw it
-    *   4: Ready to play => Countdown to 3
-    *   5: Game start
-    *   6: Game ends/one player quits => Display winner and new game option
-    */
 };
+
+extern Game *game;
 
 #endif
