@@ -11,7 +11,7 @@ extern Server *serv;
 extern Client *client;
 
 extern std::string user_name;
-extern std::string oponent_name;
+extern std::string opponent_name;
 
 extern float scale_width;
 extern float scale_height;
@@ -21,7 +21,7 @@ extern int gui_width;
 extern int gui_height;
 
 extern int teamNum;
-extern int oppenentNum;
+extern int opponentTeamNum;
 
 class Gui
 {
@@ -84,6 +84,7 @@ private:
 
     std::vector<SDL_Texture*> teams;
     std::vector<SDL_Texture*> player_names;
+    SDL_Texture* selected;
 
     int currTeam = 0;
     const float centreBoxLength = 300 * scale_width;
@@ -96,7 +97,9 @@ private:
     bool animate = false;
 
     std::string players[10][4] = {{"Team Thor", "Groot", "Loki", "Hulk"},  {"Team Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Team Captain America", "Antman", "Hawkeye", "Falcon"}, {"Team Thanos", "Hydra", "Red Skull", "Ultron"}, {"Team Doctor Strange", "Pietro", "Natasha", "Wanda"}, {"Team Captain MArvel", "Skrulls", "Nick Fury", "Monica"}, {"Team Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Team Jean", "Cyclops", "Storm", "Logan"}, {"Team Gamora", "Drax", "Rocket", "Star Lord"}, {"Team Magneto", "Iceman", "Deadpool", "Mystique"}};
-    
+
+    // Runner thread function
+    static int runGame(void* a);
 
 public:
     Gui(SDL_Window *window, SDL_Renderer *renderer);
@@ -109,6 +112,9 @@ public:
 
     bool abort;
     SDL_Thread *connectionThread = nullptr;
+    SDL_Thread *runnerThread = nullptr;
+
+    void sendMessage(std::string message);
 
 };
 

@@ -8,7 +8,7 @@ Server* serv = nullptr;
 Client* client = nullptr;
 
 std::string user_name;
-std::string oponent_name;
+std::string opponent_name;
 
 int gui_width = 4;
 int gui_height = 3;
@@ -17,7 +17,7 @@ float scale_width, scale_height;
 float scale;
 
 int teamNum = -1;
-int oppenentNum = -1;
+int opponentTeamNum = -2;
 
 int main(int argc, char* argv[])
 {

@@ -5,26 +5,27 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     this->window = window;
     this->renderer = renderer;
 
-    this->gui_bg = loadTexture("./assets/images/bg.png", this->renderer);
+    gui_bg = loadTexture("./assets/images/bg.png", renderer);
 
-    this->live_text = "";
+    live_text = "";
 
     color(renderer, 0);
-    this->live_text_texture = text(renderer, live_text, live_text_font);
-    this->host_button = text(renderer, "Host", live_text_font);
-    this->join_button = text(renderer, "Join", live_text_font);
+    live_text_texture = text(renderer, live_text, live_text_font);
+    host_button = text(renderer, "Host", live_text_font);
+    join_button = text(renderer, "Join", live_text_font);
 
     color(renderer, 150);
-    this->user_name_message = text(renderer, "Username...", live_text_font * 2 / 3);
+    user_name_message = text(renderer, "Username...", live_text_font * 2 / 3);
 
-    this->onButtonHost = this->onButtonJoin = false;
+    onButtonHost = onButtonJoin = false;
 
-    this->waiting_texture = text(renderer, "Waiting...", live_text_font);
-    this->input_code = text(renderer, "Code...", live_text_font);
+    pass_code_texture = text(renderer, "", live_text_font);
+    waiting_texture = text(renderer, "Waiting...", live_text_font);
+    input_code = text(renderer, "Code...", live_text_font);
 
     for (int i = 0; i < 10; i++)
     {
-        teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i + 1) + ".png").c_str(), this->renderer));
+        teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i + 1) + ".png").c_str(), renderer));
     }
 
     player_names.push_back(text(renderer, players[currTeam][0], text_size));
@@ -32,6 +33,8 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     {
         player_names.push_back(text(renderer, players[currTeam][i], text_size / 2));
     }
+
+    selected = loadTexture ("./assets/images/selected.png", renderer);
 }
 
 Gui::~Gui()
@@ -58,7 +61,7 @@ Gui::~Gui()
     {
         serv->end();
     }
-    
+
     if (client != nullptr)
     {
         client->end();
@@ -67,6 +70,32 @@ Gui::~Gui()
     if (connectionThread != nullptr)
     {
         SDL_DetachThread(connectionThread);
+    }
+
+    if (runnerThread != nullptr)
+    {
+        SDL_DetachThread(runnerThread);
+    }
+
+    if (serv != nullptr)
+    {
+        delete serv;
+    }
+    if (client != nullptr)
+    {
+        delete client;
+    }
+}
+
+void Gui::sendMessage(std::string message)
+{
+    if (isHost)
+    {
+        serv->send(message);
+    }
+    else
+    {
+        client->send(message);
     }
 }
 
@@ -185,15 +214,30 @@ void Gui::show_teamselect()
 
     // Centre Box
     imageCenter(renderer, teams[currTeam], NULL, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength);
+    if (currTeam == opponentTeamNum) 
+    {
+        color(renderer, 0, 150);
+        rectCenter(renderer, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength, 1, true);
+        color(renderer, 255);
+        imageCenter(renderer, selected, NULL, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength);
+    }
 
     color(renderer, 0, 200);
 
     // Left Box
     imageCenter(renderer, teams[(totalTeams + currTeam - 1) % totalTeams], NULL, gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
+    if ((totalTeams + currTeam - 1) % totalTeams == opponentTeamNum) 
+    {
+        imageCenter(renderer, selected, NULL,  gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
+    }
     rectCenter(renderer, gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength, 1, true);
 
     // Right Box
     imageCenter(renderer, teams[(totalTeams + currTeam + 1) % totalTeams], NULL, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
+    if ((totalTeams + currTeam + 1) % totalTeams == opponentTeamNum) 
+    {
+        imageCenter(renderer, selected, NULL, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
+    }
     rectCenter(renderer, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength, 1, true);
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -209,6 +253,7 @@ void Gui::show_teamselect()
 
 void Gui::show_randomplace()
 {
+    std::cout << teamNum << " " << opponentTeamNum << std::endl;
 }
 
 void Gui::event_username(SDL_Event event, int &state)
@@ -334,11 +379,12 @@ void Gui::event_teamselect(SDL_Event event, int &state)
     }
     else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
     {
-        if (isHost)
+        if (currTeam != opponentTeamNum)
+        {
             teamNum = currTeam;
-        else
-            oppenentNum = currTeam;
-        state++;
+            sendMessage(std::to_string(teamNum));
+            state++;
+        }
     }
 }
 
@@ -387,7 +433,7 @@ int Gui::initialConnection(void *a)
             {
                 serv->send("connection_success");
                 serv->send(user_name);
-                oponent_name = serv->get();
+                opponent_name = serv->get();
                 break;
             }
             else
@@ -408,7 +454,7 @@ int Gui::initialConnection(void *a)
 
             if (response == "connection_success")
             {
-                oponent_name = client->get();
+                opponent_name = client->get();
                 client->send(user_name);
                 break;
             }
@@ -418,10 +464,38 @@ int Gui::initialConnection(void *a)
     if (!gui->abort)
     {
         std::cout << "User name: " << user_name << std::endl;
-        std::cout << "Oponenet name: " << oponent_name << std::endl;
+        std::cout << "Oponenet name: " << opponent_name << std::endl;
     }
 
     gui->connected = !gui->abort;
+
+    gui->runnerThread = SDL_CreateThread(runGame, "Connect", gui);
+
+    return 0;
+}
+
+int Gui::runGame(void *a)
+{
+    Gui *gui = (Gui *)a;
+
+    std::string response;
+
+    if (gui->isHost)
+    {
+        while (serv->isActive())
+        {
+            response = serv->get();
+            opponentTeamNum = std::stoi(response);
+        }
+    }
+    else
+    {
+        while (client->isActive())
+        {
+            response = client->get();
+            opponentTeamNum = std::stoi(response);
+        }
+    }
 
     return 0;
 }
