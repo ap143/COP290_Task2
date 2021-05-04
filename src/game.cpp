@@ -54,9 +54,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
     loadAllTextures();
 
-    game_maze->generate();
-    std::cout << "Maze generated..." << std::endl;
-
     isRunning = true;
 }
 
@@ -84,7 +81,36 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    
+    if (state == 4)
+    {
+        if (gui->isHost)
+        {
+            game_maze->generate();
+        }
+        curRowToSend = 0;
+        state++;
+    }
+    else if (state == 5 && gui->isHost && curRowToSend < game_maze->n)
+    {
+        std::string rowNum = ((curRowToSend < 10) ? "0" : "") + std::to_string(curRowToSend);
+        std::string message = MAZE_STRUCT + rowNum;
+        for (int i = 0; i < game_maze->n; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                message += std::to_string((int) game_maze->maze[curRowToSend][i][j]);
+            }
+        }
+        curRowToSend++;
+        sendMessage(message);
+        if (curRowToSend == game_maze->n)
+        {
+            sendMessage(READY+std::string("0"));
+        }
+    }else if (state == 5 && opponentReady && curRowToSend == game_maze->n)
+    {
+        state++;
+    }
 }
 
 void Game::render()
@@ -96,7 +122,15 @@ void Game::render()
     {
         gui->show(state);
     }
-    else
+    else if (state == 4)
+    {
+        return;
+    }
+    else if (state == 5)
+    {
+        drawMazeLoad();
+    }
+    else if (state == 6)
     {
         game_maze->show(renderer, window);
     }
@@ -128,4 +162,99 @@ void Game::loadAllTextures()
 void Game::loadCharacters(int teamA, int teamB)
 {
     
+}
+
+void Game::drawMazeLoad()
+{
+
+    backgroundImage(renderer, game_maze->grass);
+
+    color(renderer, 0);
+    static SDL_Texture *mazeLoading = text(renderer, "Maze Loading...", font_size);
+
+    imageCenter(renderer, mazeLoading, gui_width / 2, gui_height / 2);
+
+    color(renderer, 0);
+    rectCenter(renderer, gui_width / 2, gui_height / 2 + loading_height, loading_width, loading_height, 1, false);
+
+    for (int i = 0; i < game_maze->n; i++)
+    {
+        if (i < curRowToSend)
+        {
+            color(renderer, 0, 255, 0);
+            rectCenter(renderer, gui_width / 2 - loading_width / 2 + loading_height / 2 + i * loading_height, gui_height / 2 + loading_height, loading_height, loading_height, 0.8, true);
+            color(renderer, 0);
+            rectCenter(renderer, gui_width / 2 - loading_width / 2 + loading_height / 2 + i * loading_height, gui_height / 2 + loading_height, loading_height, loading_height, 0.9, false);
+        }
+    }
+
+}
+
+void sendMessage(std::string message)
+{
+    if (serv != nullptr)
+    {
+        serv->send(message);
+    }
+    else if (client != nullptr)
+    {
+        client->send(message);
+    }
+}
+
+void respond(std::string response)
+{
+    std::string code = response.substr(0, 2);
+    std::string data = response.substr(2);
+
+    if (code == TEAM_SELECT)
+    {
+        opponentTeamNum = std::stoi(data);
+    }
+    else if (code == MAZE_STRUCT)
+    {
+        int row = std::stoi(data.substr(0, 2));
+        data = data.substr(2);
+        for (int i = 0; i < game->game_maze->n; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                game->game_maze->maze[game->curRowToSend][i][j] = std::stoi(data.substr(i * 4 + j, 1));
+            }
+        }
+        game->curRowToSend++;
+        sendMessage(READY+std::string("0"));
+    }
+    else if (code == READY)
+    {
+        game->opponentReady = true;
+    }
+    else if (code == DEPLOY)
+    {
+
+    }
+    else if (code == MOVEMENT)
+    {
+        
+    }
+    else if (code == ATTACK)
+    {
+        
+    }
+    else if (code == DIE)
+    {
+        
+    }
+    else if (code == KING_MOVE)
+    {
+
+    }
+    else if (code == END_GAME)
+    {
+
+    }
+    else
+    {
+        return;
+    }
 }
