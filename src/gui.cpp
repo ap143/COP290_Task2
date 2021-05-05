@@ -180,17 +180,17 @@ void Gui::show_codecheck()
 
     color(renderer, 255);
     // Code box
-    rectCenter(renderer, gui_width / 2, gui_height * 2 / 3, textBoxWidth * 2 / 3, textBoxHeight * 3 / 2, 1, true);
+    rectCenter(renderer, gui_width / 2, gui_height / 2, textBoxWidth * 2 / 3, textBoxHeight * 3 / 2, 1, true);
 
     color(renderer, 0);
 
     if (passCode.length() > 0)
     {
-        imageCenter(renderer, pass_code_texture, gui_width / 2, gui_height * 2 / 3);
+        imageCenter(renderer, pass_code_texture, gui_width / 2, gui_height / 2);
     }
     else
     {
-        imageCenter(renderer, input_code, gui_width / 2, gui_height * 2 / 3);
+        imageCenter(renderer, input_code, gui_width / 2, gui_height / 2);
     }
 }
 

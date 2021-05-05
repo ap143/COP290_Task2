@@ -49,7 +49,7 @@ public:
 
     Character();
 
-    Character(int teamNum, int level, bool team);
+    Character(SDL_Renderer* renderer, int teamNum, int level, bool team);
     ~Character();
 
     void show();

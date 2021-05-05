@@ -1,46 +1,50 @@
 #include "teamView.hpp"
 
-Teamview::Teamview()
-{
-
-}
-
 Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
 {
-    std::cout<<"FF"<<std::endl;
     renderer = rend;
-    std::cout << "renderer" << std::endl;
     game_maze = maze;
-    std::cout << "maze" << std::endl;
     team = teamN;
-    std::cout << "teamN" << std::endl;
     isMyTeam = self;
-
-    std::cout << "in" << std::endl;
 
     std::vector<Character *> v[4];
 
-    v[0].push_back(new Character(team, 0, self));
+    v[0].push_back(new Character(renderer, team, 0, self));
 
-    for (int i = 0; i < 4; i++) 
+    for (int i = 0; i < 4; i++)
     {
-        v[1].push_back(new Character(team, 1, self));
+        v[1].push_back(new Character(renderer, team, 1, self));
     }
 
     for (int i = 0; i < 2; i++) 
     {
-        v[2].push_back(new Character(team, 2, self));
+        v[2].push_back(new Character(renderer, team, 2, self));
     }
 
-    v[3].push_back(new Character(team, 3, self));
+    v[3].push_back(new Character(renderer, team, 3, self));
 
     for (int i = 0; i < 4; i++)
     {
         characters.push_back(v[i]);
     }
-    
-    std::cout<<"out"<<std::endl;
 
+    block_ox = game_maze->ox + game_maze->grid_length;
+    block_oy = gui_height / 2;
+    block_width = gui_width - block_ox;
+    block_height = gui_height - block_oy;
+
+    src = {.x = 48, .y = 0, .w = 48, .h = 49};
+
+    tile_height = block_height / 4;
+    bar_height = tile_height / 4;
+    bar_width = (block_width - tile_height) * 0.9;
+    bar_fill = 0;
+
+
+    for (int i = 0; i < 4; i++)
+    {
+        tiles[i] = {.x = block_ox, .y = block_oy + i * tile_height, .w = tile_height, .h = tile_height};
+    }
 }
 
 void Teamview::show()
