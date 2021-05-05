@@ -11,7 +11,7 @@ std::map<int, properties> Game::charProp =
 
 Game::Game()
 {
-    game_maze = new Maze(20, gui_width, gui_height);
+    game_maze = new Maze(10, gui_width, gui_height);
     state = 0;
 }
 
@@ -233,7 +233,7 @@ void respond(std::string response)
         {
             for (int j = 0; j < 4; j++)
             {
-                game->game_maze->maze[game->curRowToSend][i][j] = std::stoi(data.substr(i * 4 + j, 1));
+                game->game_maze->maze[game->game_maze->n - 1 - game->curRowToSend][game->game_maze->n - 1 - i][(j + 2) % 4] = std::stoi(data.substr(i * 4 + j, 1));
             }
         }
         game->curRowToSend++;
@@ -245,11 +245,18 @@ void respond(std::string response)
     }
     else if (code == DEPLOY)
     {
-
+        if (data.substr(0, 1) == "0")
+        {
+            game->myTeam->opponentKingDeployed = true;
+        } 
+        game->opponentTeam->deploy(std::stoi(data.substr(0,1)), std::stoi(data.substr(1,1)), std::stoi(data.substr(2,2)), std::stoi(data.substr(4,2)));
     }
     else if (code == MOVEMENT)
     {
-        
+        int level = std::stoi(data.substr(0, 1));
+        int cnt = std::stoi(data.substr(1, 1));
+        int dir = std::stoi(data.substr(2, 1));
+        game->opponentTeam->characters[level][cnt]->setVel((dir + 2) % 4);
     }
     else if (code == ATTACK)
     {
@@ -259,9 +266,12 @@ void respond(std::string response)
     {
         
     }
-    else if (code == KING_MOVE)
+    else if (code == TURN)
     {
-
+        int level = std::stoi(data.substr(0, 1));
+        int cnt = std::stoi(data.substr(1, 1));
+        int dir = std::stoi(data.substr(2, 1));
+        game->opponentTeam->characters[level][cnt]->turn((dir + 2) % 4);
     }
     else if (code == END_GAME)
     {

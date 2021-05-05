@@ -7,16 +7,6 @@
 #include <vector>
 #include <string>
 
-#define TEAM_SELECT "00"
-#define MAZE_STRUCT "01"
-#define READY "02"
-#define DEPLOY "03"
-#define MOVEMENT "04"
-#define ATTACK "05"
-#define DIE "06"
-#define KING_MOVE "07"
-#define END_GAME "08"
-
 extern Server *serv;
 extern Client *client;
 

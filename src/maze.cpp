@@ -150,7 +150,7 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                         // DestR.w = ww;
                         // DestR.h = wh;
                         // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL,  SDL_FLIP_NONE);
-                        image(renderer, wall, ox + cell_size * j, oy + cell_size * i, 
+                        imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * i, 
                             ww, wh, 0, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * j, oy + cell_size * i, ox + cell_size * (j + 1), oy + cell_size * i);
                     }
@@ -161,7 +161,7 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                         // DestR.w = ww;
                         // DestR.h = wh;
                         // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
-                        image(renderer, wall, ox + cell_size * (j + 1) - cell_size / 2, oy + cell_size * i + cell_size / 2, 
+                        imageCenter(renderer, wall, NULL, ox + cell_size * (j + 1), oy + cell_size * i + cell_size / 2, 
                             ww, wh, 270, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * (j + 1), oy + cell_size * i, ox + cell_size * (j + 1), oy + cell_size * (i + 1));
                     }
@@ -172,7 +172,7 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                         // DestR.w = ww;
                         // DestR.h = wh;
                         // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL, SDL_FLIP_NONE);
-                        image(renderer, wall, ox + cell_size * j, oy + cell_size * (i + 1), 
+                        imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * (i + 1), 
                             ww, wh, 0, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * j, oy + cell_size * (i + 1), ox + cell_size * (j + 1), oy + cell_size * (i + 1));
                     }
@@ -183,7 +183,7 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                         // DestR.w = ww;
                         // DestR.h = wh;
                         // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
-                        image(renderer, wall, ox + cell_size * j - cell_size / 2, oy + cell_size * i + cell_size / 2, 
+                        imageCenter(renderer, wall, NULL, ox + cell_size * j , oy + cell_size * i + cell_size / 2, 
                             ww, wh, 270, SDL_FLIP_NONE);
                         //line(renderer, ox + cell_size * j, oy + cell_size * (i + 1), ox + cell_size * j, oy + cell_size * i);
                     }

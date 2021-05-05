@@ -7,6 +7,17 @@
 #include <iostream>
 #include "helper.hpp"
 
+#define TEAM_SELECT "00"
+#define MAZE_STRUCT "01"
+#define READY "02"
+#define DEPLOY "03"
+#define MOVEMENT "04"
+#define ATTACK "05"
+#define DIE "06"
+#define TURN "07"
+#define END_GAME "08"
+
+
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b);
 void color(SDL_Renderer* renderer, Uint8 grey, Uint8 alpha);
@@ -28,6 +39,8 @@ SDL_Texture *loadTexture(const char *texture, SDL_Renderer *ren);
 void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, float x, float y);
 
 void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, SDL_Rect* src, float x, float y, float width, float height);
+
+void imageCenter(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *src, float x, float y, float width, float height, float angle, SDL_RendererFlip flip);
 
 void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, SDL_Rect* src, float x, float y, float width, float height, float scale);
 
