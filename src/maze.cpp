@@ -7,7 +7,6 @@ Maze::Maze(int size, int w, int h)
     for (int i = 0; i < n; i++)
     {
         maze[i] = new bool *[n];
-        //charMap[i] = new std::set<Character*> [n]; 
         for (int j = 0; j < n; j++)
         {
             maze[i][j] = new bool[4];
