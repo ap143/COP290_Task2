@@ -28,6 +28,9 @@ $(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp
 clean:
 	$(RM) $(OUTPUT_DIR)/*.o
 
+again:
+	make clean && make
+
 # libsdl2-dev
 
 

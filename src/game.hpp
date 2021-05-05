@@ -1,9 +1,6 @@
 #ifndef GAME
 #define GAME
 
-#include <iostream>
-#include <vector>
-#include <map>
 #include "gui.hpp"
 #include "teamView.hpp"
 

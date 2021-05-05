@@ -51,7 +51,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
     SDL_StartTextInput();
 
     gui = new Gui(window, renderer);
-
     loadAllTextures();
 
     isRunning = true;
@@ -145,7 +144,7 @@ void Game::render()
     else if (state == 7)
     {
         game_maze->show(renderer, window);
-        // myTeam->show();
+        myTeam->show();
     }
     SDL_RenderPresent(renderer);
 }
@@ -173,7 +172,6 @@ void Game::loadAllTextures()
 
 void Game::drawMazeLoad()
 {
-
     backgroundImage(renderer, game_maze->grass);
 
     color(renderer, 0);

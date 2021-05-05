@@ -59,21 +59,22 @@ private:
     // Username properties
     Uint8 textBoxColor[4] = {255, 255, 255, 255};
     std::string live_text;
-    const float live_text_font = 48 * scale;
-    const float textBoxWidth = 480 * scale_width;
-    const float textBoxHeight = 48 * scale_height;
-    
+
     int maxUserNameLength = 12;
+
+    const float textBoxWidth = gui_width / 3;
+    const float textBoxHeight = textBoxWidth / maxUserNameLength;
+    const float live_text_font = textBoxHeight;
 
     SDL_Texture *live_text_texture;
     SDL_Texture *host_button;
     SDL_Texture *join_button;
     SDL_Texture *user_name_message;
 
-    const float buttonWidth = 240 * scale_width;
-    const float buttonHeight = 72 * scale_height;
-    const float buttonMargin = 150 * scale_width;
-    const float buttonPosY = 480 * scale_height;
+    const float buttonWidth = (float) gui_width / 8;
+    const float buttonHeight = buttonWidth / 2;
+    const float buttonMargin = buttonWidth * 2;
+    const float buttonPosY = (float) gui_height * 2 / 3;
 
     bool onButtonHost;
     bool onButtonJoin;
@@ -99,7 +100,7 @@ private:
     const float centreBoxLength = 300 * scale_width;
     const float sideBoxLength = 150 * scale_height;
 
-    const float text_size = 48 * scale;
+    const float text_size = live_text_font;
 
     bool movedLeft;
     bool movedRight;

@@ -1,5 +1,4 @@
 #include "game.hpp"
-#include <iostream>
 #include "utils/helper.hpp"
 
 Game* game = nullptr;
@@ -22,9 +21,6 @@ int opponentTeamNum = -2;
 int main(int argc, char* argv[])
 {
 
-    std::cout << Teamview::lol << std::endl;
-    Teamview temp(nullptr, nullptr, 0, 0);
-
     TTF_Init();
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
@@ -44,8 +40,8 @@ int main(int argc, char* argv[])
     scale_height = (float) DM.h / 1080;
     scale = std::min(scale_height, scale_width);
 
-    gui_width = (int) (gui_width * scale_width) * 240;
-    gui_height = (int) (gui_height * scale_height) * 240;
+    gui_width = (int) (gui_width * scale_width) * 300;
+    gui_height = (int) (gui_height * scale_height) * 300;
 
     const int FPS = 30;
     const int frameDelay = 1000 / FPS;

@@ -5,8 +5,9 @@ Character::Character()
 
 }
 
-Character::Character(int teamN, int lev, bool t)
+Character::Character(SDL_Renderer* renderer, int teamN, int lev, bool t)
 {
+    this->renderer = renderer;
     team = teamN;
     level = lev;
     isMyTeam = t;
