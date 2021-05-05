@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include "maze.hpp"
+#include "gui.hpp"
 
 // Character properties
 struct properties
@@ -49,7 +50,9 @@ public:
 
     int currPos[2];
     int vel[2];
+    int currDir = -1;
 
+    bool ready = false;
     bool active = false;
     bool dead = false;
 
@@ -65,9 +68,11 @@ public:
     void show();
     void deploy(int i, int j);
     void update();
+    void setVel(int dir);
+    void turn(int dir);
 
 private:
-    float velConst = 0.01;
+    float velConst = 0.05;
     int currSprite = 0;
 
     SDL_Rect spriteRect;

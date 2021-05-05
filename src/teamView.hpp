@@ -17,6 +17,11 @@ public:
     int count[4] = {1, 4, 2, 1};
 
     int activeLevel = -1;
+
+    bool kingDeployed = false;
+    bool opponentKingDeployed = false;
+
+    int deployRange;
     
     Teamview(SDL_Renderer* renderer, Maze* maze, int teamNum, bool self);
 
@@ -24,7 +29,11 @@ public:
 
     void update();
     
-    void handleEvent(SDL_Event event);  
+    void handleEvent(SDL_Event event);
+
+    void deploy(int level, int count, int i, int j); 
+
+    void setNextDest(Character* c); 
 
 private:
 

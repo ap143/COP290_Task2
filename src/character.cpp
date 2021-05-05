@@ -47,8 +47,10 @@ void Character::deploy(int i, int j)
     currPos[1] = j;
 
     vel[0] = vel[1] = 0;
+    currDir = 2;
 
     active = true;
+    ready = true;
 
     spriteRect = spriteDim[0][1];
 
@@ -89,6 +91,68 @@ void Character::update()
 
 
     //Pos Update
+    dx += vel[0] * velConst;
+    dy += vel[1] * velConst;
+
+    posRect.x += (vel[0] * velConst) * game_maze->cell_size;
+    posRect.y += (vel[1] * velConst) * game_maze->cell_size;
 
 
+    if (dx >= 1 || dy >= 1 || dx <= -1 || dy <= -1)
+    {
+        if (dx >= 1) currPos[1] += 1;
+        else if (dx <= -1) currPos[1] -= 1;
+        else if (dy >= 1) currPos[0] += 1;
+        else if (dy <= -1) currPos[0] -= 1;
+        else ;
+
+        //decide next cell to move
+        dx = dy = 0;
+        vel[0] = vel[1] = 0;
+        ready = true;
+    }
+
+}
+
+void Character::setVel(int dir)
+{
+    turn(dir);
+
+    if (!game_maze->maze[currPos[0]][currPos[1]][dir])
+    {
+        return;
+    }
+
+    switch (dir)
+    {
+        case 0: vel[1] = -1; break;
+        case 1: vel[0] = 1; break;
+        case 2: vel[1] = 1; break;
+        case 3: vel[0] = -1; break;
+        default: break;
+    }
+
+    ready = false;
+}
+
+void Character::turn(int dir)
+{
+    currDir = dir;
+    switch (dir)
+    {
+    case 0:
+        spriteRect = spriteDim[3][1];
+        break;
+    case 1:
+        spriteRect = spriteDim[2][1];
+        break;
+    case 2:
+        spriteRect = spriteDim[0][1];
+        break;
+    case 3:
+        spriteRect = spriteDim[1][1];
+        break;
+    default:
+        break;
+    }
 }
