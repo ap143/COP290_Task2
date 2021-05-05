@@ -1,22 +1,30 @@
 #ifndef TEAM_VIEW
 #define TEAM_VIEW
 
-#include "maze.hpp"
+#include "character.hpp"
 
 extern int gui_width;
 extern int gui_height;
+
+extern float scale;
 
 class Teamview
 {
 public:
 
     std::vector<std::vector<Character*>> characters;
+
+    int count[4] = {1, 4, 2, 1};
+
+    int activeLevel = -1;
     
     Teamview(SDL_Renderer* renderer, Maze* maze, int teamNum, bool self);
 
     void show();
 
-    static const int lol = 69;
+    void update();
+    
+    void handleEvent(SDL_Event event);  
 
 private:
 
@@ -45,6 +53,8 @@ private:
     int max[4] = {6, 12, 8, 6};
     int color_comb[4][3] = {{0, 0, 255}, {255, 0, 0}, {255, 242, 0}, {149, 0, 255}};
 
+    SDL_Texture* count_text[4] = {nullptr, nullptr, nullptr, nullptr};
+    int count_text_size = 10 * scale;
 };
 
 #endif

@@ -7,14 +7,12 @@
 #include <vector>
 #include <algorithm>
 #include <set>
-#include "character.hpp"
 
 class Maze
 {
 public:
     int n = 20;
     bool ***maze;
-    std::set<Character*> **charMap;
 
     SDL_Texture *wall;
     SDL_Texture *grass;

@@ -75,6 +75,10 @@ void Game::handleEvents()
     {
         gui->event(event, state);
     }
+    else if (state == 7)
+    {
+        myTeam->handleEvent(event);
+    }
 
 }
 
@@ -117,6 +121,10 @@ void Game::update()
         myTeam = new Teamview(renderer, game_maze, teamNum, true);
         opponentTeam = new Teamview(renderer, game_maze, opponentTeamNum, false);
         state++;
+    }else if (state == 7)
+    {
+        myTeam->update();
+        opponentTeam->update();
     }
 }
 
@@ -145,6 +153,7 @@ void Game::render()
     {
         game_maze->show(renderer, window);
         myTeam->show();
+        opponentTeam->show();
     }
     SDL_RenderPresent(renderer);
 }
