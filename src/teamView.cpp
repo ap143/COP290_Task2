@@ -64,6 +64,44 @@ void Teamview::show()
 
         color(renderer, 0, 160);
         rectCenter(renderer, block_ox + block_width / 2, block_oy + block_height / 2, block_width, block_height, 0.95, true);
+
+        if (deployingNow)
+        {
+            Character *king = characters[0][0];
+            float x = (king->currPos[1] + 0.5) * game_maze->cell_size + game_maze->ox;
+            float y = (king->currPos[0] + 0.5) * game_maze->cell_size + game_maze->oy;
+            
+            float length = ( 2 * (deployRange / 2) + 1 ) * game_maze->cell_size;
+
+            float width = length;
+            float height = length;
+
+            x -= (deployRange / 2 + 0.5) * game_maze->cell_size;
+            y -= (deployRange / 2 + 0.5) * game_maze->cell_size;
+
+            if (x < game_maze->ox)
+            {
+                width -= (game_maze->ox - x);
+                x = game_maze->ox;
+            }
+            else if (x + width >= game_maze->ox + game_maze->grid_length)
+            {
+                width -= (x + width - (game_maze->ox + game_maze->grid_length));
+            }
+
+            if (y < game_maze->oy)
+            {
+                height -= (game_maze->oy - y);
+                y = game_maze->oy;
+            }
+            else if (y + height >= game_maze->oy + game_maze->grid_length)
+            {
+                height -= (y + height - (game_maze->oy + game_maze->grid_length));
+            }
+            
+            color(renderer, 0, 255, 0, 100);
+            rect(renderer, x, y, width, height, true);
+        }
         
         for (int i = 0; i<4; i++)
         {
@@ -159,18 +197,17 @@ void Teamview::handleEvent(SDL_Event event)
                 continue;
             }
             activeLevel = i;
+            if (i > 0)
+            {
+                deployingNow = true;
+            }
             return;
         }
     }
 
     if (activeLevel == -1)
     {
-        return;
-    }
-
-    if (count[activeLevel] <= 0)
-    {
-        activeLevel = -1;
+        deployingNow = false;
         return;
     }
 
@@ -188,6 +225,11 @@ void Teamview::handleEvent(SDL_Event event)
             {
                 return;
             }
+        }else if (std::abs(characters[0][0]->currPos[0] - i) > deployRange / 2 || std::abs(characters[0][0]->currPos[1] - j) > deployRange / 2)
+        {
+            deployingNow = false;
+            activeLevel = -1;
+            return;
         }
 
         characters[activeLevel][count[activeLevel]-1]->deploy(i, j);
@@ -195,8 +237,19 @@ void Teamview::handleEvent(SDL_Event event)
 
         sendMessage(DEPLOY + std::to_string(activeLevel) + std::to_string(count[activeLevel]) + ((i < 10) ? "0" : "") + std::to_string(i) + ((j < 10) ? "0" : "") + std::to_string(j));
 
+        if (count[activeLevel] == 0)
+        {
+            activeLevel = -1;
+            deployingNow = false;
+        }
+
         kingDeployed = true;
-    } 
+    }
+    else
+    {
+        activeLevel = -1;
+        deployingNow = false;
+    }
 
 }
 
@@ -206,7 +259,7 @@ void Teamview::update()
     {
         for (Character *c: v)
         {
-            if (c->ready && isMyTeam)
+            if (c->ready && isMyTeam && c->level > 0)
             {
                 setNextDest(c);
             }
@@ -224,7 +277,114 @@ void Teamview::deploy(int level, int cnt, int i, int j)
     count[level]--;
 }
 
-void Teamview::setNextDest(Character* c)
+struct Point
 {
+    int i, j;
+    int dist;
+    bool enemy, visited;
 
+    Point(int i, int j, int dist, bool enemy, bool visited)
+    {
+        this->i = i;
+        this->j = j;
+        this->dist = dist;
+        this->enemy = enemy;
+        this->visited = visited;
+    }
+};
+
+struct Compare
+{
+    bool operator()(Point* const& p1, Point* const& p2)
+    {
+        return p1->dist < p2->dist;
+    }
+};
+
+int exactToRelative(int pos, bool column, Character *c)
+{
+    return pos - c->currPos[column] + c->prop.range;
+}
+
+int relativeToExact(int pos, bool column, Character *c)
+{
+    return pos + c->currPos[column] - c->prop.range;
+}
+
+void Teamview::setNextDest(Character *c)
+{
+    int range = 2 * c->prop.range + 1;
+    Point* dist[range][range];
+
+    for (int i = 0; i < range; i++)
+    {
+        for (int j = 0; j < range; j++)
+        {
+            dist[i][j] = new Point(relativeToExact(i, false, c), relativeToExact(j, true, c), -1, false, false);
+        }
+    }
+
+    int lvl = -1;
+    int cnt = -1;
+    for (std::vector<Character *> v: enemyTeam->characters)
+    {
+        lvl++;
+        for (Character *e: v)
+        {
+            cnt++;
+            int i = e->currPos[0]-c->currPos[0];
+            int j = e->currPos[1]-c->currPos[1];
+
+            if ((i == j && i == 0) || (std::abs(i) + std::abs(j) == 1))
+            {
+                e->attack(c->prop.power);
+                sendMessage(ATTACK + std::to_string(lvl) + std::to_string(cnt) + std::to_string(c->prop.power));
+                for (int ii = 0; ii < range; ii++)
+                {
+                    for (int jj = 0; jj < range; jj++)
+                    {
+                        delete dist[ii][jj];
+                    }
+                }
+                return;
+            }
+
+            i += range / 2;
+            j += range / 2;
+
+            if (i >= 0 && i < range && j >= 0 && j < range)
+            {
+                dist[i][j]->enemy = true;
+            }
+        }
+    }
+
+    std::priority_queue<Point*, std::vector<Point*>, Compare> qu;
+
+    qu.push(dist[range / 2][range / 2]);
+
+    while (!qu.empty())
+    {
+        Point* p = qu.top();
+        qu.pop();
+        p->visited = true;
+
+        if (game_maze->maze[p->i][p->j][0])
+        {
+            int tj = exactToRelative(p->j, true, c);
+            int ti = exactToRelative(p->i - 1, false, c);
+            if (tj >= 0)
+            {
+                if (distp[][tj])
+            }
+        }
+    }
+
+    for (int ii = 0; ii < range; ii++)
+    {
+        for (int jj = 0; jj < range; jj++)
+        {
+            delete dist[ii][jj];
+        }
+    }
 }

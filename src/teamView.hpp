@@ -2,6 +2,7 @@
 #define TEAM_VIEW
 
 #include "character.hpp"
+#include <queue>
 
 extern int gui_width;
 extern int gui_height;
@@ -22,6 +23,9 @@ public:
     bool opponentKingDeployed = false;
 
     int deployRange;
+    bool deployingNow = false;
+
+    Teamview *enemyTeam;
     
     Teamview(SDL_Renderer* renderer, Maze* maze, int teamNum, bool self);
 
@@ -55,7 +59,6 @@ private:
     float bar_height;
     float bar_width;
     float bar_fill;
-
 
     SDL_FRect tiles[4];
 

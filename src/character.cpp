@@ -10,10 +10,10 @@ SDL_Rect Character::spriteDim[4][3] =
 
 std::map<int, properties> Character::charProp = 
         {
-            std::make_pair(0, properties(5, 12, 8, 2)),
-            std::make_pair(1, properties(2, 5, 4, 6)),
-            std::make_pair(2, properties(4, 8, 7, 4)),
-            std::make_pair(3, properties(6, 10, 5, 3))
+            std::make_pair(0, properties(5, 12, 4, 2)),
+            std::make_pair(1, properties(2, 5, 2, 6)),
+            std::make_pair(2, properties(4, 8, 3, 4)),
+            std::make_pair(3, properties(6, 10, 4, 3))
         };
 
 Character::Character()
@@ -38,7 +38,7 @@ void Character::show()
     {
         return;
     }
-    SDL_RenderCopyF(renderer, spriteSheet, &spriteRect, &posRect);
+    imageCenter(renderer, spriteSheet, &spriteRect, posRect.x, posRect.y, posRect.w, posRect.h);
 }
 
 void Character::deploy(int i, int j)
@@ -54,10 +54,10 @@ void Character::deploy(int i, int j)
 
     spriteRect = spriteDim[0][1];
 
-    posRect = {.x = currPos[1] * game_maze->cell_size + game_maze->cell_size / 2,
-               .y = currPos[0] * game_maze->cell_size + game_maze->cell_size / 2,
-               .w = game_maze->cell_size * (float) 0.95,
-               .h = game_maze->cell_size * (float) 0.95 };
+    posRect = {.x = game_maze->ox + currPos[1] * game_maze->cell_size + game_maze->cell_size / 2,
+               .y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2,
+               .w = game_maze->cell_size * (float) 0.8,
+               .h = game_maze->cell_size * (float) 0.8 };
 }
 
 void Character::update()

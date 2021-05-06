@@ -16,9 +16,9 @@ Maze::Maze(int size, int w, int h)
 
     h = std::min(w, h);
 
-    cell_size = (19 * ((float)h) / 20) / n;
+    cell_size = ((n-1) * ((float)h) / n) / n;
 
-    grid_length = 19 * ((float)h) / 20;
+    grid_length = (n-1) * ((float)h) / n;
     //rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
 
     ox = oy = (float)(h) / 2 - (float)grid_length / 2;
@@ -40,7 +40,7 @@ void Maze::generate()
 {
     std::vector<std::vector<bool>> cells(n, std::vector<bool>(n, false));
     srand(time(0));
-    dfs(cells, 0, 0);
+    dfs(cells, n / 2, n / 2);
 }
 
 int myrandom(int i) { return std::rand() % i; }
