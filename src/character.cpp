@@ -10,10 +10,10 @@ SDL_Rect Character::spriteDim[4][3] =
 
 std::map<int, properties> Character::charProp = 
         {
-            std::make_pair(0, properties(5, 12, 4, 2)),
-            std::make_pair(1, properties(2, 5, 2, 6)),
-            std::make_pair(2, properties(4, 8, 3, 4)),
-            std::make_pair(3, properties(6, 10, 4, 3))
+            std::make_pair(0, properties(5, 2400, 4, 2)),
+            std::make_pair(1, properties(2, 1000, 2, 6)),
+            std::make_pair(2, properties(4, 1600, 3, 4)),
+            std::make_pair(3, properties(6, 2000, 4, 3))
         };
 
 Character::Character()
@@ -29,6 +29,7 @@ Character::Character(SDL_Renderer* renderer, Maze* maze, int teamN, int lev, boo
     level = lev;
     isMyTeam = t;
     prop = charProp[lev];
+    health = prop.health;
     spriteSheet = loadTexture(("./assets/images/characters/t" + std::to_string(team+1) + "l" + std::to_string(lev) + ".png").c_str(), renderer);
 }
 
@@ -39,6 +40,9 @@ void Character::show()
         return;
     }
     imageCenter(renderer, spriteSheet, &spriteRect, posRect.x, posRect.y, posRect.w, posRect.h);
+
+    color(renderer, 255 * (1 - health / prop.health), 255 * health / prop.health, 0);
+    rect(renderer, posRect.x + posRect.w / 2, posRect.y - posRect.h / 2, (float) posRect.w * health / prop.health, (float) posRect.h / 16, true);
 }
 
 void Character::deploy(int i, int j)
@@ -155,4 +159,9 @@ void Character::turn(int dir)
     default:
         break;
     }
+}
+
+void Character::attack(int power)
+{
+    health -= power;
 }

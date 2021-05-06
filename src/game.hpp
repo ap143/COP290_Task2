@@ -17,6 +17,8 @@ public:
 
     static std::map<int, properties> charProp;
 
+    std::queue<std::string> waitQueue;
+
     Teamview *myTeam;
     Teamview *opponentTeam;
 

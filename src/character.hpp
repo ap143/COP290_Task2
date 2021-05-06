@@ -37,6 +37,7 @@ public:
     int team;
     int level; // level 0/1/2/3
     bool isMyTeam; // 1 -> my team
+    int health;
 
     properties prop;
 
