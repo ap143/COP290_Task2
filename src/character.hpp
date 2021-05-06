@@ -70,6 +70,7 @@ public:
     void update();
     void setVel(int dir);
     void turn(int dir);
+    void attack(int pow);
 
 private:
     float velConst = 0.05;

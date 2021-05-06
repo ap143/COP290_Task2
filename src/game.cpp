@@ -11,7 +11,7 @@ std::map<int, properties> Game::charProp =
 
 Game::Game()
 {
-    game_maze = new Maze(10, gui_width, gui_height);
+    game_maze = new Maze(13, gui_width, gui_height);
     state = 0;
 }
 
@@ -95,6 +95,10 @@ void Game::update()
     }
     else if (state == 5 && gui->isHost && curRowToSend < game_maze->n)
     {
+        if (opponentTeamNum < 0)
+        {
+            return;
+        }
         std::string rowNum = ((curRowToSend < 10) ? "0" : "") + std::to_string(curRowToSend);
         std::string message = MAZE_STRUCT + rowNum;
         for (int i = 0; i < game_maze->n; i++)
@@ -120,6 +124,8 @@ void Game::update()
         std::cout << "state 6" << std::endl;
         myTeam = new Teamview(renderer, game_maze, teamNum, true);
         opponentTeam = new Teamview(renderer, game_maze, opponentTeamNum, false);
+        myTeam->enemyTeam = opponentTeam;
+        opponentTeam->enemyTeam = myTeam;
         state++;
     }else if (state == 7)
     {
