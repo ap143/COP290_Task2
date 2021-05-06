@@ -212,14 +212,45 @@ void Game::drawMazeLoad()
 
 void sendMessage(std::string message)
 {
+    bool busy = false;
+
+    game->waitQueue.push(message);
+
+    if (busy)
+    {
+        return;
+    }
+
+    busy = true;
+
     if (serv != nullptr)
     {
-        serv->send(message);
+        while (!game->waitQueue.empty())
+        {
+            message = game->waitQueue.front();
+            game->waitQueue.pop();
+            serv->send(message);
+            if (serv->get() == RECIEVED + message)
+            {
+                break;
+            }
+        }
     }
     else if (client != nullptr)
     {
-        client->send(message);
+       while (!game->waitQueue.empty())
+        {
+            message = game->waitQueue.front();
+            game->waitQueue.pop();
+            client->send(message);
+            if (client->get() == RECIEVED + message)
+            {
+                break;;
+            }
+        }
     }
+
+    busy = false;
 }
 
 void respond(std::string response)
@@ -266,7 +297,10 @@ void respond(std::string response)
     }
     else if (code == ATTACK)
     {
-        
+        int level = std::stoi(data.substr(0, 1));
+        int cnt = std::stoi(data.substr(1, 1));
+        int power = std::stoi(data.substr(2, 1));
+        game->myTeam->characters[level][cnt]->attack(power);
     }
     else if (code == DIE)
     {
@@ -279,12 +313,29 @@ void respond(std::string response)
         int dir = std::stoi(data.substr(2, 1));
         game->opponentTeam->characters[level][cnt]->turn((dir + 2) % 4);
     }
+    else if (code == BREAK_WALL)
+    {
+        int i = std::stoi(data.substr(0, 2));
+        int j = std::stoi(data.substr(2, 2));
+        int dir = std::stoi(data.substr(4, 1));
+        int pow = std::stoi(data.substr(5, 1));
+        game->myTeam->attackWall(i, j, dir, pow);
+    }
     else if (code == END_GAME)
     {
 
     }
     else
     {
-        return;
+        
+    }
+
+    if (serv != nullptr)
+    {
+        serv->send(RECIEVED + response);
+    }
+    else if (client != nullptr)
+    {
+        client->send(RECIEVED + response);
     }
 }

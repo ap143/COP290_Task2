@@ -9,6 +9,17 @@ Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
 
     deployRange = game_maze->n * 2 / 5;
 
+    for (int i = 0; i < maze->n; i++)
+    {
+        for (int j = 0; j < maze->n; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                maze_health.push_back(wall_weight * 100);
+            }
+        }
+    }
+
     std::vector<Character *> v[4];
 
     v[0].push_back(new Character(renderer, maze, team, 0, self));
@@ -257,11 +268,13 @@ void Teamview::update()
 {
     for (std::vector<Character *> v: characters)
     {
+        int j = -1;
         for (Character *c: v)
         {
+            j++;
             if (c->ready && isMyTeam && c->level > 0)
             {
-                setNextDest(c);
+                setNextDest(c, c->level, j);
             }
             c->update();
         }
@@ -277,114 +290,186 @@ void Teamview::deploy(int level, int cnt, int i, int j)
     count[level]--;
 }
 
-struct Point
+void Teamview::setNextDest(Character *c, int level, int cnt)
 {
-    int i, j;
-    int dist;
-    bool enemy, visited;
+    int ci = c->currPos[0];
+    int cj = c->currPos[1];
+    int n = game_maze->n;
+    Point* graph[n][n];
 
-    Point(int i, int j, int dist, bool enemy, bool visited)
+    std::priority_queue<Point*, std::vector<Point *>, Compare> qu;
+
+    for (int i = 0; i < n; i++)
     {
-        this->i = i;
-        this->j = j;
-        this->dist = dist;
-        this->enemy = enemy;
-        this->visited = visited;
-    }
-};
-
-struct Compare
-{
-    bool operator()(Point* const& p1, Point* const& p2)
-    {
-        return p1->dist < p2->dist;
-    }
-};
-
-int exactToRelative(int pos, bool column, Character *c)
-{
-    return pos - c->currPos[column] + c->prop.range;
-}
-
-int relativeToExact(int pos, bool column, Character *c)
-{
-    return pos + c->currPos[column] - c->prop.range;
-}
-
-void Teamview::setNextDest(Character *c)
-{
-    int range = 2 * c->prop.range + 1;
-    Point* dist[range][range];
-
-    for (int i = 0; i < range; i++)
-    {
-        for (int j = 0; j < range; j++)
+        for (int j = 0; j < n; j++)
         {
-            dist[i][j] = new Point(relativeToExact(i, false, c), relativeToExact(j, true, c), -1, false, false);
+            int dist = ((i == ci && j ==cj) ? 0 : n*n+1);
+            graph[i][j] = new Point(i, j, dist, false, false);
+            qu.push(graph[i][j]);
         }
     }
 
-    int lvl = -1;
-    int cnt = -1;
-    for (std::vector<Character *> v: enemyTeam->characters)
+    for (int i = 0; i < enemyTeam->characters.size(); i++)
     {
-        lvl++;
-        for (Character *e: v)
+        for (int j = 0; j < enemyTeam->characters[i].size(); j++)
         {
-            cnt++;
-            int i = e->currPos[0]-c->currPos[0];
-            int j = e->currPos[1]-c->currPos[1];
-
-            if ((i == j && i == 0) || (std::abs(i) + std::abs(j) == 1))
+            Character *e = enemyTeam->characters[i][j];
+            if (!e->active || e->dead)
             {
-                e->attack(c->prop.power);
-                sendMessage(ATTACK + std::to_string(lvl) + std::to_string(cnt) + std::to_string(c->prop.power));
-                for (int ii = 0; ii < range; ii++)
-                {
-                    for (int jj = 0; jj < range; jj++)
-                    {
-                        delete dist[ii][jj];
-                    }
-                }
-                return;
+                continue;
             }
-
-            i += range / 2;
-            j += range / 2;
-
-            if (i >= 0 && i < range && j >= 0 && j < range)
+            Point *p = graph[e->currPos[0]][e->currPos[1]];
+            p->enemy = true;
+            if (p->e == nullptr || rand() % 2 == 0)
             {
-                dist[i][j]->enemy = true;
+                p->e = e;
+                p->lvl = i;
+                p->cnt = j;
             }
         }
     }
 
-    std::priority_queue<Point*, std::vector<Point*>, Compare> qu;
-
-    qu.push(dist[range / 2][range / 2]);
+    Point *target;
 
     while (!qu.empty())
     {
-        Point* p = qu.top();
+        Point *p = qu.top();
         qu.pop();
         p->visited = true;
 
-        if (game_maze->maze[p->i][p->j][0])
+        if (p->enemy)
         {
-            int tj = exactToRelative(p->j, true, c);
-            int ti = exactToRelative(p->i - 1, false, c);
-            if (ti >= 0)
+            target = p;
+            break;
+        }
+
+        int pi = p->i;
+        int pj = p->j;
+
+        int pos[4][2] = {{pi-1, pj}, {pi, pj+1}, {pi+1, pj}, {pi, pj-1}};
+
+        for (int k = 0; k < 4; k++)
+        {
+            int i = pos[k][0], j = pos[k][1];
+            if (i < 0 || i >= n || j < 0 || j >= n)
             {
-                if (dist[ti][tj]->dist)
+                continue;
             }
+            if (graph[i][j]->visited)
+            {
+                continue;
+            }
+
+            int newDist = -1;
+            if (game_maze->maze[pi][pj][k])
+            {
+                newDist = 1;
+            }
+            else
+            {
+                newDist = wall_weight;
+            }
+
+            if (graph[i][j]->dist > newDist + p->dist)
+            {
+                graph[i][j]->dist = newDist + p->dist;
+                graph[i][j]->pre = p;
+            }
+
         }
     }
 
-    for (int ii = 0; ii < range; ii++)
+    while (true)
     {
-        for (int jj = 0; jj < range; jj++)
+        if (target->pre == nullptr)
         {
-            delete dist[ii][jj];
+            break;
         }
+        else
+        {
+            if (target->pre->pre == nullptr)
+            {
+                break;
+            }
+            target = target->pre;
+        }
+    }
+
+    int ti = target->i;
+    int tj = target->j;
+
+    int dir;
+
+    if (ci == ti && cj == tj)
+    {
+        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power));
+        target->e->attack(c->prop.power);
+        sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+        c->turn(dir);
+        return;
+    }
+
+    if (ci - 1 == ti)
+    {
+        dir = 0;
+    }
+    else if (cj + 1 == tj)
+    {
+        dir = 1;
+    }
+    else if (ci + 1 == ti)
+    {
+        dir = 2;
+    }
+    else if (cj - 1 == tj)
+    {
+        dir = 3;
+    }
+    else
+    {
+        std::cerr << "Error in dijkstra" << std::endl;
+        exit(-1);
+    }
+
+    if (!game_maze->maze[ci][cj][dir])
+    {
+        sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) + 
+                                std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(dir) + 
+                                std::to_string(c->prop.power));
+        attackWall(ci, cj, dir, c->prop.power);
+        sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+        c->turn(dir);
+    }
+    else if (target->enemy)
+    {
+        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power));
+        target->e->attack(c->prop.power);
+        sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+        c->turn(dir);
+    }
+    else
+    {
+        sendMessage(MOVEMENT + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+        c->setVel(dir);
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            delete graph[i][j];
+        }
+    }
+
+}
+
+void Teamview::attackWall(int i, int j, int dir, int power)
+{
+    int index = i * game_maze->n + j * 4 + dir;
+    maze_health[index] -= power;
+
+    if (maze_health[index] <= 0)
+    {
+        game_maze->maze[i][j][dir] = true;
     }
 }

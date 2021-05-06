@@ -15,7 +15,9 @@
 #define ATTACK "05"
 #define DIE "06"
 #define TURN "07"
-#define END_GAME "08"
+#define BREAK_WALL "08"
+#define END_GAME "09"
+#define RECIEVED "99"
 
 
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b, Uint8 a);

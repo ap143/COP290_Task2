@@ -9,6 +9,38 @@ extern int gui_height;
 
 extern float scale;
 
+struct Point
+{
+    int i, j;
+    int dist;
+    bool enemy, visited;
+
+    Point *pre;
+    Character *e;
+    int lvl, cnt;
+
+    Point(int i, int j, int dist, bool enemy, bool visited)
+    {
+        this->i = i;
+        this->j = j;
+        this->dist = dist;
+        this->enemy = enemy;
+        this->visited = visited;
+        this->pre = nullptr;
+        this->e = nullptr;
+        lvl = -1;
+        cnt = -1;
+    }
+};
+
+struct Compare
+{
+    bool operator()(Point* const& p1, Point* const& p2)
+    {
+        return p1->dist > p2->dist;
+    }
+};
+
 class Teamview
 {
 public:
@@ -18,6 +50,7 @@ public:
     int count[4] = {1, 4, 2, 1};
 
     int activeLevel = -1;
+    int wall_weight = 5;
 
     bool kingDeployed = false;
     bool opponentKingDeployed = false;
@@ -25,19 +58,18 @@ public:
     int deployRange;
     bool deployingNow = false;
 
+    std::vector<int> maze_health;
+
     Teamview *enemyTeam;
     
     Teamview(SDL_Renderer* renderer, Maze* maze, int teamNum, bool self);
 
     void show();
-
     void update();
-    
     void handleEvent(SDL_Event event);
-
     void deploy(int level, int count, int i, int j); 
-
-    void setNextDest(Character* c); 
+    void setNextDest(Character* c, int level, int cnt);
+    void attackWall(int i, int j, int dir, int power);
 
 private:
 
