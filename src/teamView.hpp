@@ -12,7 +12,7 @@ extern float scale;
 struct Point
 {
     int i, j;
-    int dist;
+    long long int dist;
     bool enemy, visited;
 
     Point *pre;

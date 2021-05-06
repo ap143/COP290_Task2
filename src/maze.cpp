@@ -127,11 +127,8 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
 
     backgroundImage(renderer, grass);
 
-    SDL_Rect DestR;
     float ww = cell_size;
     float wh = 2 * cell_size / 5;
-
-    SDL_Point centre;
 
     for (int i = 0; i < n; i++)
     {
@@ -139,55 +136,30 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
         {
             for (int k = 0; k < 4; k++)
             {
-                // std::cout<<maze[i][j][k]<<std::endl;
-                // std::cout<<i<<" "<<j<<" "<<k<<std::endl;
-                if (!maze[i][j][k])
+                if (maze[i][j][k])
                 {
-                    if (k == 0)
-                    {
-                        // DestR.x = ox + cell_size * j;
-                        // DestR.y = oy + cell_size * i;
-                        // DestR.w = ww;
-                        // DestR.h = wh;
-                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL,  SDL_FLIP_NONE);
-                        imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * i, 
-                            ww, wh, 0, SDL_FLIP_NONE);
-                        //line(renderer, ox + cell_size * j, oy + cell_size * i, ox + cell_size * (j + 1), oy + cell_size * i);
-                    }
-                    else if (k == 1)
-                    {
-                        // DestR.x = ox + cell_size * (j+1) - cell_size / 2;
-                        // DestR.y = oy + cell_size * i + cell_size / 2;
-                        // DestR.w = ww;
-                        // DestR.h = wh;
-                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
-                        imageCenter(renderer, wall, NULL, ox + cell_size * (j + 1), oy + cell_size * i + cell_size / 2, 
-                            ww, wh, 270, SDL_FLIP_NONE);
-                        //line(renderer, ox + cell_size * (j + 1), oy + cell_size * i, ox + cell_size * (j + 1), oy + cell_size * (i + 1));
-                    }
-                    else if (k == 2)
-                    {
-                        // DestR.x = ox + cell_size * j;
-                        // DestR.y = oy + cell_size * (i + 1);
-                        // DestR.w = ww;
-                        // DestR.h = wh;
-                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 0, NULL, SDL_FLIP_NONE);
-                        imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * (i + 1), 
-                            ww, wh, 0, SDL_FLIP_NONE);
-                        //line(renderer, ox + cell_size * j, oy + cell_size * (i + 1), ox + cell_size * (j + 1), oy + cell_size * (i + 1));
-                    }
-                    else
-                    {
-                        // DestR.x = ox + cell_size * j - cell_size / 2;
-                        // DestR.y = oy + cell_size * i + cell_size / 2;
-                        // DestR.w = ww;
-                        // DestR.h = wh;
-                        // SDL_RenderCopyEx(renderer, wall, NULL, &DestR, 270, NULL, SDL_FLIP_NONE);
-                        imageCenter(renderer, wall, NULL, ox + cell_size * j , oy + cell_size * i + cell_size / 2, 
-                            ww, wh, 270, SDL_FLIP_NONE);
-                        //line(renderer, ox + cell_size * j, oy + cell_size * (i + 1), ox + cell_size * j, oy + cell_size * i);
-                    }
+                    continue;
                 }
+                if (k == 0)
+                {
+                    imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * i, 
+                        ww, wh, 0, SDL_FLIP_NONE);
+                }
+                else if (k == 1)
+                {
+                    imageCenter(renderer, wall, NULL, ox + cell_size * (j + 1), oy + cell_size * i + cell_size / 2, 
+                        ww, wh, 270, SDL_FLIP_NONE);
+                }
+                else if (k == 2)
+                {
+                    imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * (i + 1), 
+                        ww, wh, 0, SDL_FLIP_NONE);
+                }
+                else if (k == 3)
+                {
+                    imageCenter(renderer, wall, NULL, ox + cell_size * j , oy + cell_size * i + cell_size / 2, 
+                        ww, wh, 270, SDL_FLIP_NONE);
+                } 
             }
         }
     }
