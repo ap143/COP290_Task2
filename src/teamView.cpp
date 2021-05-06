@@ -373,9 +373,9 @@ void Teamview::setNextDest(Character *c)
         {
             int tj = exactToRelative(p->j, true, c);
             int ti = exactToRelative(p->i - 1, false, c);
-            if (tj >= 0)
+            if (ti >= 0)
             {
-                if (distp[][tj])
+                if (dist[ti][tj]->dist)
             }
         }
     }
