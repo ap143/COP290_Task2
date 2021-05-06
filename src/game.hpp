@@ -14,6 +14,7 @@ public:
     Maze *game_maze;
     int curRowToSend;
     bool opponentReady = false;
+    bool isRunning;
 
     static std::map<int, properties> charProp;
 
@@ -45,7 +46,6 @@ public:
     void loadAllTextures();
 
 private:
-    bool isRunning;
 
     SDL_Window *window;
     SDL_Renderer *renderer;

@@ -15,7 +15,7 @@ Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
         {
             for (int k = 0; k < 4; k++)
             {
-                maze_health.push_back(wall_weight * 100);
+                maze_health.push_back(wall_weight * 30);
             }
         }
     }
@@ -299,15 +299,20 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
 
     std::priority_queue<Point*, std::vector<Point *>, Compare> qu;
 
+    graph[ci][cj] = new Point(ci, cj, 0, false, false);
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            int dist = ((i == ci && j ==cj) ? 0 : n*n+1);
-            graph[i][j] = new Point(i, j, dist, false, false);
-            qu.push(graph[i][j]);
+            if (i != ci || j != cj)
+            {
+                graph[i][j] = new Point(i, j, 2147483647, false, false);
+                qu.push(graph[i][j]);
+            }
         }
     }
+
+    std::cout << "Objects created" << std::endl;
 
     for (int i = 0; i < enemyTeam->characters.size(); i++)
     {
@@ -329,22 +334,33 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         }
     }
 
-    Point *target;
+    std::cout << "Enemy spotted" << std::endl;
+
+    Point *target = nullptr;
+    Point *current = graph[ci][cj];
+
+    std::vector<Point*> path;
 
     while (!qu.empty())
     {
-        Point *p = qu.top();
-        qu.pop();
+        Point *p = current;
         p->visited = true;
 
         if (p->enemy)
         {
             target = p;
+            std::cout << p->dist << " " << qu.size() << std::endl;
             break;
         }
 
         int pi = p->i;
         int pj = p->j;
+
+        if (pi != ci || pj != cj)
+        {
+            std::cout << pi << " " << pj << std::endl;
+            std::cout << ci << " " << cj << std::endl;
+        }
 
         int pos[4][2] = {{pi-1, pj}, {pi, pj+1}, {pi+1, pj}, {pi, pj-1}};
 
@@ -377,10 +393,28 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             }
 
         }
+
+        current = qu.top();
+        qu.pop();
+    }
+
+    std::cout << "Target acquired" << std::endl;
+
+    if (target == nullptr)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                delete graph[i][j];
+            }
+        }
+        return;
     }
 
     while (true)
     {
+        path.push_back(target);
         if (target->pre == nullptr)
         {
             break;
@@ -395,6 +429,11 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         }
     }
 
+    for (Point *p: path)
+    {
+        // std::cout << p->i << " " << p->j << std::endl;
+    }
+
     int ti = target->i;
     int tj = target->j;
 
@@ -406,6 +445,13 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         target->e->attack(c->prop.power);
         sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
         c->turn(dir);
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                delete graph[i][j];
+            }
+        }
         return;
     }
 
@@ -427,8 +473,9 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     }
     else
     {
-        std::cerr << "Error in dijkstra" << std::endl;
-        exit(-1);
+        // std::cout<<ci<<" "<<cj<<" "<<ti<<" "<<tj<<std::endl;
+        // std::cerr << "Error in dijkstra" << std::endl;
+        // exit(-1);
     }
 
     if (!game_maze->maze[ci][cj][dir])
@@ -471,5 +518,22 @@ void Teamview::attackWall(int i, int j, int dir, int power)
     if (maze_health[index] <= 0)
     {
         game_maze->maze[i][j][dir] = true;
+        if (dir == 0 && i > 0)
+        {
+            game_maze->maze[i-1][j][2] = true;
+        }
+        else if (dir == 1 && j < game_maze->n - 1)
+        {
+            game_maze->maze[i][j+1][3] = true;
+        }
+        else if (dir == 2 && i < game_maze->n - 1)
+        {
+            game_maze->maze[i+1][j][0] = true;
+        }
+        else if (dir == 3 && i > 0)
+        {
+            game_maze->maze[i][j-1][1] = true;
+        }
+        std::cout << i << " " << j << " " << dir << std::endl;
     }
 }

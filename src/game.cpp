@@ -166,6 +166,9 @@ void Game::render()
 
 void Game::clean()
 {
+
+    sendMessage(END_GAME + std::string("0"));
+
     delete gui;
 
     SDL_DestroyWindow(window);
@@ -212,7 +215,7 @@ void Game::drawMazeLoad()
 
 void sendMessage(std::string message)
 {
-    bool busy = false;
+    static bool busy = false;
 
     game->waitQueue.push(message);
 
@@ -315,15 +318,15 @@ void respond(std::string response)
     }
     else if (code == BREAK_WALL)
     {
-        int i = std::stoi(data.substr(0, 2));
-        int j = std::stoi(data.substr(2, 2));
-        int dir = std::stoi(data.substr(4, 1));
+        int i = game->game_maze->n - 1 - std::stoi(data.substr(0, 2));
+        int j = game->game_maze->n - 1 - std::stoi(data.substr(2, 2));
+        int dir = (2 + std::stoi(data.substr(4, 1))) % 4;
         int pow = std::stoi(data.substr(5, 1));
         game->myTeam->attackWall(i, j, dir, pow);
     }
     else if (code == END_GAME)
     {
-
+        
     }
     else
     {
@@ -337,5 +340,10 @@ void respond(std::string response)
     else if (client != nullptr)
     {
         client->send(RECIEVED + response);
+    }
+
+    if (code == END_GAME)
+    {
+        game->isRunning = false;
     }
 }
