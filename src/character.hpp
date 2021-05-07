@@ -79,6 +79,8 @@ private:
     float velConst = 0.05;
     int currSprite = 0;
 
+    bool changed = false;
+
     SDL_Rect spriteRect;
     SDL_FRect posRect;
 

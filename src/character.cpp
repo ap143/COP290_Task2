@@ -59,7 +59,7 @@ void Character::deploy(int i, int j)
     spriteRect = currDir == 3 ? spriteDim[1][1] : spriteDim[2][1];
 
     posRect = {.x = game_maze->ox + currPos[1] * game_maze->cell_size + game_maze->cell_size / 2,
-               .y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2,
+            .y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2,
                .w = game_maze->cell_size * (float) 0.8,
                .h = game_maze->cell_size * (float) 0.8 };
 }
@@ -102,14 +102,18 @@ void Character::update()
     posRect.y += (vel[1] * velConst) * game_maze->cell_size;
 
 
+    if ((dx >= 0.5 || dy >= 0.5 || dx <= -0.5 || dy <= -0.5) && !changed)
+    {
+        if (dx >= 0.5) currPos[1] += 1;
+        else if (dx <= -0.5) currPos[1] -= 1;
+        else if (dy >= 0.5) currPos[0] += 1;
+        else if (dy <= -0.5) currPos[0] -= 1;
+        else ;
+        changed = true;
+    }
+
     if (dx >= 1 || dy >= 1 || dx <= -1 || dy <= -1)
     {
-        if (dx >= 1) currPos[1] += 1;
-        else if (dx <= -1) currPos[1] -= 1;
-        else if (dy >= 1) currPos[0] += 1;
-        else if (dy <= -1) currPos[0] -= 1;
-        else ;
-
         //decide next cell to move
         dx = dy = 0;
         vel[0] = vel[1] = 0;
@@ -151,22 +155,10 @@ void Character::turn(int dir)
         return;
     }
 
-    if (vel[0] == 1)
-    {
-        currPos[1] += 1;
-    }
-    else if (vel[0] == -1)
-    {
-        currPos[1] -= 1;
-    }
-    else if (vel[1] == 1)
-    {
-        currPos[0] += 1;
-    }
-    else if (vel[1] == -1)
-    {
-        currPos[0] -= 1;
-    }
+    changed = false;
+
+    posRect.x = game_maze->ox + currPos[1] * game_maze->cell_size + game_maze->cell_size / 2;
+    posRect.y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2;
 
     dx = dy = 0;
     vel[0] = vel[1] = 0;
