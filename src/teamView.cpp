@@ -272,7 +272,7 @@ void Teamview::update()
         for (Character *c: v)
         {
             j++;
-            if (c->ready && isMyTeam && c->level > 0)
+            if (c->ready && isMyTeam && c->level > 0 && c->active)
             {
                 setNextDest(c, c->level, j);
             }
@@ -297,9 +297,10 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     int n = game_maze->n;
     Point* graph[n][n];
 
-    std::priority_queue<Point*, std::vector<Point *>, Compare> qu;
+    std::vector<Point* > qu;
 
     graph[ci][cj] = new Point(ci, cj, 0, false, false);
+    qu.push_back(graph[ci][cj]);
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
@@ -307,19 +308,17 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             if (i != ci || j != cj)
             {
                 graph[i][j] = new Point(i, j, 2147483647, false, false);
-                qu.push(graph[i][j]);
+                qu.push_back(graph[i][j]);
             }
         }
     }
-
-    std::cout << "Objects created" << std::endl;
 
     for (int i = 0; i < enemyTeam->characters.size(); i++)
     {
         for (int j = 0; j < enemyTeam->characters[i].size(); j++)
         {
             Character *e = enemyTeam->characters[i][j];
-            if (!e->active || e->dead)
+            if (!e->active)
             {
                 continue;
             }
@@ -334,33 +333,34 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         }
     }
 
-    std::cout << "Enemy spotted" << std::endl;
-
     Point *target = nullptr;
-    Point *current = graph[ci][cj];
-
-    std::vector<Point*> path;
 
     while (!qu.empty())
     {
-        Point *p = current;
+        Point *p = qu[0];
+        int ind = 0;
+
+        for (int i = 0; i < qu.size(); i++)
+        {
+            if (qu[i]->dist < p->dist)
+            {
+                p = qu[i];
+                ind = i;
+            }
+        }
+
+        qu.erase(qu.begin() + ind);
+
         p->visited = true;
 
         if (p->enemy)
         {
             target = p;
-            std::cout << p->dist << " " << qu.size() << std::endl;
             break;
         }
 
         int pi = p->i;
         int pj = p->j;
-
-        if (pi != ci || pj != cj)
-        {
-            std::cout << pi << " " << pj << std::endl;
-            std::cout << ci << " " << cj << std::endl;
-        }
 
         int pos[4][2] = {{pi-1, pj}, {pi, pj+1}, {pi+1, pj}, {pi, pj-1}};
 
@@ -393,28 +393,10 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             }
 
         }
-
-        current = qu.top();
-        qu.pop();
-    }
-
-    std::cout << "Target acquired" << std::endl;
-
-    if (target == nullptr)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                delete graph[i][j];
-            }
-        }
-        return;
     }
 
     while (true)
     {
-        path.push_back(target);
         if (target->pre == nullptr)
         {
             break;
@@ -429,33 +411,17 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         }
     }
 
-    for (Point *p: path)
-    {
-        // std::cout << p->i << " " << p->j << std::endl;
-    }
-
     int ti = target->i;
     int tj = target->j;
 
-    int dir;
+    int dir = -1;
 
     if (ci == ti && cj == tj)
     {
-        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power));
+        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power) + std::to_string(4));
         target->e->attack(c->prop.power);
-        sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
-        c->turn(dir);
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                delete graph[i][j];
-            }
-        }
-        return;
     }
-
-    if (ci - 1 == ti)
+    else if (ci - 1 == ti)
     {
         dir = 0;
     }
@@ -478,26 +444,27 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         // exit(-1);
     }
 
-    if (!game_maze->maze[ci][cj][dir])
+    if (dir != -1)
     {
-        sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) + 
-                                std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(dir) + 
-                                std::to_string(c->prop.power));
-        attackWall(ci, cj, dir, c->prop.power);
-        sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
-        c->turn(dir);
-    }
-    else if (target->enemy)
-    {
-        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power));
-        target->e->attack(c->prop.power);
-        sendMessage(TURN + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
-        c->turn(dir);
-    }
-    else
-    {
-        sendMessage(MOVEMENT + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
-        c->setVel(dir);
+        if (!game_maze->maze[ci][cj][dir])
+        {
+            sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) + 
+                                    std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(dir) + 
+                                    std::to_string(c->prop.power) + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+            attackWall(ci, cj, dir, c->prop.power);
+            c->turn(dir);
+        }
+        else if (target->enemy)
+        {
+            sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power) + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+            target->e->attack(c->prop.power);
+            c->turn(dir);
+        }
+        else
+        {
+            sendMessage(MOVEMENT + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+            c->setVel(dir);
+        }
     }
 
     for (int i = 0; i < n; i++)
@@ -534,6 +501,5 @@ void Teamview::attackWall(int i, int j, int dir, int power)
         {
             game_maze->maze[i][j-1][1] = true;
         }
-        std::cout << i << " " << j << " " << dir << std::endl;
     }
 }
