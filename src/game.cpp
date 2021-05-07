@@ -66,6 +66,7 @@ void Game::handleEvents()
 
     if (event.type == SDL_QUIT)
     {
+        sendMessage(END_GAME + std::string("0"));
         isRunning = false;
         state = -1;
         return;
@@ -164,11 +165,39 @@ void Game::render()
     SDL_RenderPresent(renderer);
 }
 
+void Game::sendData()
+{
+    std::string message;
+    if (serv != nullptr)
+    {
+        while (!game->waitQueue.empty())
+        {
+            message = game->waitQueue.front();
+            game->waitQueue.pop();
+            serv->send(message);
+            // if (serv->get() == RECIEVED + message)
+            // {
+            //     break;
+            // }
+        }
+    }
+    else if (client != nullptr)
+    {
+       while (!game->waitQueue.empty())
+        {
+            message = game->waitQueue.front();
+            game->waitQueue.pop();
+            client->send(message);
+            // if (client->get() == RECIEVED + message)
+            // {
+            //     break;;
+            // }
+        }
+    }
+}
+
 void Game::clean()
 {
-
-    sendMessage(END_GAME + std::string("0"));
-
     delete gui;
 
     SDL_DestroyWindow(window);
@@ -215,45 +244,7 @@ void Game::drawMazeLoad()
 
 void sendMessage(std::string message)
 {
-    static bool busy = false;
-
     game->waitQueue.push(message);
-
-    if (busy)
-    {
-        return;
-    }
-
-    busy = true;
-
-    if (serv != nullptr)
-    {
-        while (!game->waitQueue.empty())
-        {
-            message = game->waitQueue.front();
-            game->waitQueue.pop();
-            serv->send(message);
-            if (serv->get() == RECIEVED + message)
-            {
-                break;
-            }
-        }
-    }
-    else if (client != nullptr)
-    {
-       while (!game->waitQueue.empty())
-        {
-            message = game->waitQueue.front();
-            game->waitQueue.pop();
-            client->send(message);
-            if (client->get() == RECIEVED + message)
-            {
-                break;;
-            }
-        }
-    }
-
-    busy = false;
 }
 
 void respond(std::string response)
@@ -303,6 +294,10 @@ void respond(std::string response)
         int level = std::stoi(data.substr(0, 1));
         int cnt = std::stoi(data.substr(1, 1));
         int power = std::stoi(data.substr(2, 1));
+        int lvl = std::stoi(data.substr(3, 1));
+        int cntt = std::stoi(data.substr(4, 1));
+        int dir = std::stoi(data.substr(5, 1));
+        game->opponentTeam->characters[lvl][cntt]->turn((dir + 2) % 4);
         game->myTeam->characters[level][cnt]->attack(power);
     }
     else if (code == DIE)
@@ -322,28 +317,27 @@ void respond(std::string response)
         int j = game->game_maze->n - 1 - std::stoi(data.substr(2, 2));
         int dir = (2 + std::stoi(data.substr(4, 1))) % 4;
         int pow = std::stoi(data.substr(5, 1));
+        int level = std::stoi(data.substr(6, 1));
+        int cntt = std::stoi(data.substr(7, 1));
+        int dirr = std::stoi(data.substr(8, 1));
+        game->opponentTeam->characters[level][cntt]->turn((dirr + 2) % 4);
         game->myTeam->attackWall(i, j, dir, pow);
     }
     else if (code == END_GAME)
     {
-        
+        game->isRunning = false;
     }
     else
     {
         
     }
 
-    if (serv != nullptr)
-    {
-        serv->send(RECIEVED + response);
-    }
-    else if (client != nullptr)
-    {
-        client->send(RECIEVED + response);
-    }
-
-    if (code == END_GAME)
-    {
-        game->isRunning = false;
-    }
+    // if (serv != nullptr)
+    // {
+    //     serv->send(RECIEVED + response);
+    // }
+    // else if (client != nullptr)
+    // {
+    //     client->send(RECIEVED + response);
+    // }
 }

@@ -66,7 +66,7 @@ void Character::deploy(int i, int j)
 
 void Character::update()
 {
-    if (!active || dead)
+    if (!active)
     {
         return;
     }
@@ -141,6 +141,9 @@ void Character::setVel(int dir)
 
 void Character::turn(int dir)
 {
+
+    dx = dy = 0;
+
     currDir = dir;
     switch (dir)
     {
@@ -164,4 +167,8 @@ void Character::turn(int dir)
 void Character::attack(int power)
 {
     health -= power;
+    if (health <= 0)
+    {
+        active = false;
+    }
 }

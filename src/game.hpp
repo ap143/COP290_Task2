@@ -40,6 +40,7 @@ public:
     void update();
     void render();
     void clean();
+    void sendData();
 
     bool running() { return isRunning; };
 
