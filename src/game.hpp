@@ -4,6 +4,8 @@
 #include "gui.hpp"
 #include "teamView.hpp"
 
+extern bool game_over;
+
 class Game
 {
 

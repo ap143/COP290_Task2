@@ -18,6 +18,8 @@ float scale;
 int teamNum = -1;
 int opponentTeamNum = -2;
 
+bool game_over = false;
+
 int main(int argc, char* argv[])
 {
 

@@ -35,7 +35,7 @@ Character::Character(SDL_Renderer* renderer, Maze* maze, int teamN, int lev, boo
 
 void Character::show()
 {
-    if (!active || dead)
+    if (!active)
     {
         return;
     }
@@ -51,12 +51,12 @@ void Character::deploy(int i, int j)
     currPos[1] = j;
 
     vel[0] = vel[1] = 0;
-    currDir = 2;
+    currDir = isMyTeam ? 3 : 1;
 
     active = true;
     ready = true;
 
-    spriteRect = spriteDim[0][1];
+    spriteRect = currDir == 3 ? spriteDim[1][1] : spriteDim[2][1];
 
     posRect = {.x = game_maze->ox + currPos[1] * game_maze->cell_size + game_maze->cell_size / 2,
                .y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2,
@@ -120,6 +120,11 @@ void Character::update()
 
 void Character::setVel(int dir)
 {
+    if (!active)
+    {
+        return;
+    }
+
     turn(dir);
 
     if (!game_maze->maze[currPos[0]][currPos[1]][dir])
@@ -141,8 +146,36 @@ void Character::setVel(int dir)
 
 void Character::turn(int dir)
 {
+    if (!active)
+    {
+        return;
+    }
+
+    if (vel[0] == 1)
+    {
+        currPos[1] += 1;
+    }
+    else if (vel[0] == -1)
+    {
+        currPos[1] -= 1;
+    }
+    else if (vel[1] == 1)
+    {
+        currPos[0] += 1;
+    }
+    else if (vel[1] == -1)
+    {
+        currPos[0] -= 1;
+    }
 
     dx = dy = 0;
+    vel[0] = vel[1] = 0;
+    ready = true;
+
+    if (dir > 3 || dir < 0)
+    {
+        return;
+    }
 
     currDir = dir;
     switch (dir)
@@ -170,5 +203,10 @@ void Character::attack(int power)
     if (health <= 0)
     {
         active = false;
+        dead = true;
+        if (level == 0)
+        {
+            game_over = true;
+        }
     }
 }
