@@ -148,7 +148,10 @@ void Teamview::show()
     {
         for (Character *c: v)
         {
-            c->show();
+            if (c->active)
+            {
+                c->show();
+            }
         }
     }
 }
@@ -418,7 +421,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
 
     if (ci == ti && cj == tj)
     {
-        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power) + std::to_string(4));
+        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power) + std::to_string(level) + std::to_string(cnt) + std::to_string(4));
         target->e->attack(c->prop.power);
     }
     else if (ci - 1 == ti)

@@ -59,6 +59,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 void Game::handleEvents()
 {
 
+    if (game_over)
+    {
+        state = 99;
+    }
+
     SDL_FlushEvent(SDL_MOUSEMOTION);
 
     SDL_Event event;
@@ -79,6 +84,10 @@ void Game::handleEvents()
     else if (state == 7)
     {
         myTeam->handleEvent(event);
+    }
+    else if (state == 99)
+    {
+        // Game over
     }
 
 }
@@ -122,16 +131,20 @@ void Game::update()
     }
     else if (state == 6)
     {
-        std::cout << "state 6" << std::endl;
         myTeam = new Teamview(renderer, game_maze, teamNum, true);
         opponentTeam = new Teamview(renderer, game_maze, opponentTeamNum, false);
         myTeam->enemyTeam = opponentTeam;
         opponentTeam->enemyTeam = myTeam;
         state++;
-    }else if (state == 7)
+    }
+    else if (state == 7)
     {
         myTeam->update();
         opponentTeam->update();
+    }
+    else if (state == 9)
+    {
+        // Game over
     }
 }
 
@@ -162,6 +175,11 @@ void Game::render()
         myTeam->show();
         opponentTeam->show();
     }
+    else if (state == 99)
+    {
+        // Game over
+    }
+
     SDL_RenderPresent(renderer);
 }
 
@@ -297,12 +315,12 @@ void respond(std::string response)
         int lvl = std::stoi(data.substr(3, 1));
         int cntt = std::stoi(data.substr(4, 1));
         int dir = std::stoi(data.substr(5, 1));
-        game->opponentTeam->characters[lvl][cntt]->turn((dir + 2) % 4);
         game->myTeam->characters[level][cnt]->attack(power);
+        game->opponentTeam->characters[lvl][cntt]->turn((dir + 2) % 4);
     }
     else if (code == DIE)
     {
-        
+
     }
     else if (code == TURN)
     {

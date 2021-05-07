@@ -9,6 +9,8 @@
 #include "maze.hpp"
 #include "gui.hpp"
 
+extern bool game_over;
+
 // Character properties
 struct properties
 {
