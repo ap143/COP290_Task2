@@ -1,6 +1,6 @@
 OUT = MazeWars
 
-CC := g++
+CC := g++ -O3
 
 OUTPUT_DIR := ./output
 SRC_DIR := ./src

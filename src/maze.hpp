@@ -1,8 +1,6 @@
 #ifndef MAZE
 #define MAZE
 
-#include "SDL.h"
-#include <iostream>
 #include "./utils/draw.hpp"
 #include <vector>
 #include <algorithm>

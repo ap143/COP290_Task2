@@ -19,6 +19,21 @@
 #define END_GAME "09"
 #define RECIEVED "99"
 
+extern std::string user_name;
+extern std::string opponent_name;
+
+extern float scale_width;
+extern float scale_height;
+extern float scale;
+
+extern int gui_width;
+extern int gui_height;
+
+extern int teamNum;
+extern int opponentTeamNum;
+
+extern bool game_over;
+
 
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b);

@@ -95,11 +95,11 @@ void Character::update()
 
 
     //Pos Update
-    dx += vel[0] * velConst;
-    dy += vel[1] * velConst;
+    dx += vel[0] * velConst * prop.speed;
+    dy += vel[1] * velConst * prop.speed;
 
-    posRect.x += (vel[0] * velConst) * game_maze->cell_size;
-    posRect.y += (vel[1] * velConst) * game_maze->cell_size;
+    posRect.x += (vel[0] * velConst) * game_maze->cell_size * prop.speed;
+    posRect.y += (vel[1] * velConst) * game_maze->cell_size * prop.speed;
 
 
     if ((dx >= 0.5 || dy >= 0.5 || dx <= -0.5 || dy <= -0.5) && !changed)

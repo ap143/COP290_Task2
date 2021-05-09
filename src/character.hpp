@@ -1,15 +1,8 @@
 #ifndef CHARACTER
 #define CHARACTER
 
-#include "SDL.h"
-#include <iostream>
-#include "./utils/draw.hpp"
-#include <vector>
-#include <map>
 #include "maze.hpp"
-#include "gui.hpp"
-
-extern bool game_over;
+#include <map>
 
 // Character properties
 struct properties
@@ -76,7 +69,7 @@ public:
     void attack(int pow);
 
 private:
-    float velConst = 0.05;
+    float velConst = 0.01;
     int currSprite = 0;
 
     bool changed = false;
