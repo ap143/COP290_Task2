@@ -398,6 +398,18 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         }
     }
 
+    if (target == nullptr)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                delete graph[i][j];
+            }
+        }
+        return;
+    }
+
     while (true)
     {
         if (target->pre == nullptr)
