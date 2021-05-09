@@ -1,7 +1,6 @@
 #ifndef GUI
 #define GUI
 
-#include "SDL.h"
 #include "./utils/draw.hpp"
 #include "network.hpp"
 #include <vector>
@@ -9,19 +8,6 @@
 
 extern Server *serv;
 extern Client *client;
-
-extern std::string user_name;
-extern std::string opponent_name;
-
-extern float scale_width;
-extern float scale_height;
-extern float scale;
-
-extern int gui_width;
-extern int gui_height;
-
-extern int teamNum;
-extern int opponentTeamNum;
 
 class Gui
 {
@@ -116,8 +102,5 @@ public:
     SDL_Thread *runnerThread = nullptr;
 
 };
-
-void sendMessage(std::string message);
-void respond(std::string message);
 
 #endif

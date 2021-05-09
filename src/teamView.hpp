@@ -4,11 +4,6 @@
 #include "character.hpp"
 #include <queue>
 
-extern int gui_width;
-extern int gui_height;
-
-extern float scale;
-
 struct Point
 {
     int i, j;

@@ -1,5 +1,4 @@
 #include "game.hpp"
-#include "utils/helper.hpp"
 
 Game* game = nullptr;
 
