@@ -5,6 +5,8 @@
 #include "network.hpp"
 #include <vector>
 #include <string>
+#include <fstream>
+#include "character.hpp"
 
 extern Server *serv;
 extern Client *client;
@@ -70,7 +72,11 @@ private:
 
     std::vector<SDL_Texture*> teams;
     std::vector<SDL_Texture*> player_names;
+    std::vector<SDL_Texture*> player_counts;
     SDL_Texture* selected;
+    SDL_Texture* power;
+    SDL_Texture* health;
+    SDL_Texture* speed;
 
     int currTeam = 0;
     const float centreBoxLength = 300 * scale_width;
@@ -78,10 +84,19 @@ private:
 
     const float text_size = live_text_font;
 
+    const float bar_length = gui_width / 16;
+    const float bar_width = text_size / 10;
+    int max_power = 0;
+    int max_health = 0;
+    int max_speed = 0;
+
+
+
     bool movedLeft;
     bool movedRight;
     bool animate = false;
 
+    std::string num_players[4] = {"x1", "x4", "x2", "x1"};
     std::string players[10][4] = {{"Team Thor", "Groot", "Loki", "Hulk"},  {"Team Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Team Captain America", "Antman", "Hawkeye", "Falcon"}, {"Team Thanos", "Hydra", "Red Skull", "Ultron"}, {"Team Doctor Strange", "Pietro", "Natasha", "Wanda"}, {"Team Captain MArvel", "Skrulls", "Nick Fury", "Monica"}, {"Team Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Team Jean", "Cyclops", "Storm", "Logan"}, {"Team Gamora", "Drax", "Rocket", "Star Lord"}, {"Team Magneto", "Iceman", "Deadpool", "Mystique"}};
 
     // Runner thread function
