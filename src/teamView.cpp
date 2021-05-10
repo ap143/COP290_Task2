@@ -154,6 +154,8 @@ void Teamview::handleEvent(SDL_Event event)
             return;
         }
 
+        std::cout << king->currPos[0] << " " << king->currPos[1] << std::endl;
+
         int dir = -1;
         bool move = true;
 

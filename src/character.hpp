@@ -9,18 +9,16 @@ struct properties
 {
     int power;
     int health;
-    int range;
     int speed;
 
     properties()
     {
     }
 
-    properties(int p, int h, int r, int s)
+    properties(int p, int h, int s)
     {
         power = p;
         health = h;
-        range = r;
         speed = s;
     }
 };
@@ -44,8 +42,12 @@ public:
     float dx = 0;
     float dy = 0;
 
+    // {row, column}
     int currPos[2];
+    
+    // {x, y}
     int vel[2];
+
     int currDir = -1;
 
     bool ready = false;
@@ -54,7 +56,8 @@ public:
 
     static SDL_Rect spriteDim[4][3];
 
-    static std::map<int, properties> charProp;
+    static std::vector<properties> character_data;
+    static int total_teams;
 
     Character();
 

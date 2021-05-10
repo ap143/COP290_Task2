@@ -1,14 +1,5 @@
 #include "game.hpp"
 
-std::map<int, properties> Game::charProp = 
-{
-    std::make_pair(0, properties(5, 12, 8, 2)),
-    std::make_pair(1, properties(2, 5, 4, 6)),
-    std::make_pair(2, properties(4, 8, 7, 4)),
-    std::make_pair(3, properties(6, 10, 5, 3))
-};
-
-
 Game::Game()
 {
     game_maze = new Maze(13, gui_width, gui_height);

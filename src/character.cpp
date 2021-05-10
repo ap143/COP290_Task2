@@ -8,13 +8,9 @@ SDL_Rect Character::spriteDim[4][3] =
     {{.x = 0, .y = 147, .w = 48, .h = 49}, {.x = 48, .y = 147, .w = 48, .h = 49}, {.x = 96, .y = 147, .w = 48, .h = 49}},
 };
 
-std::map<int, properties> Character::charProp = 
-        {
-            std::make_pair(0, properties(5, 2400, 4, 2)),
-            std::make_pair(1, properties(2, 1000, 2, 6)),
-            std::make_pair(2, properties(4, 1600, 3, 4)),
-            std::make_pair(3, properties(6, 2000, 4, 3))
-        };
+std::vector<properties> Character::character_data = {};
+
+int Character::total_teams = 0;
 
 Character::Character()
 {
@@ -28,8 +24,9 @@ Character::Character(SDL_Renderer* renderer, Maze* maze, int teamN, int lev, boo
     team = teamN;
     level = lev;
     isMyTeam = t;
-    prop = charProp[lev];
+    prop = Character::character_data[level * Character::total_teams + team];
     health = prop.health;
+
     spriteSheet = loadTexture(("./assets/images/characters/t" + std::to_string(team+1) + "l" + std::to_string(lev) + ".png").c_str(), renderer);
 
     if (level == 0)
@@ -103,25 +100,42 @@ void Character::update()
     dx += vel[0] * velConst * prop.speed;
     dy += vel[1] * velConst * prop.speed;
 
-    posRect.x += (vel[0] * velConst) * game_maze->cell_size * prop.speed;
-    posRect.y += (vel[1] * velConst) * game_maze->cell_size * prop.speed;
+    posRect.x = game_maze->ox + currPos[1] * game_maze->cell_size + 
+                game_maze->cell_size / 2 + dx * game_maze->cell_size;
+    posRect.y = game_maze->oy + currPos[0] * game_maze->cell_size + 
+                game_maze->cell_size / 2 + dy * game_maze->cell_size;
 
-
-    if ((dx >= 0.5 || dy >= 0.5 || dx <= -0.5 || dy <= -0.5) && !changed)
+    if (!changed)
     {
-        if (dx >= 0.5) currPos[1] += 1;
-        else if (dx <= -0.5) currPos[1] -= 1;
-        else if (dy >= 0.5) currPos[0] += 1;
-        else if (dy <= -0.5) currPos[0] -= 1;
-        else ;
-        changed = true;
+        if (dx >= 0.5)
+        {
+            currPos[1]++;
+            dx += -1;
+            changed = true;
+        }
+        else if (dx <= -0.5)
+        {
+            currPos[1]--;
+            dx += 1;
+            changed = true;
+        }
+        else if (dy >= 0.5)
+        {
+            currPos[0]++;
+            dy += -1;
+            changed = true;
+        }
+        else if (dy <= -0.5)
+        {
+            currPos[0]--;
+            dy += 1;
+            changed = true;
+        }
     }
-
-    if (dx >= 1 || dy >= 1 || dx <= -1 || dy <= -1)
+    else if (dx * vel[0] >= 0 && dy * vel[1] >= 0)
     {
-        //decide next cell to move
-        dx = dy = 0;
-        vel[0] = vel[1] = 0;
+        dx = dy = vel[0] = vel[1] = 0;
+        changed = false;
         ready = true;
     }
 
@@ -150,7 +164,10 @@ void Character::setVel(int dir)
         default: break;
     }
 
-    ready = false;
+    if (dir >= 0 && dir < 4)
+    {
+        ready = false;
+    }
 }
 
 void Character::turn(int dir)
@@ -161,13 +178,10 @@ void Character::turn(int dir)
     }
 
     changed = false;
-
-    posRect.x = game_maze->ox + currPos[1] * game_maze->cell_size + game_maze->cell_size / 2;
-    posRect.y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2;
+    ready = true;
 
     dx = dy = 0;
     vel[0] = vel[1] = 0;
-    ready = true;
 
     if (dir > 3 || dir < 0)
     {
@@ -175,22 +189,14 @@ void Character::turn(int dir)
     }
 
     currDir = dir;
+
     switch (dir)
     {
-    case 0:
-        spriteRect = spriteDim[3][1];
-        break;
-    case 1:
-        spriteRect = spriteDim[2][1];
-        break;
-    case 2:
-        spriteRect = spriteDim[0][1];
-        break;
-    case 3:
-        spriteRect = spriteDim[1][1];
-        break;
-    default:
-        break;
+        case 0: spriteRect = spriteDim[3][1]; break;
+        case 1: spriteRect = spriteDim[2][1]; break;
+        case 2: spriteRect = spriteDim[0][1]; break;
+        case 3: spriteRect = spriteDim[1][1]; break;
+        default: break;
     }
 }
 
