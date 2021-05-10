@@ -33,10 +33,10 @@ private:
     void reel(bool direction);
 
     // Username properties
-    Uint8 textBoxColor[4] = {255, 255, 255, 255};
+    const Uint8 textBoxColor[4] = {255, 255, 255, 255};
     std::string live_text;
 
-    int maxUserNameLength = 12;
+    const unsigned int maxUserNameLength = 12;
 
     const float textBoxWidth = gui_width / 3;
     const float textBoxHeight = textBoxWidth / maxUserNameLength;

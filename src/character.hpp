@@ -69,7 +69,7 @@ public:
     void attack(int pow);
 
 private:
-    float velConst = 0.01;
+    float velConst = 0.005;
     int currSprite = 0;
 
     bool changed = false;

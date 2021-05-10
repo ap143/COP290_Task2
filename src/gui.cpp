@@ -9,26 +9,31 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
 
     live_text = "";
 
+    // Solid Black texts
     color(renderer, 0);
     live_text_texture = text(renderer, live_text, live_text_font);
     host_button = text(renderer, "Host", live_text_font);
     join_button = text(renderer, "Join", live_text_font);
+    pass_code_texture = text(renderer, "", live_text_font);
 
+    // Grey texts
     color(renderer, 150);
     user_name_message = text(renderer, "Username...", live_text_font * 2 / 3);
-
-    onButtonHost = onButtonJoin = false;
-
-    pass_code_texture = text(renderer, "", live_text_font);
     waiting_texture = text(renderer, "Waiting...", live_text_font);
     input_code = text(renderer, "Code...", live_text_font);
 
+    // Button hover bools
+    onButtonHost = onButtonJoin = false;
+
+    // Team sprite inputs
     for (int i = 0; i < 10; i++)
     {
         teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i + 1) + ".png").c_str(), renderer));
     }
 
+
     player_names.push_back(text(renderer, players[currTeam][0], text_size));
+    
     for (int i = 1; i < 4; i++)
     {
         player_names.push_back(text(renderer, players[currTeam][i], text_size / 2));
