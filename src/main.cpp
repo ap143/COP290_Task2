@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     gui_width = (int) (gui_width * scale_width) * 300;
     gui_height = (int) (gui_height * scale_height) * 300;
 
-    const int FPS = 30;
+    const int FPS = 60;
     const int frameDelay = 1000 / FPS;
 
     Uint32 frameStart;

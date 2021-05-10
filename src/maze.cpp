@@ -10,8 +10,11 @@ Maze::Maze(int size, int w, int h)
         for (int j = 0; j < n; j++)
         {
             maze[i][j] = new bool[4];
+            for (int k = 0; k < 4; k++)
+            {
+                maze_health.push_back(wall_health);
+            }
         }
-
     }
 
     h = std::min(w, h);
@@ -63,7 +66,7 @@ void Maze::dfs(std::vector<std::vector<bool>> &cells, int i, int j)
     // for (int k = 0; k<4;k++) std::cout<< s[k] << " ";
     // std::cout <<std::endl;
 
-    for (int k = 0; k < s.size(); k++)
+    for (unsigned int k = 0; k < s.size(); k++)
     {
 
         // srand(time(NULL));

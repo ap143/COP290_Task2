@@ -1,6 +1,6 @@
 #include "teamView.hpp"
 
-Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
+Teamview::Teamview(SDL_Renderer *rend, Maze *maze, int teamN, bool self)
 {
     renderer = rend;
     game_maze = maze;
@@ -8,17 +8,6 @@ Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
     isMyTeam = self;
 
     deployRange = game_maze->n * 2 / 5;
-
-    for (int i = 0; i < maze->n; i++)
-    {
-        for (int j = 0; j < maze->n; j++)
-        {
-            for (int k = 0; k < 4; k++)
-            {
-                maze_health.push_back(wall_weight * 30);
-            }
-        }
-    }
 
     std::vector<Character *> v[4];
 
@@ -29,7 +18,7 @@ Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
         v[1].push_back(new Character(renderer, maze, team, 1, self));
     }
 
-    for (int i = 0; i < 2; i++) 
+    for (int i = 0; i < 2; i++)
     {
         v[2].push_back(new Character(renderer, maze, team, 2, self));
     }
@@ -53,21 +42,18 @@ Teamview::Teamview(SDL_Renderer* rend, Maze* maze, int teamN, bool self)
     bar_width = (block_width - tile_height) * 0.9;
     bar_fill = 0;
 
-
     for (int i = 0; i < 4; i++)
     {
         tiles[i] = {.x = block_ox, .y = block_oy + i * tile_height, .w = tile_height, .h = tile_height};
-
         count_text[i] = text(renderer, std::to_string(count[i]), count_text_size);
     }
-
 }
 
 void Teamview::show()
 {
     if (isMyTeam)
     {
-        if(activeLevel == 0 && !kingDeployed)
+        if (activeLevel == 0 && !kingDeployed)
         {
             color(renderer, 0, 255, 0, 100);
             rect(renderer, game_maze->ox + (game_maze->n - deployRange) * game_maze->cell_size, game_maze->oy + (game_maze->n - deployRange) * game_maze->cell_size, deployRange * game_maze->cell_size, deployRange * game_maze->cell_size, true);
@@ -81,8 +67,8 @@ void Teamview::show()
             Character *king = characters[0][0];
             float x = (king->currPos[1] + 0.5) * game_maze->cell_size + game_maze->ox;
             float y = (king->currPos[0] + 0.5) * game_maze->cell_size + game_maze->oy;
-            
-            float length = ( 2 * (deployRange / 2) + 1 ) * game_maze->cell_size;
+
+            float length = (2 * (deployRange / 2) + 1) * game_maze->cell_size;
 
             float width = length;
             float height = length;
@@ -109,12 +95,12 @@ void Teamview::show()
             {
                 height -= (y + height - (game_maze->oy + game_maze->grid_length));
             }
-            
+
             color(renderer, 0, 255, 0, 100);
             rect(renderer, x, y, width, height, true);
         }
-        
-        for (int i = 0; i<4; i++)
+
+        for (int i = 0; i < 4; i++)
         {
             if (activeLevel == i && count[i] > 0)
             {
@@ -122,33 +108,32 @@ void Teamview::show()
             }
             else
             {
-                color(renderer, 197, 207, 68, 160);   
+                color(renderer, 197, 207, 68, 160);
             }
-            
-            // Tile on which sprite placed
-            rectCenter(renderer, block_ox + tile_height / 2, block_oy + tile_height * i  +  tile_height / 2, tile_height, tile_height, 0.95, true);
 
-            // Sprite 
-            imageCenter(renderer, characters[i][0]->spriteSheet, &src, block_ox + tile_height / 2, block_oy + tile_height * i  + tile_height / 2, tile_height, tile_height, 0.9);
+            // Tile on which sprite placed
+            rectCenter(renderer, block_ox + tile_height / 2, block_oy + tile_height * i + tile_height / 2, tile_height, tile_height, 0.95, true);
+
+            // Sprite
+            imageCenter(renderer, characters[i][0]->spriteSheet, &src, block_ox + tile_height / 2, block_oy + tile_height * i + tile_height / 2, tile_height, tile_height, 0.9);
 
             // Text
             image(renderer, count_text[i], tiles[i].x, tiles[i].y, 0, SDL_FLIP_NONE);
-
 
             if (count[i] == 0)
             {
                 // Shade when count of a level = 0
                 color(renderer, 0, 160);
-                rectCenter(renderer, block_ox + tile_height / 2, block_oy + tile_height * i  +  tile_height / 2, tile_height, tile_height, 0.95, true);
+                rectCenter(renderer, block_ox + tile_height / 2, block_oy + tile_height * i + tile_height / 2, tile_height, tile_height, 0.95, true);
             }
         }
     }
 
-    for (std::vector<Character *> v: characters)
+    for (std::vector<Character *> v : characters)
     {
-        for (Character *c: v)
+        for (Character *c : v)
         {
-            if (c->active)
+            if (c->active && !c->dead)
             {
                 c->show();
             }
@@ -163,27 +148,58 @@ void Teamview::handleEvent(SDL_Event event)
     {
         // Move king
         Character *king = characters[0][0];
+
         if (!king->ready)
         {
             return;
         }
 
         int dir = -1;
+        bool move = true;
+
+        if (event.key.keysym.sym == SDLK_a)
+        {
+            kingAttack(king);
+        }
+
         switch (event.key.keysym.sym)
         {
-            case SDLK_UP: king->setVel(dir = 0); break;
-            case SDLK_DOWN: king->setVel(dir = 2); break;
-            case SDLK_RIGHT: king->setVel(dir = 1); break;
-            case SDLK_LEFT: king->setVel(dir = 3); break;
-            default: break;
+        case SDLK_UP:
+            dir = 0;
+            break;
+        case SDLK_DOWN:
+            dir = 2;
+            break;
+        case SDLK_RIGHT:
+            dir = 1;
+            break;
+        case SDLK_LEFT:
+            dir = 3;
+            break;
+        default:
+            break;
+        }
+
+        if (dir == -1)
+        {
+            return;
+        }
+
+        if (SDL_GetModState() & (SDLK_RSHIFT | SDLK_LSHIFT))
+        {
+            king->turn(dir);
+        }
+        else
+        {
+            king->setVel(dir);
         }
 
         if (std::abs(king->vel[0]) + std::abs(king->vel[1]) == 0)
         {
-            dir = -1;
+            move = false;
         }
 
-        if (dir >= 0)
+        if (move)
         {
             sendMessage(MOVEMENT + std::string("00") + std::to_string(dir));
         }
@@ -203,10 +219,10 @@ void Teamview::handleEvent(SDL_Event event)
     float x = event.button.x;
     float y = event.button.y;
     for (int i = 0; i < 4; i++)
-    {    
+    {
         if (inRect(x, y, tiles[i].x, tiles[i].y, tiles[i].w, tiles[i].h) && count[i] > 0)
         {
-            if ((!opponentKingDeployed || !kingDeployed ) && i > 0)
+            if ((!opponentKingDeployed || !kingDeployed) && i > 0)
             {
                 continue;
             }
@@ -239,14 +255,15 @@ void Teamview::handleEvent(SDL_Event event)
             {
                 return;
             }
-        }else if (std::abs(characters[0][0]->currPos[0] - i) > deployRange / 2 || std::abs(characters[0][0]->currPos[1] - j) > deployRange / 2)
+        }
+        else if (std::abs(characters[0][0]->currPos[0] - i) > deployRange / 2 || std::abs(characters[0][0]->currPos[1] - j) > deployRange / 2)
         {
             deployingNow = false;
             activeLevel = -1;
             return;
         }
 
-        characters[activeLevel][count[activeLevel]-1]->deploy(i, j);
+        characters[activeLevel][count[activeLevel] - 1]->deploy(i, j);
         count[activeLevel]--;
 
         sendMessage(DEPLOY + std::to_string(activeLevel) + std::to_string(count[activeLevel]) + ((i < 10) ? "0" : "") + std::to_string(i) + ((j < 10) ? "0" : "") + std::to_string(j));
@@ -264,15 +281,14 @@ void Teamview::handleEvent(SDL_Event event)
         activeLevel = -1;
         deployingNow = false;
     }
-
 }
 
 void Teamview::update()
 {
-    for (std::vector<Character *> v: characters)
+    for (std::vector<Character *> v : characters)
     {
         int j = -1;
-        for (Character *c: v)
+        for (Character *c : v)
         {
             j++;
             if (c->ready && isMyTeam && c->level > 0 && c->active)
@@ -298,9 +314,9 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     int ci = c->currPos[0];
     int cj = c->currPos[1];
     int n = game_maze->n;
-    Point* graph[n][n];
+    Point *graph[n][n];
 
-    std::vector<Point* > qu;
+    std::vector<Point *> qu;
 
     graph[ci][cj] = new Point(ci, cj, 0, false, false);
     qu.push_back(graph[ci][cj]);
@@ -316,9 +332,9 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         }
     }
 
-    for (int i = 0; i < enemyTeam->characters.size(); i++)
+    for (unsigned int i = 0; i < enemyTeam->characters.size(); i++)
     {
-        for (int j = 0; j < enemyTeam->characters[i].size(); j++)
+        for (unsigned int j = 0; j < enemyTeam->characters[i].size(); j++)
         {
             Character *e = enemyTeam->characters[i][j];
             if (!e->active)
@@ -343,7 +359,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         Point *p = qu[0];
         int ind = 0;
 
-        for (int i = 0; i < qu.size(); i++)
+        for (unsigned int i = 0; i < qu.size(); i++)
         {
             if (qu[i]->dist < p->dist)
             {
@@ -365,7 +381,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         int pi = p->i;
         int pj = p->j;
 
-        int pos[4][2] = {{pi-1, pj}, {pi, pj+1}, {pi+1, pj}, {pi, pj-1}};
+        int pos[4][2] = {{pi - 1, pj}, {pi, pj + 1}, {pi + 1, pj}, {pi, pj - 1}};
 
         for (int k = 0; k < 4; k++)
         {
@@ -386,7 +402,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             }
             else
             {
-                newDist = wall_weight;
+                newDist = game_maze->wall_health;
             }
 
             if (graph[i][j]->dist > newDist + p->dist)
@@ -394,7 +410,6 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
                 graph[i][j]->dist = newDist + p->dist;
                 graph[i][j]->pre = p;
             }
-
         }
     }
 
@@ -433,7 +448,9 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
 
     if (ci == ti && cj == tj)
     {
-        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power) + std::to_string(level) + std::to_string(cnt) + std::to_string(4));
+        sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) +
+                    std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
+                    std::to_string(level) + std::to_string(cnt) + std::to_string(4));
         target->e->attack(c->prop.power);
     }
     else if (ci - 1 == ti)
@@ -463,15 +480,18 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     {
         if (!game_maze->maze[ci][cj][dir])
         {
-            sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) + 
-                                    std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(dir) + 
-                                    std::to_string(c->prop.power) + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+            sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) +
+                        std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(dir) +
+                        std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
+                        std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
             attackWall(ci, cj, dir, c->prop.power);
             c->turn(dir);
         }
         else if (target->enemy)
         {
-            sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) + std::to_string(c->prop.power) + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+            sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) +
+                        std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
+                        std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
             target->e->attack(c->prop.power);
             c->turn(dir);
         }
@@ -489,32 +509,112 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             delete graph[i][j];
         }
     }
-
 }
 
 void Teamview::attackWall(int i, int j, int dir, int power)
 {
     int index = i * game_maze->n + j * 4 + dir;
-    maze_health[index] -= power;
+    game_maze->maze_health[index] -= power;
 
-    if (maze_health[index] <= 0)
+    if (game_maze->maze_health[index] <= 0)
     {
         game_maze->maze[i][j][dir] = true;
         if (dir == 0 && i > 0)
         {
-            game_maze->maze[i-1][j][2] = true;
+            game_maze->maze[i - 1][j][2] = true;
         }
         else if (dir == 1 && j < game_maze->n - 1)
         {
-            game_maze->maze[i][j+1][3] = true;
+            game_maze->maze[i][j + 1][3] = true;
         }
         else if (dir == 2 && i < game_maze->n - 1)
         {
-            game_maze->maze[i+1][j][0] = true;
+            game_maze->maze[i + 1][j][0] = true;
         }
         else if (dir == 3 && i > 0)
         {
-            game_maze->maze[i][j-1][1] = true;
+            game_maze->maze[i][j - 1][1] = true;
         }
+    }
+}
+
+void Teamview::kingAttack(Character *c)
+{
+    int ci = c->currPos[0];
+    int cj = c->currPos[1];
+
+    int pos[2] = {ci, cj};
+
+    switch (c->currDir)
+    {
+    case 0:
+        pos[0]--;
+        break;
+    case 1:
+        pos[1]++;
+        break;
+    case 2:
+        pos[0]++;
+        break;
+    case 3:
+        pos[1]--;
+        break;
+    default:
+        break;
+    }
+
+    Character *target = nullptr;
+    int cnt = -1;
+    bool onPlace = false;
+
+    for (std::vector<Character *> v : enemyTeam->characters)
+    {
+        int j = -1;
+        for (Character *e : v)
+        {
+            j++;
+            if (!e->active || e->dead)
+            {
+                continue;
+            }
+            if (e->currPos[0] == ci && e->currPos[1] == cj)
+            {
+                target = e;
+                cnt = j;
+                onPlace = true;
+                break;
+            }
+            if (e->currPos[0] == pos[0] && e->currPos[1] == pos[1])
+            {
+                if (target == nullptr || rand() % 2 == 0)
+                {
+                    target = e;
+                    cnt = j;
+                }
+            }
+        }
+    }
+
+    if (onPlace)
+    {
+        target->attack(c->prop.power);
+        sendMessage(ATTACK + std::to_string(target->level) + std::to_string(cnt) +
+                    std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
+                    std::to_string(0) + std::to_string(0) + std::to_string(c->currDir));
+    }
+    else if (!game_maze->maze[ci][cj][c->currDir])
+    {
+        attackWall(ci, cj, c->currDir, c->prop.power);
+        sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) +
+                    std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(c->currDir) +
+                    std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
+                    "00" + std::to_string(c->currDir));
+    }
+    else if (target != nullptr)
+    {
+        target->attack(c->prop.power);
+        sendMessage(ATTACK + std::to_string(target->level) + std::to_string(cnt) +
+                    std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
+                    std::to_string(0) + std::to_string(0) + std::to_string(c->currDir));
     }
 }

@@ -45,15 +45,12 @@ public:
     int count[4] = {1, 4, 2, 1};
 
     int activeLevel = -1;
-    int wall_weight = 5;
 
     bool kingDeployed = false;
     bool opponentKingDeployed = false;
 
     int deployRange;
     bool deployingNow = false;
-
-    std::vector<int> maze_health;
 
     Teamview *enemyTeam;
     
@@ -63,7 +60,6 @@ public:
     void update();
     void handleEvent(SDL_Event event);
     void deploy(int level, int count, int i, int j); 
-    void setNextDest(Character* c, int level, int cnt);
     void attackWall(int i, int j, int dir, int power);
 
 private:
@@ -94,6 +90,9 @@ private:
 
     SDL_Texture* count_text[4] = {nullptr, nullptr, nullptr, nullptr};
     int count_text_size = 10 * scale;
+
+    void setNextDest(Character* c, int level, int cnt);
+    void kingAttack(Character *c);
 };
 
 #endif

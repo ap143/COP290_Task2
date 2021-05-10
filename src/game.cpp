@@ -65,6 +65,7 @@ void Game::handleEvents()
     }
 
     SDL_FlushEvent(SDL_MOUSEMOTION);
+    SDL_FlushEvent(SDL_KEYDOWN);
 
     SDL_Event event;
     SDL_PollEvent(&event);
@@ -276,7 +277,6 @@ void respond(std::string response)
     }
     else if (code == MAZE_STRUCT)
     {
-        int row = std::stoi(data.substr(0, 2));
         data = data.substr(2);
         for (int i = 0; i < game->game_maze->n; i++)
         {
@@ -302,21 +302,22 @@ void respond(std::string response)
     }
     else if (code == MOVEMENT)
     {
-        int level = std::stoi(data.substr(0, 1));
+        int lvl = std::stoi(data.substr(0, 1));
         int cnt = std::stoi(data.substr(1, 1));
         int dir = std::stoi(data.substr(2, 1));
-        game->opponentTeam->characters[level][cnt]->setVel((dir + 2) % 4);
+        game->opponentTeam->characters[lvl][cnt]->setVel((dir + 2) % 4);
     }
     else if (code == ATTACK)
     {
-        int level = std::stoi(data.substr(0, 1));
-        int cnt = std::stoi(data.substr(1, 1));
-        int power = std::stoi(data.substr(2, 1));
-        int lvl = std::stoi(data.substr(3, 1));
-        int cntt = std::stoi(data.substr(4, 1));
-        int dir = std::stoi(data.substr(5, 1));
-        game->myTeam->characters[level][cnt]->attack(power);
-        game->opponentTeam->characters[lvl][cntt]->turn((dir + 2) % 4);
+        int attack_lvl = std::stoi(data.substr(0, 1));
+        int attack_cnt = std::stoi(data.substr(1, 1));
+        int power = std::stoi(data.substr(2, 2));
+        game->myTeam->characters[attack_lvl][attack_cnt]->attack(power);
+
+        int lvl = std::stoi(data.substr(4, 1));
+        int cnt = std::stoi(data.substr(5, 1));
+        int dir = std::stoi(data.substr(6, 1));
+        game->opponentTeam->characters[lvl][cnt]->turn((dir + 2) % 4);
     }
     else if (code == DIE)
     {
@@ -324,21 +325,23 @@ void respond(std::string response)
     }
     else if (code == TURN)
     {
-        int level = std::stoi(data.substr(0, 1));
+        int lvl = std::stoi(data.substr(0, 1));
         int cnt = std::stoi(data.substr(1, 1));
         int dir = std::stoi(data.substr(2, 1));
-        game->opponentTeam->characters[level][cnt]->turn((dir + 2) % 4);
+        game->opponentTeam->characters[lvl][cnt]->turn((dir + 2) % 4);
     }
     else if (code == BREAK_WALL)
     {
         int i = game->game_maze->n - 1 - std::stoi(data.substr(0, 2));
         int j = game->game_maze->n - 1 - std::stoi(data.substr(2, 2));
         int dir = (2 + std::stoi(data.substr(4, 1))) % 4;
-        int pow = std::stoi(data.substr(5, 1));
-        int level = std::stoi(data.substr(6, 1));
-        int cntt = std::stoi(data.substr(7, 1));
-        int dirr = std::stoi(data.substr(8, 1));
-        game->opponentTeam->characters[level][cntt]->turn((dirr + 2) % 4);
+        int pow = std::stoi(data.substr(5, 2));
+
+        int lvl = std::stoi(data.substr(7, 1));
+        int cnt = std::stoi(data.substr(8, 1));
+        int dirr = std::stoi(data.substr(9, 1));
+
+        game->opponentTeam->characters[lvl][cnt]->turn((dirr + 2) % 4);
         game->myTeam->attackWall(i, j, dir, pow);
     }
     else if (code == END_GAME)
@@ -349,13 +352,4 @@ void respond(std::string response)
     {
         
     }
-
-    // if (serv != nullptr)
-    // {
-    //     serv->send(RECIEVED + response);
-    // }
-    // else if (client != nullptr)
-    // {
-    //     client->send(RECIEVED + response);
-    // }
 }

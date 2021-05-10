@@ -31,6 +31,11 @@ Character::Character(SDL_Renderer* renderer, Maze* maze, int teamN, int lev, boo
     prop = charProp[lev];
     health = prop.health;
     spriteSheet = loadTexture(("./assets/images/characters/t" + std::to_string(team+1) + "l" + std::to_string(lev) + ".png").c_str(), renderer);
+
+    if (level == 0)
+    {
+        prop.power *= 5;
+    }
 }
 
 void Character::show()
