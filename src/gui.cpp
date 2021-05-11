@@ -31,6 +31,7 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
         teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i + 1) + ".png").c_str(), renderer));
     }
 
+    color(renderer, 255);
     for (int i = 0; i < 4; i++)
     {
         player_names.push_back(text(renderer, players[currTeam][i], 2 * text_size / 3));
@@ -233,65 +234,160 @@ void Gui::show_codecheck()
     }
 }
 
+void Gui::team_select_update()
+{
+    animate_extent += animate_direction;
+
+    if (animate_extent == max_extent)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            SDL_DestroyTexture(player_names[i]);
+        }
+        currTeam = (totalTeams + currTeam - 1) % totalTeams;
+
+        for (int i = 0; i < 4; i++)
+        {
+            player_names[i] = text(renderer, players[currTeam][i], 2 * text_size / 3);
+        }
+        animate_extent = animate_direction = 0;
+    }
+    else if (animate_extent == -max_extent)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            SDL_DestroyTexture(player_names[i]);
+        }
+        currTeam = (totalTeams + currTeam + 1) % totalTeams;
+
+        for (int i = 0 ; i < 4; i++)
+        {
+            player_names[i] = text(renderer, players[currTeam][i], 2 * text_size / 3);
+        }
+        animate_extent = animate_direction = 0;
+    }
+}
+
 void Gui::show_teamselect()
 {
+    team_select_update();
+
     backgroundImage(renderer, gui_bg);
 
-    color(renderer, 255);
+    float scl = std::abs(animate_extent) / max_extent;
+    float cx;
+    float cy = gui_height / 2;
+    float len;
+
+    // New Box
+
+    if (animate_extent < 0)
+    {
+        color(renderer, 0, 150);
+        cx = 3 * gui_width / 4;
+        len = sideBoxLength * scl;
+        imageCenter(renderer, teams[(totalTeams + currTeam + 2) % totalTeams], NULL, cx, cy, len, len);
+        if ((totalTeams + currTeam + 2) % totalTeams == opponentTeamNum) 
+        {
+            imageCenter(renderer, selected, NULL, cx, cy, len, len);
+        }
+        rectCenter(renderer, cx, cy, len, len, 1, true);
+    }
+    else if (animate_extent > 0)
+    {
+        color(renderer, 0, 150);
+        cx = gui_width / 4;
+        len = sideBoxLength * scl;
+        imageCenter(renderer, teams[(totalTeams + currTeam - 2) % totalTeams], NULL, cx, cy, len, len);
+        if ((totalTeams + currTeam - 2) % totalTeams == opponentTeamNum) 
+        {
+            imageCenter(renderer, selected, NULL, cx, cy, len, len);
+        }
+        rectCenter(renderer, cx, cy, len, len, 1, true);
+    }
+
+    // Left Box
+    if (animate_extent < 0)
+    {
+        color(renderer, 0, 150);
+        cx = gui_width / 4;
+        len = sideBoxLength * (1 - scl);
+    }
+    else
+    {
+        color(renderer, 0, 150 * (1 - scl));
+        cx = gui_width / 4 * (1 + scl);
+        len = sideBoxLength * (1 + scl);
+    }
+
+    imageCenter(renderer, teams[(totalTeams + currTeam - 1) % totalTeams], NULL, cx, cy, len, len);
+    if ((totalTeams + currTeam - 1) % totalTeams == opponentTeamNum) 
+    {
+        imageCenter(renderer, selected, NULL,  cx, cy, len, len);
+    }
+    rectCenter(renderer, cx, cy, len, len, 1, true);
+
+    // Right Box
+    if (animate_extent > 0)
+    {
+        color(renderer, 0, 150);
+        cx = 3 * gui_width / 4;
+        len = sideBoxLength * (1 - scl);
+    }
+    else
+    {
+        color(renderer, 0, 150 * (1 - scl));
+        cx = gui_width / 2 + gui_width / 4 * (1 - scl);
+        len = sideBoxLength * (1 + scl);
+    }
+
+    imageCenter(renderer, teams[(totalTeams + currTeam + 1) % totalTeams], NULL, cx, cy, len, len);
+    if ((totalTeams + currTeam + 1) % totalTeams == opponentTeamNum) 
+    {
+        imageCenter(renderer, selected, NULL, cx, cy, len, len);
+    }
+    rectCenter(renderer, cx, cy, len, len, 1, true);
 
     // Centre Box
-    imageCenter(renderer, teams[currTeam], NULL, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength);
+    cx = gui_width / 2 + animate_extent * gui_width / 4 / max_extent;
+    len = centreBoxLength * (1 - scl / 2);
+
+    imageCenter(renderer, teams[currTeam], NULL, cx, cy, len, len);
     if (currTeam == opponentTeamNum) 
     {
         color(renderer, 0, 150);
-        rectCenter(renderer, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength, 1, true);
-        color(renderer, 255);
-        imageCenter(renderer, selected, NULL, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength);
+        rectCenter(renderer, cx, cy, len, len, 1, true);
+        imageCenter(renderer, selected, NULL, cx, cy, len, len);
     }
-
-    color(renderer, 0, 200);
-
-    // Left Box
-    imageCenter(renderer, teams[(totalTeams + currTeam - 1) % totalTeams], NULL, gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
-    if ((totalTeams + currTeam - 1) % totalTeams == opponentTeamNum) 
+    else
     {
-        imageCenter(renderer, selected, NULL,  gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
+        color(renderer, 0, 150 * scl);
+        rectCenter(renderer, cx, cy, len, len, 1, true);
     }
-    rectCenter(renderer, gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength, 1, true);
-
-    // Right Box
-    imageCenter(renderer, teams[(totalTeams + currTeam + 1) % totalTeams], NULL, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
-    if ((totalTeams + currTeam + 1) % totalTeams == opponentTeamNum) 
-    {
-        imageCenter(renderer, selected, NULL, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
-    }
-    rectCenter(renderer, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength, 1, true);
-
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     // Team Details
 
     color(renderer, 255, 255, 255, 255);
-    imageCenter(renderer, power, gui_width / 2 + bar_length / 2, gui_height / 2 + 0.6 * centreBoxLength + text_size / 2);
-    imageCenter(renderer, health, gui_width / 2 + bar_length + bar_length / 2 + bar_length / (10 * 2), gui_height / 2 + 0.6 * centreBoxLength + text_size / 2);
-    imageCenter(renderer, speed, gui_width / 2 + 2 * bar_length +  bar_length / 2 + 2 * bar_length / (10 * 2) , gui_height / 2 + 0.6 * centreBoxLength + text_size / 2);
+    imageCenter(renderer, power, gui_width / 2 + bar_length / 2, gui_height / 2 + 0.7 * centreBoxLength + text_size / 2);
+    imageCenter(renderer, health, gui_width / 2 + bar_length + bar_length / 2 + bar_length / (10 * 2), gui_height / 2 + 0.7 * centreBoxLength + text_size / 2);
+    imageCenter(renderer, speed, gui_width / 2 + 2 * bar_length +  bar_length / 2 + 2 * bar_length / (10 * 2) , gui_height / 2 + 0.7 * centreBoxLength + text_size / 2);
 
     for (int i = 0; i < 4; i++)
     {
         color(renderer, 255, 255, 255, 255);
-        image(renderer, player_names[i], gui_width / 2 - 4 * bar_length, gui_height / 2 + 0.6 * centreBoxLength + i * text_size + text_size, 0, SDL_FLIP_NONE);
+        image(renderer, player_names[i], gui_width / 2 - 4 * bar_length, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, 0, SDL_FLIP_NONE);
 
-        image(renderer, player_counts[i], gui_width / 2 - bar_length / 2 , gui_height / 2 + 0.6 * centreBoxLength + i * text_size + text_size, 0, SDL_FLIP_NONE);
+        image(renderer, player_counts[i], gui_width / 2 - bar_length / 2 , gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, 0, SDL_FLIP_NONE);
 
         color(renderer, 255, 0, 0, 255);
-        rect(renderer, gui_width / 2 +  0 * bar_length / 10, gui_height / 2 + 0.6 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].power / max_power, bar_width , true);
+        rect(renderer, gui_width / 2 +  0 * bar_length / 10, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].power / max_power, bar_width , true);
 
         color(renderer, 0, 255, 0, 255);
-        rect(renderer, gui_width / 2 + bar_length + 1 * bar_length / 10, gui_height / 2 + 0.6 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].health / max_health, bar_width , true);
+        rect(renderer, gui_width / 2 + bar_length + 1 * bar_length / 10, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].health / max_health, bar_width , true);
         
 
         color(renderer, 0, 0, 255, 255);
-        rect(renderer, gui_width / 2  +  2 * bar_length  + 2 * bar_length / 10, gui_height / 2 + 0.6 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width , true);
+        rect(renderer, gui_width / 2  +  2 * bar_length  + 2 * bar_length / 10, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width , true);
 
     }
     color(renderer, 255);
@@ -397,32 +493,18 @@ void Gui::event_teamselect(SDL_Event event, int &state)
 {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            SDL_DestroyTexture(player_names[i]);
-        }
-        currTeam = (totalTeams + currTeam + 1) % totalTeams;
-
-        for (int i = 0; i < 4; i++)
-        {
-            player_names[i] = text(renderer, players[currTeam][i], 2 * text_size / 3);
-        }
+        animate_direction = -1;
     }
     else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            SDL_DestroyTexture(player_names[i]);
-        }
-        currTeam = (totalTeams + currTeam - 1) % totalTeams;
-
-        for (int i = 0 ; i < 4; i++)
-        {
-            player_names[i] = text(renderer, players[currTeam][i], 2 * text_size / 3);
-        }
+        animate_direction = 1;
     }
     else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
     {
+        if (animate_direction != 0)
+        {
+            return;
+        }
         if (currTeam != opponentTeamNum)
         {
             teamNum = currTeam;
@@ -542,33 +624,4 @@ int Gui::runGame(void *a)
     }
 
     return 0;
-}
-
-void Gui::reel(bool dir)
-{
-    float dx = gui_width / 4;
-    float dw = (centreBoxLength - sideBoxLength) / 2;
-
-    int frames = 100;
-    dx /= frames;
-    dw /= frames;
-
-    int count = 0;
-    while (count != frames)
-    {
-        // Centre Box
-        imageCenter(renderer, teams[currTeam], NULL, gui_width / 2, gui_height / 2, centreBoxLength, centreBoxLength);
-
-        color(renderer, 0, 134);
-
-        // Left Box
-        imageCenter(renderer, teams[(totalTeams + currTeam - 1) % totalTeams], NULL, gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
-        rectCenter(renderer, gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength, 1, true);
-
-        // Right Box
-        imageCenter(renderer, teams[(totalTeams + currTeam + 1) % totalTeams], NULL, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength);
-        rectCenter(renderer, 3 * gui_width / 4, gui_height / 2, sideBoxLength, sideBoxLength, 1, true);
-
-        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    }
 }

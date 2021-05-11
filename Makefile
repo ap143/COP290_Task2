@@ -18,11 +18,11 @@ $(OUTPUT_DIR)/main.o: $(SRC_DIR)/main.cpp
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
 # src -> cpp
-$(OUTPUT_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OUTPUT_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/%.hpp
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
 # src/utils -> cpp
-$(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp
+$(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp $(SRC_DIR)/$(UTILS_DIR)/%.hpp
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
 clean:
