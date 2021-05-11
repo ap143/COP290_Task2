@@ -30,6 +30,9 @@ private:
     void event_teamselect(SDL_Event event, int &state);
     void event_randomplace(SDL_Event event, int &state);
 
+    // For animation
+    void team_select_update();
+
     void setInfo();
     static int initialConnection(void* a);
     void reel(bool direction);
@@ -90,14 +93,15 @@ private:
     int max_health = 0;
     int max_speed = 0;
 
-
-
     bool movedLeft;
     bool movedRight;
-    bool animate = false;
+    
+    float animate_extent = 0;
+    int animate_direction = 0;
+    float max_extent = 20;
 
     std::string num_players[4] = {"x1", "x4", "x2", "x1"};
-    std::string players[10][4] = {{"Team Thor", "Groot", "Loki", "Hulk"},  {"Team Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Team Captain America", "Antman", "Hawkeye", "Falcon"}, {"Team Thanos", "Hydra", "Red Skull", "Ultron"}, {"Team Doctor Strange", "Pietro", "Natasha", "Wanda"}, {"Team Captain MArvel", "Skrulls", "Nick Fury", "Monica"}, {"Team Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Team Jean", "Cyclops", "Storm", "Logan"}, {"Team Gamora", "Drax", "Rocket", "Star Lord"}, {"Team Magneto", "Iceman", "Deadpool", "Mystique"}};
+    std::string players[10][4] = {{"Thor Odinson", "Groot", "Loki", "Hulk"},  {"Iron Man", "Agents of Sheild", "Vision", "Spiderman"}, {"Captain America", "Antman", "Hawkeye", "Falcon"}, {"Thanos", "Hydra", "Red Skull", "Ultron"}, {"Doctor Strange", "Quicksilver", "Natasha", "Wanda"}, {"Captain Marvel", "Skrulls", "Nick Fury", "Monica"}, {"Black Panther", "Dora Milaje", "War machine", "White Wolf"}, {"Jean Grey", "Cyclops", "Storm", "Logan"}, {"Gamora", "Drax", "Rocket", "Star Lord"}, {"Magneto", "Iceman", "Deadpool", "Mystique"}};
 
     // Runner thread function
     static int runGame(void* a);

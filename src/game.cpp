@@ -40,6 +40,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
     }
 
     SDL_StartTextInput();
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     gui = new Gui(window, renderer);
     loadAllTextures();
