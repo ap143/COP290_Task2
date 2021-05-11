@@ -26,7 +26,7 @@ public:
     void show(SDL_Renderer *renderer, SDL_Window *window);
 
     std::vector<int> maze_health;
-    const int wall_health = 1500;
+    const int wall_health = 5;
 
 private:
     void dfs(std::vector<std::vector<bool>> &cells, int i, int j);
