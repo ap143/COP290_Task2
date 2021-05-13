@@ -43,7 +43,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     gui = new Gui(window, renderer);
+
+    play_again_box = {.x = (float)gui_width / 2 - (float) gui_width / 8, .y = (float)gui_height * 4 / 5 - (float) gui_height / 24, .w =(float) gui_width / 4, .h =(float) gui_height / 12};
+
     loadAllTextures();
+
 
     isRunning = true;
 }
@@ -80,7 +84,18 @@ void Game::handleEvents()
     }
     else if (state == 99)
     {
-        // Game over
+        if (event.type != SDL_MOUSEBUTTONUP)
+        {
+            return;
+        }
+        float x = event.button.x;
+        float y = event.button.y;
+        
+        if (inRect(x, y, play_again_box.x , play_again_box.y, play_again_box.w, play_again_box.h))
+        {
+            play_again = true;
+            sendMessage(PLAY_AGAIN + std::string("1"));
+        }
     }
 
 }
@@ -135,9 +150,12 @@ void Game::update()
         myTeam->update();
         opponentTeam->update();
     }
-    else if (state == 9)
+    else if (state == 99)
     {
-        // Game over
+        if (play_again && play_again_request)
+        {
+            restartGame();
+        }
     }
 }
 
@@ -170,7 +188,7 @@ void Game::render()
     }
     else if (state == 99)
     {
-        // Game over
+        drawPlayAgain();
     }
 
     SDL_RenderPresent(renderer);
@@ -219,6 +237,29 @@ void Game::clean()
     std::cout << "Game cleaned!" << std::endl;
 }
 
+void Game::restartGame()
+{
+    delete myTeam;
+    delete opponentTeam;
+    delete game_maze;
+
+    play_again_request = false;
+    play_again = false;
+
+    game_over = false;
+
+    teamNum = -1;
+    opponentTeamNum = -2;
+
+    game_maze = new Maze(13, gui_width, gui_height);
+
+    loadAllTextures();
+
+    state = 2;
+
+    std::cout << "Game Restart!" << std::endl;
+}
+   
 void Game::loadAllTextures()
 {
     game_maze->wall = loadTexture("assets/images/wall.png", renderer);
@@ -226,6 +267,19 @@ void Game::loadAllTextures()
 
     game_maze->grass = loadTexture("assets/images/grass.jpg", renderer);
     if (game_maze->grass == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+    win = loadTexture("assets/images/Winner.png", renderer);
+    if (win == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+    lose = loadTexture("assets/images/Loser.png", renderer);
+    if (lose == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+    button = loadTexture("assets/images/tile.jpg", renderer);
+    if (button == NULL) {std::cout << "Failed loading texture" << std::endl;}
+
+    play_again_text = text(renderer, "Play Again", play_again_box.h / 5);
+    waiting_text = text(renderer, "Waiting for Other Player...", 40 * scale);
+    play_again_request_text = text(renderer, "Other Player want to Play Again...", 40 * scale);
 }
 
 void Game::drawMazeLoad()
@@ -251,6 +305,40 @@ void Game::drawMazeLoad()
         }
     }
 
+}
+
+void Game::drawPlayAgain()
+{
+    if (!play_again && !play_again_request)
+    {
+        backgroundImage(renderer, game_maze->grass);
+        if (!myTeam->characters[0][0]->dead)
+        {
+            imageCenter(renderer, win, NULL, gui_width / 2, gui_height / 2, gui_width / 3, gui_height / 7);
+        }
+        else
+        {
+            imageCenter(renderer, lose, NULL, gui_width / 2, gui_height / 2, gui_width / 3, gui_height / 7);
+        }
+
+        color(renderer, 0, 255, 0, 255);
+        imageCenter(renderer, button, NULL, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2, play_again_box.w, play_again_box.h, 1, SDL_FLIP_NONE);
+        imageCenter(renderer, play_again_text, NULL, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2, play_again_box.x / 2, play_again_box.h, 0.9, SDL_FLIP_NONE);
+    }
+    else if (play_again)
+    {
+        backgroundImage(renderer, game_maze->grass);
+        imageCenter(renderer, waiting_text, gui_width / 2, gui_height / 2);
+    }
+    else if (play_again_request)
+    {
+        backgroundImage(renderer, game_maze->grass);
+        imageCenter(renderer, play_again_request_text, gui_width / 2, gui_height / 2); 
+
+        color(renderer, 0, 255, 0, 255);
+        imageCenter(renderer, button, NULL, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2, play_again_box.w, play_again_box.h, 1, SDL_FLIP_NONE);
+        imageCenter(renderer, play_again_text, NULL, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2, play_again_box.x / 2, play_again_box.h, 0.9, SDL_FLIP_NONE);  
+    }
 }
 
 void sendMessage(std::string message)
@@ -335,6 +423,17 @@ void respond(std::string response)
 
         game->opponentTeam->characters[lvl][cnt]->turn((dirr + 2) % 4);
         game->myTeam->attackWall(i, j, dir, pow);
+    }
+    else if (code == PLAY_AGAIN)
+    {
+        if (std::stoi(data) == 1)
+        {
+            game->play_again_request = true;
+            if (game->play_again && game->play_again_request)
+            {
+                game->restart = true;
+            }
+        }
     }
     else if (code == END_GAME)
     {
