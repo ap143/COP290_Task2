@@ -366,28 +366,31 @@ void Gui::show_teamselect()
     }
 
     // Team Details
+    
+    float ox = gui_width / 2;
+    float oy = gui_height / 2 + 0.7 * centreBoxLength;
 
     color(renderer, 255, 255, 255, 255);
-    imageCenter(renderer, power, gui_width / 2 + bar_length / 2, gui_height / 2 + 0.7 * centreBoxLength + text_size / 2);
-    imageCenter(renderer, health, gui_width / 2 + bar_length + bar_length / 2 + bar_length / (10 * 2), gui_height / 2 + 0.7 * centreBoxLength + text_size / 2);
-    imageCenter(renderer, speed, gui_width / 2 + 2 * bar_length +  bar_length / 2 + 2 * bar_length / (10 * 2) , gui_height / 2 + 0.7 * centreBoxLength + text_size / 2);
+    image(renderer, power, ox, oy, 0, SDL_FLIP_NONE);
+    image(renderer, health, ox + bar_length + bar_length / 10, oy, 0, SDL_FLIP_NONE);
+    image(renderer, speed, ox + 2 * bar_length + 2 * bar_length / 10, oy, 0, SDL_FLIP_NONE);
 
     for (int i = 0; i < 4; i++)
     {
         color(renderer, 255, 255, 255, 255);
-        image(renderer, player_names[i], gui_width / 2 - 4 * bar_length, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, 0, SDL_FLIP_NONE);
+        image(renderer, player_names[i], ox - 4 * bar_length, oy + i * text_size + text_size, 0, SDL_FLIP_NONE);
 
-        image(renderer, player_counts[i], gui_width / 2 - bar_length / 2 , gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, 0, SDL_FLIP_NONE);
+        image(renderer, player_counts[i], ox - bar_length / 2 , oy + i * text_size + text_size, 0, SDL_FLIP_NONE);
 
         color(renderer, 255, 0, 0, 255);
-        rect(renderer, gui_width / 2 +  0 * bar_length / 10, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].power / max_power, bar_width , true);
+        rect(renderer, ox +  0 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].power / max_power, bar_width , true);
 
         color(renderer, 0, 255, 0, 255);
-        rect(renderer, gui_width / 2 + bar_length + 1 * bar_length / 10, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].health / max_health, bar_width , true);
+        rect(renderer, ox + bar_length + 1 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].health / max_health, bar_width , true);
         
 
         color(renderer, 0, 0, 255, 255);
-        rect(renderer, gui_width / 2  +  2 * bar_length  + 2 * bar_length / 10, gui_height / 2 + 0.7 * centreBoxLength + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width , true);
+        rect(renderer, ox  +  2 * bar_length  + 2 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width , true);
 
     }
     color(renderer, 255);

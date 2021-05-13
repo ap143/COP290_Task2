@@ -17,6 +17,7 @@
 #define TURN "07"
 #define BREAK_WALL "08"
 #define END_GAME "09"
+#define PLAY_AGAIN "10"
 #define RECIEVED "99"
 
 extern std::string user_name;

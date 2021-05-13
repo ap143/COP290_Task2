@@ -16,6 +16,11 @@ public:
     bool opponentReady = false;
     bool isRunning;
 
+    bool play_again = false;
+    bool play_again_request = false;
+
+    bool restart = false;
+
     static std::map<int, properties> charProp;
 
     std::queue<std::string> waitQueue;
@@ -53,7 +58,18 @@ private:
 
     Gui *gui;
 
+    SDL_Texture* win;
+    SDL_Texture* lose;
+    SDL_Texture* play_again_text;
+    SDL_FRect play_again_box; 
+    SDL_Texture* waiting_text;
+    SDL_Texture* play_again_request_text;
+    SDL_Texture* button;
+
     void drawMazeLoad();
+    void drawPlayAgain();
+    void restartGame();
+
     const float font_size = 24 * scale;
     const float loading_width = gui_width * 2 / 3;
     const float loading_height = loading_width / 20;
