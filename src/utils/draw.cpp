@@ -73,6 +73,16 @@ SDL_Texture *text(SDL_Renderer *renderer, std::string text_to_display, float siz
     SDL_Color fontColor = {.r = _r, .g = _g, .b = _b, .a = _a};
     SDL_Surface *textSurface = TTF_RenderText_Blended(font, text_to_display.c_str(), fontColor);
     SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, textSurface);
+    TTF_CloseFont(font);
+    SDL_FreeSurface(textSurface);
+    return text;
+}
+
+SDL_Texture *text(SDL_Renderer *renderer, std::string text_to_display, TTF_Font *font)
+{
+    SDL_Color fontColor = {.r = _r, .g = _g, .b = _b, .a = _a};
+    SDL_Surface *textSurface = TTF_RenderText_Blended(font, text_to_display.c_str(), fontColor);
+    SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, textSurface);
     SDL_FreeSurface(textSurface);
     return text;
 }

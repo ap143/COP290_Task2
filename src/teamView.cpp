@@ -167,6 +167,11 @@ void Teamview::show()
 void Teamview::handleEvent(SDL_Event event)
 {
 
+    if (game_over)
+    {
+        return;
+    }
+
     if (event.type == SDL_KEYDOWN && opponentKingDeployed && kingDeployed)
     {
         // Move king
@@ -312,6 +317,11 @@ void Teamview::handleEvent(SDL_Event event)
 
 void Teamview::update()
 {
+    if (game_over)
+    {
+        return;
+    }
+
     for (std::vector<Character *> v : characters)
     {
         int j = -1;
@@ -498,9 +508,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     }
     else
     {
-        // std::cout<<ci<<" "<<cj<<" "<<ti<<" "<<tj<<std::endl;
-        // std::cerr << "Error in dijkstra" << std::endl;
-        // exit(-1);
+        
     }
 
     if (dir != -1)
@@ -540,6 +548,23 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
 
 void Teamview::attackWall(int i, int j, int dir, int power)
 {
+    if (i == 0 && dir == 0)
+    {
+        return;
+    }
+    else if (i == game_maze->n - 1 && dir == 2)
+    {
+        return;
+    }
+    else if (j == 0 && dir == 3)
+    {
+        return;
+    }
+    else if (j == game_maze->n - 1 && dir == 1)
+    {
+        return;
+    }
+
     int index = i * game_maze->n + j * 4 + dir;
     game_maze->maze_health[index] -= power;
 
