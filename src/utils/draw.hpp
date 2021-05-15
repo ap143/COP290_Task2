@@ -18,7 +18,6 @@
 #define BREAK_WALL "08"
 #define END_GAME "09"
 #define PLAY_AGAIN "10"
-#define RECIEVED "99"
 
 extern std::string user_name;
 extern std::string opponent_name;
@@ -35,6 +34,9 @@ extern int opponentTeamNum;
 
 extern bool game_over;
 
+extern int myTeamScore;
+extern int opponentTeamScore;
+
 
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b);
@@ -49,6 +51,8 @@ void rect(SDL_Renderer *renderer, float x, float y, float width, float height, b
 void rectCenter(SDL_Renderer* renderer, float cx, float cy, float width, float height, float scale, bool filled);
 
 SDL_Texture* text(SDL_Renderer *renderer, std::string text_to_display, float size);
+
+SDL_Texture *text(SDL_Renderer *renderer, std::string text_to_display, TTF_Font *font);
 
 SDL_Texture* text(SDL_Renderer *renderer, std::string text_to_display);
 

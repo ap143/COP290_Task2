@@ -19,6 +19,9 @@ int opponentTeamNum = -2;
 
 bool game_over = false;
 
+int myTeamScore = 0;
+int opponentTeamScore = 0;
+
 int main(int argc, char* argv[])
 {
 
