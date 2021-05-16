@@ -12,8 +12,8 @@ public:
     int n = 20;
     bool ***maze;
 
-    SDL_Texture *wall;
-    SDL_Texture *grass;
+    SDL_Texture *wall = nullptr;
+    SDL_Texture *grass = nullptr;
 
     float ox;
     float oy;

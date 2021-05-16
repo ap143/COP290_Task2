@@ -9,18 +9,22 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
 
     live_text = "";
 
+    font1 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", live_text_font);
+    font2 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", 2 * live_text_font / 3);
+    font3 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", live_text_font / 2);
+
     // Solid Black texts
     color(renderer, 0);
-    live_text_texture = text(renderer, live_text, live_text_font);
-    host_button = text(renderer, "Host", live_text_font);
-    join_button = text(renderer, "Join", live_text_font);
-    pass_code_texture = text(renderer, "", live_text_font);
+    live_text_texture = text(renderer, live_text, font1);
+    host_button = text(renderer, "Host", font1);
+    join_button = text(renderer, "Join", font1);
+    pass_code_texture = text(renderer, "", font1);
 
     // Grey texts
     color(renderer, 150);
-    user_name_message = text(renderer, "Username...", live_text_font * 2 / 3);
-    waiting_texture = text(renderer, "Waiting...", live_text_font);
-    input_code = text(renderer, "Code...", live_text_font);
+    user_name_message = text(renderer, "Username...", font2);
+    waiting_texture = text(renderer, "Waiting...", font1);
+    input_code = text(renderer, "Code...", font1);
 
     // Button hover bools
     onButtonHost = onButtonJoin = false;
@@ -34,13 +38,13 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     color(renderer, 255);
     for (int i = 0; i < 4; i++)
     {
-        player_names.push_back(text(renderer, players[currTeam][i], 2 * text_size / 3));
-        player_counts.push_back(text(renderer, num_players[i], text_size / 2));
+        player_names.push_back(text(renderer, players[currTeam][i], font2));
+        player_counts.push_back(text(renderer, num_players[i], font3));
     }
 
-    power = text(renderer, "Power", text_size * 2 / 3);
-    health = text(renderer, "Health", text_size * 2 / 3);
-    speed = text(renderer, "Speed", text_size * 2 / 3);
+    power = text(renderer, "Power", font2);
+    health = text(renderer, "Health", font2);
+    speed = text(renderer, "Speed", font2);
 
     std::ifstream data("./assets/character_data.csv");
 
@@ -70,6 +74,9 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
 
 Gui::~Gui()
 {
+    TTF_CloseFont(font1);
+    TTF_CloseFont(font2);
+    TTF_CloseFont(font3);
     SDL_DestroyTexture(gui_bg);
     SDL_DestroyTexture(live_text_texture);
     SDL_DestroyTexture(host_button);
@@ -248,7 +255,7 @@ void Gui::team_select_update()
 
         for (int i = 0; i < 4; i++)
         {
-            player_names[i] = text(renderer, players[currTeam][i], 2 * text_size / 3);
+            player_names[i] = text(renderer, players[currTeam][i], font2);
         }
         animate_extent = animate_direction = 0;
     }
@@ -262,7 +269,7 @@ void Gui::team_select_update()
 
         for (int i = 0 ; i < 4; i++)
         {
-            player_names[i] = text(renderer, players[currTeam][i], 2 * text_size / 3);
+            player_names[i] = text(renderer, players[currTeam][i], font2);
         }
         animate_extent = animate_direction = 0;
     }
@@ -409,7 +416,7 @@ void Gui::event_username(SDL_Event event, int &state)
         {
             live_text = live_text.substr(0, live_text.length() - 1);
             SDL_DestroyTexture(live_text_texture);
-            live_text_texture = text(renderer, live_text, live_text_font);
+            live_text_texture = text(renderer, live_text, font1);
         }
         return;
     }
@@ -419,7 +426,7 @@ void Gui::event_username(SDL_Event event, int &state)
         {
             live_text += event.text.text;
             SDL_DestroyTexture(live_text_texture);
-            live_text_texture = text(renderer, live_text, live_text_font);
+            live_text_texture = text(renderer, live_text, font1);
         }
         return;
     }
@@ -476,7 +483,7 @@ void Gui::event_codecheck(SDL_Event event, int &state)
         {
             passCode = passCode.substr(0, passCode.length() - 1);
             SDL_DestroyTexture(pass_code_texture);
-            pass_code_texture = text(renderer, passCode, live_text_font);
+            pass_code_texture = text(renderer, passCode, font1);
         }
         return;
     }
@@ -486,7 +493,7 @@ void Gui::event_codecheck(SDL_Event event, int &state)
         {
             passCode += event.text.text;
             SDL_DestroyTexture(pass_code_texture);
-            pass_code_texture = text(renderer, passCode, live_text_font);
+            pass_code_texture = text(renderer, passCode, font1);
         }
         return;
     }
@@ -538,7 +545,7 @@ void Gui::setInfo()
     }
 
     color(renderer, 0);
-    pass_code_texture = text(renderer, passCode, live_text_font);
+    pass_code_texture = text(renderer, passCode, font1);
 
     connectionThread = SDL_CreateThread(initialConnection, "Connect", this);
 }

@@ -60,6 +60,8 @@ SDL_Texture *loadTexture(const char *texture, SDL_Renderer *ren);
 
 void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, float x, float y);
 
+void imageCenter(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect src, float x, float y);
+
 void imageCenter(SDL_Renderer *renderer, SDL_Texture* texture, SDL_Rect* src, float x, float y, float width, float height);
 
 void imageCenter(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *src, float x, float y, float width, float height, float angle, SDL_RendererFlip flip);
