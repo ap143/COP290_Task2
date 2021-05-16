@@ -30,6 +30,11 @@ private:
     void event_teamselect(SDL_Event event, int &state);
     void event_randomplace(SDL_Event event, int &state);
 
+    // fonts
+    TTF_Font *font1 = nullptr;
+    TTF_Font *font2 = nullptr;
+    TTF_Font *font3 = nullptr;
+
     // For animation
     void team_select_update();
 
@@ -47,10 +52,10 @@ private:
     const float textBoxHeight = textBoxWidth / maxUserNameLength;
     const float live_text_font = textBoxHeight;
 
-    SDL_Texture *live_text_texture;
-    SDL_Texture *host_button;
-    SDL_Texture *join_button;
-    SDL_Texture *user_name_message;
+    SDL_Texture *live_text_texture = nullptr;
+    SDL_Texture *host_button = nullptr;
+    SDL_Texture *join_button = nullptr;
+    SDL_Texture *user_name_message = nullptr;
 
     const float buttonWidth = (float) gui_width / 8;
     const float buttonHeight = buttonWidth / 2;
@@ -64,22 +69,22 @@ private:
 
     // Connection variables
 
-    SDL_Texture *pass_code_texture;
-    SDL_Texture *waiting_texture;
-    SDL_Texture *input_code;
+    SDL_Texture *pass_code_texture = nullptr;
+    SDL_Texture *waiting_texture = nullptr;
+    SDL_Texture *input_code = nullptr;
 
     bool connected;
 
     // Team Selection Variables
     int const totalTeams = 10;
 
-    std::vector<SDL_Texture*> teams;
-    std::vector<SDL_Texture*> player_names;
-    std::vector<SDL_Texture*> player_counts;
-    SDL_Texture* selected;
-    SDL_Texture* power;
-    SDL_Texture* health;
-    SDL_Texture* speed;
+    std::vector<SDL_Texture*> teams = {};
+    std::vector<SDL_Texture*> player_names = {};
+    std::vector<SDL_Texture*> player_counts = {};
+    SDL_Texture* selected = nullptr;
+    SDL_Texture* power = nullptr;
+    SDL_Texture* health = nullptr;
+    SDL_Texture* speed = nullptr;
 
     int currTeam = 0;
     const float centreBoxLength = 300 * scale_width;

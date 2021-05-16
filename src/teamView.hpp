@@ -85,7 +85,7 @@ private:
     float bar_fill;
 
     SDL_FRect tiles[4];
-    SDL_Texture* tile_tex;
+    SDL_Texture* tile_tex = nullptr;
 
     int max[4] = {6, 12, 8, 6};
     int color_comb[4][3] = {{0, 0, 255}, {255, 0, 0}, {255, 242, 0}, {149, 0, 255}};
