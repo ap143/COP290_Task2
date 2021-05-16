@@ -22,7 +22,6 @@ Maze::Maze(int size, int w, int h)
     cell_size = ((n-1) * ((float)h) / n) / n;
 
     grid_length = (n-1) * ((float)h) / n;
-    //rect(renderer,(w)/2- grid_length/2, (h)/2- grid_length/2, grid_length, grid_length, 0);
 
     ox = oy = (float)(h) / 2 - (float)grid_length / 2;
 

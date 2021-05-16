@@ -53,7 +53,7 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
 
     int pi, hi, si;
 
-    for(int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < n; j++)
         {
@@ -66,10 +66,9 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
         }
     }
 
-
     data.close();
 
-    selected = loadTexture ("./assets/images/selected.png", renderer);
+    selected = loadTexture("./assets/images/selected.png", renderer);
 }
 
 Gui::~Gui()
@@ -77,13 +76,20 @@ Gui::~Gui()
     TTF_CloseFont(font1);
     TTF_CloseFont(font2);
     TTF_CloseFont(font3);
+
     SDL_DestroyTexture(gui_bg);
+
     SDL_DestroyTexture(live_text_texture);
     SDL_DestroyTexture(host_button);
     SDL_DestroyTexture(join_button);
+    SDL_DestroyTexture(pass_code_texture);    
+    
     SDL_DestroyTexture(user_name_message);
-    SDL_DestroyTexture(pass_code_texture);
     SDL_DestroyTexture(waiting_texture);
+    SDL_DestroyTexture(input_code);
+
+    SDL_DestroyTexture(selected);
+
     SDL_DestroyTexture(power);
     SDL_DestroyTexture(health);
     SDL_DestroyTexture(speed);
@@ -102,7 +108,6 @@ Gui::~Gui()
     {
         SDL_DestroyTexture(tex);
     }
-
 
     if (serv != nullptr)
     {
@@ -267,7 +272,7 @@ void Gui::team_select_update()
         }
         currTeam = (totalTeams + currTeam + 1) % totalTeams;
 
-        for (int i = 0 ; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             player_names[i] = text(renderer, players[currTeam][i], font2);
         }
@@ -294,7 +299,7 @@ void Gui::show_teamselect()
         cx = 3 * gui_width / 4;
         len = sideBoxLength * scl;
         imageCenter(renderer, teams[(totalTeams + currTeam + 2) % totalTeams], NULL, cx, cy, len, len);
-        if ((totalTeams + currTeam + 2) % totalTeams == opponentTeamNum) 
+        if ((totalTeams + currTeam + 2) % totalTeams == opponentTeamNum)
         {
             imageCenter(renderer, selected, NULL, cx, cy, len, len);
         }
@@ -306,7 +311,7 @@ void Gui::show_teamselect()
         cx = gui_width / 4;
         len = sideBoxLength * scl;
         imageCenter(renderer, teams[(totalTeams + currTeam - 2) % totalTeams], NULL, cx, cy, len, len);
-        if ((totalTeams + currTeam - 2) % totalTeams == opponentTeamNum) 
+        if ((totalTeams + currTeam - 2) % totalTeams == opponentTeamNum)
         {
             imageCenter(renderer, selected, NULL, cx, cy, len, len);
         }
@@ -328,9 +333,9 @@ void Gui::show_teamselect()
     }
 
     imageCenter(renderer, teams[(totalTeams + currTeam - 1) % totalTeams], NULL, cx, cy, len, len);
-    if ((totalTeams + currTeam - 1) % totalTeams == opponentTeamNum) 
+    if ((totalTeams + currTeam - 1) % totalTeams == opponentTeamNum)
     {
-        imageCenter(renderer, selected, NULL,  cx, cy, len, len);
+        imageCenter(renderer, selected, NULL, cx, cy, len, len);
     }
     rectCenter(renderer, cx, cy, len, len, 1, true);
 
@@ -349,7 +354,7 @@ void Gui::show_teamselect()
     }
 
     imageCenter(renderer, teams[(totalTeams + currTeam + 1) % totalTeams], NULL, cx, cy, len, len);
-    if ((totalTeams + currTeam + 1) % totalTeams == opponentTeamNum) 
+    if ((totalTeams + currTeam + 1) % totalTeams == opponentTeamNum)
     {
         imageCenter(renderer, selected, NULL, cx, cy, len, len);
     }
@@ -360,7 +365,7 @@ void Gui::show_teamselect()
     len = centreBoxLength * (1 - scl / 2);
 
     imageCenter(renderer, teams[currTeam], NULL, cx, cy, len, len);
-    if (currTeam == opponentTeamNum) 
+    if (currTeam == opponentTeamNum)
     {
         color(renderer, 0, 150);
         rectCenter(renderer, cx, cy, len, len, 1, true);
@@ -373,7 +378,7 @@ void Gui::show_teamselect()
     }
 
     // Team Details
-    
+
     float ox = gui_width / 2;
     float oy = gui_height / 2 + 0.7 * centreBoxLength;
 
@@ -387,18 +392,16 @@ void Gui::show_teamselect()
         color(renderer, 255, 255, 255, 255);
         image(renderer, player_names[i], ox - 4 * bar_length, oy + i * text_size + text_size, 0, SDL_FLIP_NONE);
 
-        image(renderer, player_counts[i], ox - bar_length / 2 , oy + i * text_size + text_size, 0, SDL_FLIP_NONE);
+        image(renderer, player_counts[i], ox - bar_length / 2, oy + i * text_size + text_size, 0, SDL_FLIP_NONE);
 
         color(renderer, 255, 0, 0, 255);
-        rect(renderer, ox +  0 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].power / max_power, bar_width , true);
+        rect(renderer, ox + 0 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].power / max_power, bar_width, true);
 
         color(renderer, 0, 255, 0, 255);
-        rect(renderer, ox + bar_length + 1 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].health / max_health, bar_width , true);
-        
+        rect(renderer, ox + bar_length + 1 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].health / max_health, bar_width, true);
 
         color(renderer, 0, 0, 255, 255);
-        rect(renderer, ox  +  2 * bar_length  + 2 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width , true);
-
+        rect(renderer, ox + 2 * bar_length + 2 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width, true);
     }
     color(renderer, 255);
 }

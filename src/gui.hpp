@@ -38,9 +38,11 @@ private:
     // For animation
     void team_select_update();
 
+    // To set username and code
     void setInfo();
+
+    // Connection thread function
     static int initialConnection(void* a);
-    void reel(bool direction);
 
     // Username properties
     const Uint8 textBoxColor[4] = {255, 255, 255, 255};
@@ -79,9 +81,13 @@ private:
     int const totalTeams = 10;
 
     std::vector<SDL_Texture*> teams = {};
+    
     std::vector<SDL_Texture*> player_names = {};
+
     std::vector<SDL_Texture*> player_counts = {};
+
     SDL_Texture* selected = nullptr;
+
     SDL_Texture* power = nullptr;
     SDL_Texture* health = nullptr;
     SDL_Texture* speed = nullptr;
