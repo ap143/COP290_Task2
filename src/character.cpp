@@ -78,26 +78,34 @@ void Character::update()
         return;
     }
 
-    // Sprite update
-    if (vel[0] > 0)
+    if (sprite_change == max_speed + 1 - prop.speed)
     {
-        spriteRect = spriteDim[2][currSprite];
-        currSprite = (currSprite + 1)%3;
+        sprite_change = 0;
+        // Sprite update
+        if (vel[0] > 0)
+        {
+            spriteRect = spriteDim[2][currSprite];
+            currSprite = (currSprite + 1)%3;
+        }
+        else if (vel[0] < 0) 
+        {
+            spriteRect = spriteDim[1][currSprite];
+            currSprite = (currSprite + 1)%3;
+        }
+        else if (vel[1] > 0)
+        {
+            spriteRect = spriteDim[0][currSprite];
+            currSprite = (currSprite + 1)%3;
+        }
+        else if (vel[1] < 0)
+        {
+            spriteRect = spriteDim[3][currSprite];
+            currSprite = (currSprite + 1)%3;
+        }
     }
-    else if (vel[0] < 0) 
+    else
     {
-        spriteRect = spriteDim[1][currSprite];
-        currSprite = (currSprite + 1)%3;
-    }
-    else if (vel[1] > 0)
-    {
-        spriteRect = spriteDim[0][currSprite];
-        currSprite = (currSprite + 1)%3;
-    }
-    else if (vel[1] < 0)
-    {
-        spriteRect = spriteDim[3][currSprite];
-        currSprite = (currSprite + 1)%3;
+        sprite_change++;
     }
 
 

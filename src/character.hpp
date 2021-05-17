@@ -31,6 +31,11 @@ public:
     int level; // level 0/1/2/3
     bool isMyTeam; // 1 -> my team
     int health;
+    int sprite_change = 0;
+
+    int animationDirection = -1;
+
+    static const int max_speed = 10;
 
     properties prop;
 

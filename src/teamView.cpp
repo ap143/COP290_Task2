@@ -62,7 +62,6 @@ Teamview::~Teamview()
         }
     }
 
-    // SDL_DestroyTexture(tile_tex);
     for (SDL_Texture* s : count_text)
     {
         SDL_DestroyTexture(s);
