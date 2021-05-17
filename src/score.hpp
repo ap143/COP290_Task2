@@ -7,12 +7,14 @@ class Score
 {
 private:
 
-    TTF_Font *font = nullptr;
+    TTF_Font *font1 = nullptr;
+    TTF_Font *font2 = nullptr;
     int font_size = 30 * scale;
 
     SDL_Texture *timer = nullptr, *score = nullptr;
     SDL_Texture *timer_text = nullptr, *score_text = nullptr;
 
+    int king_deploy_time;
     int countdown;
     int mil_sec;
 
@@ -39,13 +41,12 @@ private:
     SDL_Texture* lose = nullptr;
 
     SDL_Texture* play_again_text = nullptr;
-
-    SDL_Texture* play_again_request_r = nullptr;
-    SDL_Texture* play_again_request_s = nullptr;
-
 public:
     // text changed
-    bool changed = false;
+    std::string message;
+
+    // Kings Deployed
+    bool kingDeployed = false;
 
     bool play_again = false;
     bool play_again_request = false;

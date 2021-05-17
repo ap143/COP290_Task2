@@ -2,11 +2,12 @@
 
 Score::Score(SDL_Renderer *renderer, Maze *maze)
 {
-    font = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", font_size);
-
+    font1 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", font_size);
+    font2 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", 2 * font_size / 3);
     this->renderer = renderer;
     this->game_maze = maze;
 
+    king_deploy_time = 10;
     countdown = 120; 
     mil_sec = 60;   
 
@@ -21,32 +22,56 @@ Score::Score(SDL_Renderer *renderer, Maze *maze)
     length_displayed = {.x = 0, .y = 0};
 
     color(renderer, 255, 255, 255, 255);
-    timer = text(renderer, std::to_string(countdown), font);
-    timer_text = text(renderer, "Time Left", font);
+    timer = text(renderer, std::to_string(king_deploy_time), font1);
+    timer_text = text(renderer, "Time Left", font1);
 
     color(renderer, 0, 255, 0, 255);
-    score = text(renderer, std::to_string(myTeamScore) + " - " + std::to_string(opponentTeamScore), font);
-    score_text = text(renderer, "Score", font);
+    score = text(renderer, std::to_string(myTeamScore) + " - " + std::to_string(opponentTeamScore), font1);
+    score_text = text(renderer, "Score", font1);
 
+    message = "Deploy King!";
     color(renderer, 255, 255, 255, 255);
-    text_to_display = text(renderer, "Deploy King!", font);
+    text_to_display = text(renderer, message, font1);
 
     color(renderer, 0, 0, 0, 255);
-    play_again_text = text(renderer, "Play Again", font);
+    play_again_text = text(renderer, "Play Again", font1);
 }
 
 Score::~Score()
 {
-    TTF_CloseFont(font);
-    SDL_DestroyTexture(score);
-    SDL_DestroyTexture(timer);
+    TTF_CloseFont(font1);
+    TTF_CloseFont(font2);
+
+    if(score != NULL)
+    {
+        SDL_DestroyTexture(score);
+    }
+    if(score_text != NULL)
+    {
+        SDL_DestroyTexture(score_text);
+    }
+    if(timer != NULL)
+    {
+        SDL_DestroyTexture(timer);
+    }
+    if(timer_text != NULL)
+    {
+        SDL_DestroyTexture(timer_text);
+    }
+    if(text_to_display != NULL)
+    {
+        SDL_DestroyTexture(text_to_display);
+    }
+    if(play_again_text != NULL)
+    {
+        SDL_DestroyTexture(play_again_text);
+    }
 }
 
 void Score::handleEvent(SDL_Event event)
 {
     if(game_over)
     {
-
         float x = event.button.x;
         float y = event.button.y;
 
@@ -56,7 +81,6 @@ void Score::handleEvent(SDL_Event event)
             if (inRect(x, y, play_again_box.x , play_again_box.y, play_again_box.w, play_again_box.h))
             {
                 play_again = true;
-                changed = true;
                 sendMessage(PLAY_AGAIN + std::string("1"));   
                 return;
             }
@@ -75,7 +99,37 @@ void Score::update()
     // countdown 
     if (!game_over)
     {
-        if (countdown != 0)
+        if (!kingDeployed)
+        {
+            if (king_deploy_time != 0)
+            {
+                mil_sec--;
+                if(mil_sec == 0)
+                {
+                    king_deploy_time--;
+                    if (timer != NULL)
+                    {
+                        SDL_DestroyTexture(timer);
+                    }
+                    color(renderer, 255, 0, 0, 0);
+                    timer = text(renderer, std::to_string(king_deploy_time), font1);
+
+                    mil_sec = 60;
+                }
+            }
+            else
+            {
+                color(renderer, 255, 0, 0, 255);
+                if (text_to_display != NULL)
+                {
+                    SDL_DestroyTexture(text_to_display);
+                }
+                message = "Game Over";
+                text_to_display = text(renderer, "Game Over", font1);
+                game_over = true;   
+            }
+        }
+        else if (countdown != 0)
         {
             mil_sec--;
             if (mil_sec == 0)
@@ -94,10 +148,20 @@ void Score::update()
                 {
                     color(renderer, 255, 255, 255, 255);
                 }
-                timer = text(renderer, std::to_string(countdown), font);
+                timer = text(renderer, std::to_string(countdown), font1);
 
                 mil_sec = 60;
-            } 
+            }
+            if (message != "Lets Begin!")
+            {
+                color(renderer, 255, 255, 255, 255);
+                if (text_to_display != NULL)
+                {
+                    SDL_DestroyTexture(text_to_display);
+                }
+                message = "Lets Begin!";
+                text_to_display = text(renderer, message, font1); 
+            }
         }
         else
         {
@@ -106,7 +170,9 @@ void Score::update()
             {
                 SDL_DestroyTexture(text_to_display);
             }
-            text_to_display = text(renderer, "Game Over", font);
+            message = "Game Over";
+            text_to_display = text(renderer, "Game Over", font1);
+            game_over = true;
         }
 
         // score
@@ -115,53 +181,62 @@ void Score::update()
             SDL_DestroyTexture(score);
         }
         color(renderer, 0, 255, 0, 255);
-        score = text(renderer, std::to_string(myTeamScore) + " - " + std::to_string(opponentTeamScore), font);
+        score = text(renderer, std::to_string(myTeamScore) + " - " + std::to_string(opponentTeamScore), font1);
     }
-    if (changed)
-    {   
-        if (play_again_request && play_again)
+
+    // Text Update
+       
+    if (play_again_request && play_again)
+    {
+        if (message != "Lets Play Again!")
         {
             color(renderer, 255, 255);
             if (text_to_display != NULL)
             {
                 SDL_DestroyTexture(text_to_display);
             }
-            text_to_display = text(renderer, "Lets Play Again!", font); 
+            message = "Lets Play Again!";
+            text_to_display = text(renderer, message, font1); 
         }
-        else if (play_again_request)
+    }
+    else if (play_again_request)
+    {
+        if (message != opponent_name + " Wants to Play Again..")
         {
             color(renderer, 255, 255);
             if (text_to_display != NULL)
             {
                 SDL_DestroyTexture(text_to_display);
             }
-            text_to_display = text(renderer, opponent_name + " Wants to Play Again..", font);   
-        } 
-        else if (play_again)
+            message = opponent_name + " Wants to Play Again..";
+            text_to_display = text(renderer, message, font2); 
+        }  
+    } 
+    else if (play_again)
+    {
+        if (message != "Waiting for " + opponent_name)
         {
             color(renderer, 255, 255);
             if (text_to_display != NULL)
             {
                 SDL_DestroyTexture(text_to_display);
             }
-            text_to_display = text(renderer, "Waiting for " + opponent_name, font);       
-        } 
-        else
+            message = "Waiting for " + opponent_name;
+            text_to_display = text(renderer, message, font2); 
+        }      
+    } 
+    else if (game_over)
+    {
+        if (message != "Game Over")
         {
             color(renderer, 255, 0, 0, 255);
             if (text_to_display != NULL)
             {
                 SDL_DestroyTexture(text_to_display);
             }
-            text_to_display = text(renderer, "Game Over", font);   
+            message = "Game Over";
+            text_to_display = text(renderer, message, font1);   
         }
-
-        changed = false;
-    }
-    if (text_to_display != NULL)
-    {
-        SDL_QueryTexture(text_to_display, NULL, NULL, &width, &height);  
-        length_displayed.x = (width + length_displayed.x + change) % width;
     }
 
 }
@@ -195,7 +270,7 @@ void Score::show()
 
     color(renderer, 0, 255);
     rectCenter(renderer, text_box.x + text_box.w / 2, text_box.y + text_box.h / 2, text_box.w * (float)0.9, text_box.h, 1, true);
-    image(renderer, text_to_display, length_displayed.x, length_displayed.y , std::min(text_box.w, (float)width - length_displayed.x), float(height), text_box.x + text_box.w * float(0.1), text_box.y + text_box.h / 4,  std::min(text_box.w, (float)width - length_displayed.x), (float)height, 0, SDL_FLIP_NONE);
+    imageCenter(renderer, text_to_display, text_box.x + text_box.w / 2, text_box.y + text_box.h / 2);
 
     if (game_over)
     {
