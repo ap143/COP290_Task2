@@ -16,6 +16,7 @@ Maze::Maze(int size, int w, int h)
             }
         }
     }
+    max_health = wall_health * 300;
 
     h = std::min(w, h);
 
@@ -35,6 +36,28 @@ Maze::Maze(int size, int w, int h)
                 maze[i][j][k] = 0;
             }
         }
+    }
+}
+
+Maze::~Maze()
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            delete maze[i][j];
+            
+        }
+        delete maze[i];
+    }  
+
+    if (grass != NULL)
+    {
+        SDL_DestroyTexture(grass);
+    } 
+    if (wall != NULL)
+    {
+        SDL_DestroyTexture(wall);
     }
 }
 
@@ -107,6 +130,8 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
 
     float ww = cell_size;
     float wh = 2 * cell_size / 5;
+    float bar_length = cell_size * 2 / 3;
+    int index = 0;
 
     for (int i = 0; i < n; i++)
     {
@@ -114,6 +139,7 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
         {
             for (int k = 0; k < 2; k++)
             {
+
                 if (maze[i][j][k])
                 {
                     continue;
@@ -129,13 +155,12 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                         ww, wh, 270, SDL_FLIP_NONE);
                 }
             }
-
             if (j == 0)
             {
                 if (!maze[i][j][3])
                 {
                     imageCenter(renderer, wall, NULL, ox + cell_size * j , oy + cell_size * i + cell_size / 2, 
-                        ww, wh, 270, SDL_FLIP_NONE);   
+                        ww, wh, 270, SDL_FLIP_NONE);  
                 }
             }
 
@@ -145,6 +170,38 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                 {
                     imageCenter(renderer, wall, NULL, ox + cell_size * j + cell_size / 2, oy + cell_size * (i + 1), 
                         ww, wh, 0, SDL_FLIP_NONE);
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            for (int k = 0; k < 2; k++)
+            {
+                index = i * n * 4 + j * 4 + k;
+
+                if (maze[i][j][k])
+                {
+                    continue;
+                }
+                if (k == 0)
+                {
+                    if (maze_health[index] < max_health)
+                    {
+                        color(renderer, 255 * (1 - maze_health[index] / max_health), 255 * maze_health[index] / max_health, 0);
+                        rect(renderer, ox + cell_size * j + cell_size * 3 / 4, oy + cell_size * i, bar_length * maze_health[index] / max_health, wh / 6, true);
+                    }
+                }
+                else if (k == 1)
+                {
+                    if (maze_health[index] < max_health)
+                    {
+                        color(renderer, 255 * (1 - maze_health[index] / max_health), 255 * maze_health[index] / max_health, 0);
+                        rect(renderer, ox + cell_size * (j + 1), oy + cell_size * i, bar_length * maze_health[index] / max_health, wh / 6, true);
+                    }
                 }
             }
         }
