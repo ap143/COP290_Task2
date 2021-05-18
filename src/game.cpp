@@ -62,9 +62,22 @@ void Game::handleEvents()
 
     if (event.type == SDL_QUIT)
     {
-        sendMessage(END_GAME + std::string("0"));
+        if (state >= 2)
+        {
+            sendMessage(END_GAME + std::string("0"));
+        }
         isRunning = false;
         state = -1;
+
+        if (gui->isHost && serv != nullptr)
+        {
+            serv->end();
+        }
+        else if (!gui->isHost && client != nullptr)
+        {
+            client->end();
+        }
+
         return;
     }
 
@@ -82,6 +95,7 @@ void Game::handleEvents()
 
 void Game::update()
 {
+
     if (state == 4)
     {
         if (gui->isHost)
@@ -188,7 +202,17 @@ void Game::render()
         opponentTeam->show();
         myScore->show();
     }
+    else if (state == 99)
+    {
+        drawExitState();
+    }
+
     SDL_RenderPresent(renderer);
+}
+
+void Game::playSound()
+{
+    
 }
 
 void Game::sendData()
@@ -284,7 +308,13 @@ void Game::drawMazeLoad()
             rectCenter(renderer, gui_width / 2 - loading_width / 2 + loading_height / 2 + i * loading_height, gui_height / 2 + loading_height, loading_height, loading_height, 0.9, false);
         }
     }
+}
 
+void Game::drawExitState()
+{
+    static SDL_Texture *txt = text(renderer, opponent_name + " doesn't wants to play... *LUDO Vibes* ;-)");
+
+    imageCenter(renderer, txt, gui_width / 2, gui_height / 2);
 }
 
 void Game::deployKing()
@@ -308,6 +338,10 @@ void Game::deployKing()
 
 void sendMessage(std::string message)
 {
+    if (!recieving_messages)
+    {
+        return;
+    }
     game->waitQueue.push(message);
 }
 
@@ -404,7 +438,9 @@ void respond(std::string response)
     }
     else if (code == END_GAME)
     {
-        game->isRunning = false;
+        game_over = true;
+        recieving_messages = false;
+        game->state = 99;
     }
     else
     {

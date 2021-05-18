@@ -46,6 +46,7 @@ public:
     void render();
     void clean();
     void sendData();
+    void playSound();
 
     bool running() { return isRunning; };
 
@@ -61,6 +62,7 @@ private:
     void drawMazeLoad();
     void deployKing();
     void restartGame();
+    void drawExitState();
 
     float font_size = 24 * scale;
     float loading_width = gui_width * 2 / 3;

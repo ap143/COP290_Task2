@@ -33,6 +33,7 @@ extern int teamNum;
 extern int opponentTeamNum;
 
 extern bool game_over;
+extern bool recieving_messages;
 
 extern int myTeamScore;
 extern int opponentTeamScore;

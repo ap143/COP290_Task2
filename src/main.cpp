@@ -18,6 +18,7 @@ int teamNum = -1;
 int opponentTeamNum = -2;
 
 bool game_over = false;
+bool recieving_messages = true;
 
 int myTeamScore = 0;
 int opponentTeamScore = 0;
@@ -65,6 +66,7 @@ int main(int argc, char* argv[])
         game->update();
         game->render();
         game->sendData();
+        game->playSound();
 
         frameTime = SDL_GetTicks() - frameStart;
 
