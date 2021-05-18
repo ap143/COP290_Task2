@@ -16,6 +16,7 @@ Maze::Maze(int size, int w, int h)
             }
         }
     }
+
     max_health = wall_health * 300;
 
     h = std::min(w, h);
@@ -187,20 +188,34 @@ void Maze::show(SDL_Renderer *renderer, SDL_Window *window)
                 {
                     continue;
                 }
+
+                int red, green;
+
+                if ((float) maze_health[index] / max_health >= 0.5)
+                {
+                    green = 255;
+                    red = std::min(255, (int) (255 * (1 - (float) maze_health[index] / max_health) * 2));
+                }
+                else
+                {
+                    red = 255;
+                    green = std::min(255, (int) (255 * ((float) maze_health[index] / max_health) * 2));
+                }
+
+                color(renderer, red, green, 0);
+
                 if (k == 0)
                 {
                     if (maze_health[index] < max_health)
                     {
-                        color(renderer, 255 * (1 - maze_health[index] / max_health), 255 * maze_health[index] / max_health, 0);
-                        rect(renderer, ox + cell_size * j + cell_size * 3 / 4, oy + cell_size * i, bar_length * maze_health[index] / max_health, wh / 6, true);
+                        rect(renderer, ox + cell_size * j + cell_size * 3 / 4, oy + cell_size * i, bar_length * maze_health[index] / max_health, wh / 8, true);
                     }
                 }
                 else if (k == 1)
                 {
                     if (maze_health[index] < max_health)
                     {
-                        color(renderer, 255 * (1 - maze_health[index] / max_health), 255 * maze_health[index] / max_health, 0);
-                        rect(renderer, ox + cell_size * (j + 1), oy + cell_size * i, bar_length * maze_health[index] / max_health, wh / 6, true);
+                        rect(renderer, ox + cell_size * (j + 1), oy + cell_size * i, bar_length * maze_health[index] / max_health, wh / 8, true);
                     }
                 }
             }

@@ -51,18 +51,15 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     data >> Character::total_teams;
     int n = Character::total_teams;
 
-    int pi, hi, si;
+    int pi, hi, si, hli;
 
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            data >> pi >> hi >> si;
-            max_power = std::max(max_power, pi);
-            max_health = std::max(max_health, hi);
-            max_speed = std::max(max_speed, si);
+            data >> pi >> hi >> si >> hli;
 
-            Character::character_data.push_back(properties(pi, hi, si));
+            Character::character_data.push_back(properties(pi, hi, si, hli));
         }
     }
 
@@ -350,6 +347,7 @@ void Gui::show_teamselect()
     imageCenter(renderer, teams[(totalTeams + currTeam - 1) % totalTeams], NULL, cx, cy, len, len);
     if ((totalTeams + currTeam - 1) % totalTeams == opponentTeamNum)
     {
+        color(renderer, 0, 150);
         imageCenter(renderer, selected, NULL, cx, cy, len, len);
     }
     rectCenter(renderer, cx, cy, len, len, 1, true);
@@ -371,6 +369,7 @@ void Gui::show_teamselect()
     imageCenter(renderer, teams[(totalTeams + currTeam + 1) % totalTeams], NULL, cx, cy, len, len);
     if ((totalTeams + currTeam + 1) % totalTeams == opponentTeamNum)
     {
+        color(renderer, 0, 150);
         imageCenter(renderer, selected, NULL, cx, cy, len, len);
     }
     rectCenter(renderer, cx, cy, len, len, 1, true);
@@ -382,9 +381,9 @@ void Gui::show_teamselect()
     imageCenter(renderer, teams[currTeam], NULL, cx, cy, len, len);
     if (currTeam == opponentTeamNum)
     {
+        imageCenter(renderer, selected, NULL, cx, cy, len, len);
         color(renderer, 0, 150);
         rectCenter(renderer, cx, cy, len, len, 1, true);
-        imageCenter(renderer, selected, NULL, cx, cy, len, len);
     }
     else
     {

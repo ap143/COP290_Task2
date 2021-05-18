@@ -54,32 +54,47 @@ void Character::show()
         return;
     }
 
-    // Sprite 
-    imageCenter(renderer, spriteSheet, &spriteRect, posRect.x, posRect.y, posRect.w, posRect.h);
-
     if (attackDir == 0)
     {
-        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y - game_maze->cell_size / 3, posRect.w / 2, posRect.w / 2);
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y - game_maze->cell_size / 3, attackW, attackH);
     }
     else if (attackDir == 1)
     {
-        imageCenter(renderer, attackSheet, &blastRect, posRect.x + game_maze->cell_size / 3, posRect.y, posRect.w / 2, posRect.w / 2);
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x + game_maze->cell_size / 3, posRect.y, attackW, attackH);
     }
     else if (attackDir == 2)
     {
-        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y + game_maze->cell_size / 3, posRect.w / 2, posRect.w / 2);   
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y + game_maze->cell_size / 3, attackW, attackH);   
     }
     else if (attackDir == 3)
     {
-        imageCenter(renderer, attackSheet, &blastRect, posRect.x - game_maze->cell_size / 3, posRect.y, posRect.w / 2, posRect.w / 2);   
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x - game_maze->cell_size / 3, posRect.y, attackW, attackH);   
     }
     else if (attackDir == 4)
     {
-        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y, posRect.w / 2, posRect.w / 2);
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y, attackW, attackH);
     }
 
-    color(renderer, 255 * (1 - health / prop.health), 255 * health / prop.health, 0);
-    rect(renderer, posRect.x + posRect.w / 2, posRect.y - posRect.h / 2, (float) posRect.w * health / prop.health, (float) posRect.h / 16, true);
+    attackDir = -1;
+
+    // Sprite 
+    imageCenter(renderer, spriteSheet, &spriteRect, posRect.x, posRect.y, posRect.w, posRect.h);
+
+    int red, green;
+
+    if (health / prop.health >= 0.5)
+    {
+        green = 255;
+        red = std::min(255, (int) (255 * (1 - health / prop.health) * 2));
+    }
+    else
+    {
+        red = 255;
+        green = std::min(255, (int) (255 * (health / prop.health) * 2));
+    }
+
+    color(renderer, red, green, 0);
+    rect(renderer, posRect.x + posRect.w / 2, posRect.y - posRect.h / 2, posRect.w * health / prop.health, posRect.h / 16, true);
 }
 
 void Character::deploy(int i, int j)
@@ -99,6 +114,9 @@ void Character::deploy(int i, int j)
             .y = game_maze->oy + currPos[0] * game_maze->cell_size + game_maze->cell_size / 2,
                .w = game_maze->cell_size * (float) 0.8,
                .h = game_maze->cell_size * (float) 0.8 };
+    
+    attackW = posRect.w / 1.2;
+    attackH = posRect.h / 1.2;
 }
 
 void Character::update()
@@ -141,8 +159,11 @@ void Character::update()
     if(attackDir != -1)
     {
         blastRect.x = currBlast * blastRect.w;
-        currBlast = (currBlast + 1)%6;
+        currBlast = (currBlast + 1) % 6;
     }
+
+    // Healing
+    health = std::min(prop.health, health + prop.heal);
 
     //Pos Update
     dx += vel[0] * velConst * prop.speed;

@@ -8,18 +8,20 @@
 struct properties
 {
     int power;
-    int health;
+    float health;
     int speed;
+    float heal;
 
     properties()
     {
     }
 
-    properties(int p, int h, int s)
+    properties(int p, float h, int s, float hl)
     {
         power = p;
         health = h;
         speed = s;
+        heal = hl * health / 10000;
     }
 };
 
@@ -85,6 +87,8 @@ private:
 
     int currBlast = 0;
     int w, h;
+
+    float attackW, attackH;
 
     bool changed = false;
 

@@ -38,31 +38,31 @@ Teamview::Teamview(SDL_Renderer *rend, Maze *maze, int teamN, bool self)
     src = {.x = 48, .y = 0, .w = 48, .h = 49};
 
     tile_height = block_width / 2 - block_width / 8;
-    bar_height = block_height/ 4;
+    bar_height = block_height / 4;
     bar_width = (block_width - tile_height) * 0.9;
     bar_fill = 0;
 
     for (int i = 0; i < 4; i++)
     {
         tiles[i] = {.x = block_ox, .y = block_oy + (i / 2) * (5 * tile_height / 4), .w = tile_height, .h = tile_height};
-        tiles[i+1] = {.x = block_ox + tile_height * 5 / 4, .y = block_oy + (i / 2) * (5 * tile_height / 4), .w = tile_height, .h = tile_height};
+        tiles[i + 1] = {.x = block_ox + tile_height * 5 / 4, .y = block_oy + (i / 2) * (5 * tile_height / 4), .w = tile_height, .h = tile_height};
         count_text[i] = text(renderer, "x" + std::to_string(count[i]), count_text_size);
-        count_text[i+1] = text(renderer, "x" + std::to_string(count[i+1]), count_text_size);
+        count_text[i + 1] = text(renderer, "x" + std::to_string(count[i + 1]), count_text_size);
         i++;
     }
 }
 
 Teamview::~Teamview()
 {
-    for (std::vector<Character*> v : characters)
+    for (std::vector<Character *> v : characters)
     {
-        for (Character* c : v)
+        for (Character *c : v)
         {
             delete c;
         }
     }
 
-    for (SDL_Texture* s : count_text)
+    for (SDL_Texture *s : count_text)
     {
         if (s != NULL)
         {
@@ -141,19 +141,19 @@ void Teamview::show()
             color(renderer, 0, 255);
             rectCenter(renderer, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 0.95, true);
 
-
             // Sprite
             imageCenter(renderer, characters[i][0]->spriteSheet, &src, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 0.9);
-            if (!kingDeployed && !opponentKingDeployed && !game_over && i >= 1)
+
+            if ((!kingDeployed || !opponentKingDeployed) && !game_over && i >= 1)
             {
                 color(renderer, 0, 0, 0, 160);
                 rectCenter(renderer, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 1.05, true);
             }
+
             // Text
             color(renderer, 255, 255, 255, 255);
             rectCenter(renderer, tiles[i].x, tiles[i].y, 20, 20, 1, true);
             imageCenter(renderer, count_text[i], NULL, tiles[i].x, tiles[i].y, (float)20, (float)20);
-
 
             if (count[i] == 0)
             {
@@ -188,7 +188,7 @@ void Teamview::handleEvent(SDL_Event event)
     {
         // Move king
         Character *king = characters[0][0];
-        
+
         king->attackDir = -1;
 
         if (!king->ready)
@@ -305,8 +305,8 @@ void Teamview::handleEvent(SDL_Event event)
 
         characters[activeLevel][count[activeLevel] - 1]->deploy(i, j);
         count[activeLevel]--;
-        
-        if(count_text[activeLevel] != NULL)
+
+        if (count_text[activeLevel] != NULL)
         {
             SDL_DestroyTexture(count_text[activeLevel]);
         }
@@ -502,7 +502,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     {
         sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
-                    std::to_string(level) + std::to_string(cnt) + std::to_string(4));
+                    std::to_string(level) + std::to_string(cnt) + std::to_string(4) + "4");
         c->attackDir = 4;
         target->e->attack(c->prop.power);
     }
@@ -524,7 +524,6 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     }
     else
     {
-
     }
 
     if (dir != -1)
@@ -534,7 +533,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) +
                         std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(dir) +
                         std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
-                        std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+                        std::to_string(level) + std::to_string(cnt) + std::to_string(dir) + std::to_string(dir));
             attackWall(ci, cj, dir, c->prop.power);
             c->attackDir = dir;
             c->turn(dir);
@@ -543,7 +542,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         {
             sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) +
                         std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
-                        std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
+                        std::to_string(level) + std::to_string(cnt) + std::to_string(dir) + std::to_string(dir));
             target->e->attack(c->prop.power);
             c->turn(dir);
             c->attackDir = dir;
@@ -683,17 +682,12 @@ void Teamview::kingAttack(Character *c)
         }
     }
 
-    if (target == nullptr)
-    {
-        return;
-    }
-
     if (onPlace)
     {
         target->attack(c->prop.power);
         sendMessage(ATTACK + std::to_string(target->level) + std::to_string(cnt) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
-                    std::to_string(0) + std::to_string(0) + std::to_string(c->currDir));
+                    std::to_string(0) + std::to_string(0) + std::to_string(c->currDir) + "4");
         c->attackDir = 4;
     }
     else if (!game_maze->maze[ci][cj][c->currDir])
@@ -702,7 +696,7 @@ void Teamview::kingAttack(Character *c)
         sendMessage(BREAK_WALL + std::string((ci < 10) ? "0" : "") + std::to_string(ci) +
                     std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(c->currDir) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
-                    "00" + std::to_string(c->currDir));
+                    "00" + std::to_string(c->currDir) + std::to_string(c->currDir));
         c->attackDir = c->currDir;
     }
     else if (target != nullptr)
@@ -710,7 +704,7 @@ void Teamview::kingAttack(Character *c)
         target->attack(c->prop.power);
         sendMessage(ATTACK + std::to_string(target->level) + std::to_string(cnt) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
-                    std::to_string(0) + std::to_string(0) + std::to_string(c->currDir));
+                    std::to_string(0) + std::to_string(0) + std::to_string(c->currDir) + std::to_string(c->currDir));
         c->attackDir = c->currDir;
     }
 }

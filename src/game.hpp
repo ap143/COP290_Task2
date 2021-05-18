@@ -23,10 +23,10 @@ public:
 
     std::queue<std::string> waitQueue;
 
-    Teamview *myTeam;
-    Teamview *opponentTeam;
+    Teamview *myTeam = nullptr;
+    Teamview *opponentTeam = nullptr;
 
-    Score *myScore;
+    Score *myScore = nullptr;
 
     int state;
     /*
