@@ -250,7 +250,6 @@ void Teamview::handleEvent(SDL_Event event)
 
         return;
     }
-
     if (event.type != SDL_MOUSEBUTTONUP)
     {
         return;
@@ -274,7 +273,6 @@ void Teamview::handleEvent(SDL_Event event)
             return;
         }
     }
-
     if (activeLevel == -1)
     {
         deployingNow = false;
@@ -310,6 +308,7 @@ void Teamview::handleEvent(SDL_Event event)
         {
             SDL_DestroyTexture(count_text[activeLevel]);
         }
+
         count_text[activeLevel] = text(renderer, "x" + std::to_string(count[activeLevel]), count_text_size);
 
         sendMessage(DEPLOY + std::to_string(activeLevel) + std::to_string(count[activeLevel]) + ((i < 10) ? "0" : "") + std::to_string(i) + ((j < 10) ? "0" : "") + std::to_string(j));
