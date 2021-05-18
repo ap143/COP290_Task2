@@ -4,6 +4,8 @@ Game::Game()
 {
     game_maze = new Maze(13, gui_width, gui_height);
     state = 0;
+
+    loading_height = loading_width / game_maze->n;
 }
 
 Game::~Game()
