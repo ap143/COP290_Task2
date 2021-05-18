@@ -188,6 +188,8 @@ void Teamview::handleEvent(SDL_Event event)
     {
         // Move king
         Character *king = characters[0][0];
+        
+        king->attackDir = -1;
 
         if (!king->ready)
         {
@@ -501,6 +503,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
         sendMessage(ATTACK + std::to_string(target->lvl) + std::to_string(target->cnt) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
                     std::to_string(level) + std::to_string(cnt) + std::to_string(4));
+        c->attackDir = 4;
         target->e->attack(c->prop.power);
     }
     else if (ci - 1 == ti)
@@ -521,7 +524,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
     }
     else
     {
-        
+
     }
 
     if (dir != -1)
@@ -533,6 +536,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
                         std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
                         std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
             attackWall(ci, cj, dir, c->prop.power);
+            c->attackDir = dir;
             c->turn(dir);
         }
         else if (target->enemy)
@@ -542,11 +546,13 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
                         std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
             target->e->attack(c->prop.power);
             c->turn(dir);
+            c->attackDir = dir;
         }
         else
         {
             sendMessage(MOVEMENT + std::to_string(level) + std::to_string(cnt) + std::to_string(dir));
             c->setVel(dir);
+            c->attackDir = -1;
         }
     }
 
@@ -677,12 +683,18 @@ void Teamview::kingAttack(Character *c)
         }
     }
 
+    if (target == nullptr)
+    {
+        return;
+    }
+
     if (onPlace)
     {
         target->attack(c->prop.power);
         sendMessage(ATTACK + std::to_string(target->level) + std::to_string(cnt) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
                     std::to_string(0) + std::to_string(0) + std::to_string(c->currDir));
+        c->attackDir = 4;
     }
     else if (!game_maze->maze[ci][cj][c->currDir])
     {
@@ -691,6 +703,7 @@ void Teamview::kingAttack(Character *c)
                     std::string((cj < 10) ? "0" : "") + std::to_string(cj) + std::to_string(c->currDir) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
                     "00" + std::to_string(c->currDir));
+        c->attackDir = c->currDir;
     }
     else if (target != nullptr)
     {
@@ -698,5 +711,6 @@ void Teamview::kingAttack(Character *c)
         sendMessage(ATTACK + std::to_string(target->level) + std::to_string(cnt) +
                     std::string((c->prop.power < 10) ? "0" : "") + std::to_string(c->prop.power) +
                     std::to_string(0) + std::to_string(0) + std::to_string(c->currDir));
+        c->attackDir = c->currDir;
     }
 }
