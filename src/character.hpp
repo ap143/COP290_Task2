@@ -39,7 +39,7 @@ public:
 
     properties prop;
 
-    SDL_Texture *spriteSheet;
+    SDL_Texture *spriteSheet = nullptr;
     SDL_Renderer *renderer;
 
     Maze* game_maze;

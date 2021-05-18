@@ -37,7 +37,10 @@ Character::Character(SDL_Renderer* renderer, Maze* maze, int teamN, int lev, boo
 
 Character::~Character()
 {
-    SDL_DestroyTexture(spriteSheet);
+    if (spriteSheet != NULL)
+    {
+        SDL_DestroyTexture(spriteSheet);
+    }
 }
 
 void Character::show()

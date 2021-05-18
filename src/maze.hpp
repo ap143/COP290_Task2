@@ -21,12 +21,14 @@ public:
     float cell_size;
 
     Maze(int n, int w, int h);
+    ~Maze();
 
     void generate();
     void show(SDL_Renderer *renderer, SDL_Window *window);
 
     std::vector<int> maze_health;
     const int wall_health = 5;
+    int max_health;
 
 private:
     void dfs(std::vector<std::vector<bool>> &cells, int i, int j);

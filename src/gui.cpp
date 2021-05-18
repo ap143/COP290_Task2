@@ -96,17 +96,26 @@ Gui::~Gui()
 
     for (SDL_Texture *tex : teams)
     {
-        SDL_DestroyTexture(tex);
+        if (tex != NULL)
+        {
+            SDL_DestroyTexture(tex);
+        }
     }
 
     for (SDL_Texture *tex : player_names)
     {
-        SDL_DestroyTexture(tex);
+        if(tex != NULL)
+        {
+            SDL_DestroyTexture(tex);
+        }
     }
 
     for (SDL_Texture *tex : player_counts)
     {
-        SDL_DestroyTexture(tex);
+        if (tex != NULL)
+        {
+            SDL_DestroyTexture(tex);
+        }
     }
 
     if (serv != nullptr)
@@ -254,7 +263,10 @@ void Gui::team_select_update()
     {
         for (int i = 0; i < 4; i++)
         {
-            SDL_DestroyTexture(player_names[i]);
+            if(player_names[i] != NULL)
+            {
+                SDL_DestroyTexture(player_names[i]);
+            }
         }
         currTeam = (totalTeams + currTeam - 1) % totalTeams;
 
@@ -268,7 +280,10 @@ void Gui::team_select_update()
     {
         for (int i = 0; i < 4; i++)
         {
-            SDL_DestroyTexture(player_names[i]);
+            if(player_names[i] != NULL)
+            {
+                SDL_DestroyTexture(player_names[i]);
+            }
         }
         currTeam = (totalTeams + currTeam + 1) % totalTeams;
 
@@ -418,7 +433,10 @@ void Gui::event_username(SDL_Event event, int &state)
         if (live_text.length() > 0)
         {
             live_text = live_text.substr(0, live_text.length() - 1);
-            SDL_DestroyTexture(live_text_texture);
+            if (live_text_texture != NULL)
+            {
+                SDL_DestroyTexture(live_text_texture);
+            }
             live_text_texture = text(renderer, live_text, font1);
         }
         return;
@@ -428,7 +446,10 @@ void Gui::event_username(SDL_Event event, int &state)
         if (live_text.length() < maxUserNameLength && std::string(event.text.text) != " ")
         {
             live_text += event.text.text;
-            SDL_DestroyTexture(live_text_texture);
+            if (live_text_texture != NULL)
+            {
+                SDL_DestroyTexture(live_text_texture);
+            }
             live_text_texture = text(renderer, live_text, font1);
         }
         return;
@@ -485,7 +506,10 @@ void Gui::event_codecheck(SDL_Event event, int &state)
         if (passCode.length() > 0)
         {
             passCode = passCode.substr(0, passCode.length() - 1);
-            SDL_DestroyTexture(pass_code_texture);
+            if (pass_code_texture != NULL)
+            {
+                SDL_DestroyTexture(pass_code_texture);
+            }
             pass_code_texture = text(renderer, passCode, font1);
         }
         return;
@@ -495,7 +519,10 @@ void Gui::event_codecheck(SDL_Event event, int &state)
         if (passCode.length() < maxUserNameLength && std::string(event.text.text) != " ")
         {
             passCode += event.text.text;
-            SDL_DestroyTexture(pass_code_texture);
+            if (pass_code_texture != NULL)
+            {
+                SDL_DestroyTexture(pass_code_texture);
+            }
             pass_code_texture = text(renderer, passCode, font1);
         }
         return;

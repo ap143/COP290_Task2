@@ -139,6 +139,12 @@ void Game::update()
         }
         myTeam->update();
         opponentTeam->update();
+
+        if (myTeam->kingDeployed && myTeam->opponentKingDeployed)
+        {
+            myScore->kingDeployed = true;
+        }
+
         myScore->update();
     }
     
@@ -209,6 +215,10 @@ void Game::sendData()
 
 void Game::clean()
 {
+    delete myTeam;
+    delete opponentTeam;
+    delete game_maze;
+    delete myScore;
     delete gui;
 
     SDL_DestroyWindow(window);
@@ -362,7 +372,6 @@ void respond(std::string response)
         if (std::stoi(data) == 1)
         {
             game->myScore->play_again_request = true;
-            game->myScore->changed = true;
         }
     }
     else if (code == END_GAME)

@@ -64,7 +64,15 @@ Teamview::~Teamview()
 
     for (SDL_Texture* s : count_text)
     {
-        SDL_DestroyTexture(s);
+        if (s != NULL)
+        {
+            SDL_DestroyTexture(s);
+        }
+    }
+
+    if (tile_tex != NULL)
+    {
+        SDL_DestroyTexture(tile_tex);
     }
 }
 
@@ -136,7 +144,7 @@ void Teamview::show()
 
             // Sprite
             imageCenter(renderer, characters[i][0]->spriteSheet, &src, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 0.9);
-            if (!characters[0][0]->active && !game_over && i >= 1)
+            if (!kingDeployed && !opponentKingDeployed && !game_over && i >= 1)
             {
                 color(renderer, 0, 0, 0, 160);
                 rectCenter(renderer, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 1.05, true);
@@ -299,7 +307,11 @@ void Teamview::handleEvent(SDL_Event event)
 
         characters[activeLevel][count[activeLevel] - 1]->deploy(i, j);
         count[activeLevel]--;
-        SDL_DestroyTexture(count_text[activeLevel]);
+        
+        if(count_text[activeLevel] != NULL)
+        {
+            SDL_DestroyTexture(count_text[activeLevel]);
+        }
         count_text[activeLevel] = text(renderer, "x" + std::to_string(count[activeLevel]), count_text_size);
 
         sendMessage(DEPLOY + std::to_string(activeLevel) + std::to_string(count[activeLevel]) + ((i < 10) ? "0" : "") + std::to_string(i) + ((j < 10) ? "0" : "") + std::to_string(j));
@@ -569,8 +581,25 @@ void Teamview::attackWall(int i, int j, int dir, int power)
         return;
     }
 
-    int index = i * game_maze->n + j * 4 + dir;
+    int index = i * game_maze->n * 4 + j * 4 + dir;
     game_maze->maze_health[index] -= power;
+
+    if (dir == 0 && i > 0)
+    {
+        game_maze->maze_health[index - game_maze->n * 4 + 2] -= power;
+    }
+    else if (dir == 1 && j < game_maze->n - 1)
+    {
+        game_maze->maze_health[index + 4 + 2] -= power;
+    }
+    else if (dir == 2 && i < game_maze->n - 1)
+    {
+        game_maze->maze_health[index + game_maze->n * 4 - 2] -= power;
+    }
+    else if (dir == 3 && i > 0)
+    {
+        game_maze->maze_health[index - 4 - 2] -= power;
+    }
 
     if (game_maze->maze_health[index] <= 0)
     {
