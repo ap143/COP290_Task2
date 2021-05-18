@@ -46,9 +46,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
 
     gui = new Gui(window, renderer);
 
-
     loadAllTextures();
-
 
     isRunning = true;
 }
@@ -234,10 +232,12 @@ void Game::clean()
 
 void Game::restartGame()
 {
-    delete myTeam;
-    delete opponentTeam;
+    if (myTeam != nullptr) delete myTeam;
+    if (opponentTeam != nullptr) delete opponentTeam;
+    
     delete game_maze;
-    delete myScore;
+    
+    if (myScore != nullptr) delete myScore;
 
     game_over = false;
 
@@ -363,6 +363,9 @@ void respond(std::string response)
         int cnt = std::stoi(data.substr(5, 1));
         int dir = std::stoi(data.substr(6, 1));
         game->opponentTeam->characters[lvl][cnt]->turn((dir + 2) % 4);
+
+        int attackDir = std::stoi(data.substr(7, 1));
+        game->opponentTeam->characters[lvl][cnt]->attackDir = attackDir == 4 ? 4 : (attackDir + 2) % 4;
     }
     else if (code == DIE)
     {
@@ -388,6 +391,9 @@ void respond(std::string response)
 
         game->opponentTeam->characters[lvl][cnt]->turn((dirr + 2) % 4);
         game->myTeam->attackWall(i, j, dir, pow);
+
+        int attackDir = std::stoi(data.substr(10, 1));
+        game->opponentTeam->characters[lvl][cnt]->attackDir = attackDir == 4 ? 4 : (attackDir + 2) % 4;
     }
     else if (code == PLAY_AGAIN)
     {

@@ -100,9 +100,9 @@ private:
 
     const float bar_length = gui_width / 16;
     const float bar_width = text_size / 10;
-    int max_power = 0;
-    int max_health = 0;
-    int max_speed = 0;
+    int max_power = 10;
+    int max_health = 3000;
+    int max_speed = 10;
 
     bool movedLeft;
     bool movedRight;
