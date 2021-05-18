@@ -35,6 +35,8 @@ public:
 
     int animationDirection = -1;
 
+    int attackDir = -1;
+
     static const int max_speed = 10;
 
     properties prop;

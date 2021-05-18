@@ -316,12 +316,12 @@ void respond(std::string response)
         game->opponentReady = true;
     }
     else if (code == DEPLOY)
-    {
+    { 
+        game->opponentTeam->deploy(std::stoi(data.substr(0,1)), std::stoi(data.substr(1,1)), std::stoi(data.substr(2,2)), std::stoi(data.substr(4,2)));
         if (data.substr(0, 1) == "0")
         {
             game->myTeam->opponentKingDeployed = true;
-        } 
-        game->opponentTeam->deploy(std::stoi(data.substr(0,1)), std::stoi(data.substr(1,1)), std::stoi(data.substr(2,2)), std::stoi(data.substr(4,2)));
+        }
     }
     else if (code == MOVEMENT)
     {
