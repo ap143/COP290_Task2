@@ -52,6 +52,9 @@ public:
     int deployRange;
     bool deployingNow = false;
 
+    SDL_Texture* count_text[4] = {nullptr, nullptr, nullptr, nullptr};
+    int count_text_size = 20 * scale;
+
     Teamview *enemyTeam;
     
     Teamview(SDL_Renderer* renderer, Maze* maze, int teamNum, bool self);
@@ -89,9 +92,6 @@ private:
 
     int max[4] = {6, 12, 8, 6};
     int color_comb[4][3] = {{0, 0, 255}, {255, 0, 0}, {255, 242, 0}, {149, 0, 255}};
-
-    SDL_Texture* count_text[4] = {nullptr, nullptr, nullptr, nullptr};
-    int count_text_size = 20 * scale;
 
     void setNextDest(Character* c, int level, int cnt);
     void kingAttack(Character *c);

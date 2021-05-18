@@ -137,12 +137,24 @@ void Game::update()
             restartGame();
             return;
         }
+
+        if (myScore->king_deploy_time == 0 && !myTeam->kingDeployed)
+        {
+            deployKing();
+        }
+
         myTeam->update();
         opponentTeam->update();
 
-        if (myTeam->kingDeployed && myTeam->opponentKingDeployed)
+        myScore->kingDeployed = myTeam->kingDeployed & myTeam->opponentKingDeployed;
+
+        if (game_over && myTeam->characters[0][0]->dead)
         {
-            myScore->kingDeployed = true;
+            myScore->win = false;
+        }
+        else if (game_over)
+        {
+            myScore->win = true;
         }
 
         myScore->update();
@@ -178,7 +190,6 @@ void Game::render()
         opponentTeam->show();
         myScore->show();
     }
-
     SDL_RenderPresent(renderer);
 }
 
@@ -192,10 +203,6 @@ void Game::sendData()
             message = game->waitQueue.front();
             game->waitQueue.pop();
             serv->send(message);
-            // if (serv->get() == RECIEVED + message)
-            // {
-            //     break;
-            // }
         }
     }
     else if (client != nullptr)
@@ -205,10 +212,6 @@ void Game::sendData()
             message = game->waitQueue.front();
             game->waitQueue.pop();
             client->send(message);
-            // if (client->get() == RECIEVED + message)
-            // {
-            //     break;;
-            // }
         }
     }
 }
@@ -284,6 +287,25 @@ void Game::drawMazeLoad()
 
 }
 
+void Game::deployKing()
+{
+    int i = game_maze->n - 1;
+    int j = game_maze->n - 1;
+    myTeam->characters[0][0]->deploy(i, j);
+    sendMessage(DEPLOY + std::string("00") + ((i < 10) ? "0" : "") + std::to_string(i) + ((j < 10) ? "0" : "") + std::to_string(j));
+    myTeam->activeLevel = -1;
+    myTeam->deployingNow = false;
+    myTeam->count[0] = 0;
+    myTeam->kingDeployed = true;
+
+    if(myTeam->count_text[0] != NULL)
+    {
+        SDL_DestroyTexture(myTeam->count_text[0]);
+    }
+    
+    myTeam->count_text[0] = text(renderer, "x0", myTeam->count_text_size);
+}
+
 void sendMessage(std::string message)
 {
     game->waitQueue.push(message);
@@ -317,11 +339,11 @@ void respond(std::string response)
     }
     else if (code == DEPLOY)
     {
+        game->opponentTeam->deploy(std::stoi(data.substr(0,1)), std::stoi(data.substr(1,1)), std::stoi(data.substr(2,2)), std::stoi(data.substr(4,2)));
         if (data.substr(0, 1) == "0")
         {
             game->myTeam->opponentKingDeployed = true;
-        } 
-        game->opponentTeam->deploy(std::stoi(data.substr(0,1)), std::stoi(data.substr(1,1)), std::stoi(data.substr(2,2)), std::stoi(data.substr(4,2)));
+        }
     }
     else if (code == MOVEMENT)
     {
