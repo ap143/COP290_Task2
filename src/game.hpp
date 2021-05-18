@@ -61,9 +61,9 @@ private:
     void drawMazeLoad();
     void restartGame();
 
-    const float font_size = 24 * scale;
-    const float loading_width = gui_width * 2 / 3;
-    const float loading_height = loading_width / 20;
+    float font_size = 24 * scale;
+    float loading_width = gui_width * 2 / 3;
+    float loading_height;
 };
 
 extern Game *game;
