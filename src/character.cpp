@@ -28,6 +28,10 @@ Character::Character(SDL_Renderer* renderer, Maze* maze, int teamN, int lev, boo
     health = prop.health;
 
     spriteSheet = loadTexture(("./assets/images/characters/t" + std::to_string(team+1) + "l" + std::to_string(lev) + ".png").c_str(), renderer);
+    attackSheet = loadTexture(("./assets/images/characters/t" + std::to_string(team+1) + "l" + std::to_string(lev) +  "_blast.png").c_str(), renderer);
+
+    SDL_QueryTexture(attackSheet, NULL, NULL, &w, &h);
+    blastRect = {.x = 0, .y = 0, w / 6, h};
 
     if (level == 0)
     {
@@ -49,7 +53,30 @@ void Character::show()
     {
         return;
     }
+
+    // Sprite 
     imageCenter(renderer, spriteSheet, &spriteRect, posRect.x, posRect.y, posRect.w, posRect.h);
+
+    if (attackDir == 0)
+    {
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y - game_maze->cell_size / 3, posRect.w / 2, posRect.w / 2);
+    }
+    else if (attackDir == 1)
+    {
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x + game_maze->cell_size / 3, posRect.y, posRect.w / 2, posRect.w / 2);
+    }
+    else if (attackDir == 2)
+    {
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y + game_maze->cell_size / 3, posRect.w / 2, posRect.w / 2);   
+    }
+    else if (attackDir == 3)
+    {
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x - game_maze->cell_size / 3, posRect.y, posRect.w / 2, posRect.w / 2);   
+    }
+    else if (attackDir == 4)
+    {
+        imageCenter(renderer, attackSheet, &blastRect, posRect.x, posRect.y, posRect.w / 2, posRect.w / 2);
+    }
 
     color(renderer, 255 * (1 - health / prop.health), 255 * health / prop.health, 0);
     rect(renderer, posRect.x + posRect.w / 2, posRect.y - posRect.h / 2, (float) posRect.w * health / prop.health, (float) posRect.h / 16, true);
@@ -111,6 +138,11 @@ void Character::update()
         sprite_change++;
     }
 
+    if(attackDir != -1)
+    {
+        blastRect.x = currBlast * blastRect.w;
+        currBlast = (currBlast + 1)%6;
+    }
 
     //Pos Update
     dx += vel[0] * velConst * prop.speed;

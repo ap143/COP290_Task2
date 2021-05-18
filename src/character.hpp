@@ -42,6 +42,7 @@ public:
     properties prop;
 
     SDL_Texture *spriteSheet = nullptr;
+    SDL_Texture *attackSheet = nullptr;
     SDL_Renderer *renderer;
 
     Maze* game_maze;
@@ -82,8 +83,12 @@ private:
     float velConst = 0.005;
     int currSprite = 0;
 
+    int currBlast = 0;
+    int w, h;
+
     bool changed = false;
 
+    SDL_Rect blastRect;
     SDL_Rect spriteRect;
     SDL_FRect posRect;
 
