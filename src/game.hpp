@@ -59,6 +59,7 @@ private:
     Gui *gui;
 
     void drawMazeLoad();
+    void deployKing();
     void restartGame();
 
     float font_size = 24 * scale;

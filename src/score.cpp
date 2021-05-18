@@ -35,6 +35,9 @@ Score::Score(SDL_Renderer *renderer, Maze *maze)
 
     color(renderer, 0, 0, 0, 255);
     play_again_text = text(renderer, "Play Again", font1);
+
+    winner = loadTexture( "./assets/images/Winner.png", renderer);
+    loser = loadTexture( "./assets/images/Loser.png", renderer);
 }
 
 Score::~Score()
@@ -117,17 +120,17 @@ void Score::update()
                     mil_sec = 60;
                 }
             }
-            else
-            {
-                color(renderer, 255, 0, 0, 255);
-                if (text_to_display != NULL)
-                {
-                    SDL_DestroyTexture(text_to_display);
-                }
-                message = "Game Over";
-                text_to_display = text(renderer, "Game Over", font1);
-                game_over = true;   
-            }
+            // else
+            // {
+            //     color(renderer, 255, 0, 0, 255);
+            //     if (text_to_display != NULL)
+            //     {
+            //         SDL_DestroyTexture(text_to_display);
+            //     }
+            //     message = "Game Over";
+            //     text_to_display = text(renderer, "Game Over", font1);
+            //     game_over = true;   
+            // }
         }
         else if (countdown != 0)
         {
@@ -152,14 +155,14 @@ void Score::update()
 
                 mil_sec = 60;
             }
-            if (message != "Lets Begin!")
+            if (message != "")
             {
                 color(renderer, 255, 255, 255, 255);
                 if (text_to_display != NULL)
                 {
                     SDL_DestroyTexture(text_to_display);
                 }
-                message = "Lets Begin!";
+                message = "";
                 text_to_display = text(renderer, message, font1); 
             }
         }
@@ -173,6 +176,15 @@ void Score::update()
             message = "Game Over";
             text_to_display = text(renderer, "Game Over", font1);
             game_over = true;
+
+            if(myTeamScore > opponentTeamScore)
+            {
+                win = true;
+            }
+            else
+            {
+                win = false;
+            }
         }
 
         // score
@@ -285,5 +297,13 @@ void Score::show()
             rectCenter(renderer, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2, play_again_box.w * (float)0.9, play_again_box.h, 1, true);
         }
         imageCenter(renderer, play_again_text, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2);
+
+        if (win)
+        {
+            imageCenter(renderer, winner, NULL, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, game_maze->grid_length / 2, game_maze->grid_length / 4);
+        }
+        else{
+            imageCenter(renderer, loser, NULL, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, game_maze->grid_length / 2, game_maze->grid_length / 4);
+        }
     }
 }
