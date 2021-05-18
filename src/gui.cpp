@@ -45,6 +45,7 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     power = text(renderer, "Power", font2);
     health = text(renderer, "Health", font2);
     speed = text(renderer, "Speed", font2);
+    heal = text(renderer, "Heal", font2);
 
     std::ifstream data("./assets/character_data.csv");
 
@@ -90,6 +91,7 @@ Gui::~Gui()
     SDL_DestroyTexture(power);
     SDL_DestroyTexture(health);
     SDL_DestroyTexture(speed);
+    SDL_DestroyTexture(heal);
 
     for (SDL_Texture *tex : teams)
     {
@@ -393,13 +395,14 @@ void Gui::show_teamselect()
 
     // Team Details
 
-    float ox = gui_width / 2;
+    float ox = gui_width / 2 - 2 * bar_length / 3;
     float oy = gui_height / 2 + 0.7 * centreBoxLength;
 
     color(renderer, 255, 255, 255, 255);
     image(renderer, power, ox, oy, 0, SDL_FLIP_NONE);
     image(renderer, health, ox + bar_length + bar_length / 10, oy, 0, SDL_FLIP_NONE);
     image(renderer, speed, ox + 2 * bar_length + 2 * bar_length / 10, oy, 0, SDL_FLIP_NONE);
+    image(renderer, heal, ox + 3 * bar_length + 3 * bar_length / 10, oy, 0, SDL_FLIP_NONE);
 
     for (int i = 0; i < 4; i++)
     {
@@ -416,6 +419,9 @@ void Gui::show_teamselect()
 
         color(renderer, 0, 0, 255, 255);
         rect(renderer, ox + 2 * bar_length + 2 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].speed / max_speed, bar_width, true);
+
+        color(renderer, 252, 223, 3, 255);
+        rect(renderer, ox + 3 * bar_length + 3 * bar_length / 10, oy + i * text_size + text_size, bar_length * Character::character_data[i * Character::total_teams + currTeam].heal / max_heal, bar_width, true);
     }
     color(renderer, 255);
 }
