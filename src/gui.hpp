@@ -91,6 +91,7 @@ private:
     SDL_Texture* power = nullptr;
     SDL_Texture* health = nullptr;
     SDL_Texture* speed = nullptr;
+    SDL_Texture* heal = nullptr;
 
     int currTeam = 0;
     const float centreBoxLength = 300 * scale_width;
@@ -103,6 +104,7 @@ private:
     int max_power = 10;
     int max_health = 3000;
     int max_speed = 10;
+    int max_heal = 10;
 
     bool movedLeft;
     bool movedRight;
