@@ -227,5 +227,16 @@ void Character::attack(int power)
         {
             game_over = true;
         }
+
+        int points = (int) std::round((prop.power / 10.0 + prop.health / 3000.0 + prop.speed / 10.0) / 3.0 * 10);
+
+        if (isMyTeam)
+        {
+            opponentTeamScore += points;
+        }
+        else
+        {
+            myTeamScore += points;
+        }
     }
 }
