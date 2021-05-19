@@ -4,7 +4,8 @@ CC := g++ -O3
 
 OUTPUT_DIR := ./output
 SRC_DIR := ./src
-UTILS_DIR := utils
+UTILS_DIR := ./utils
+NETWORK_DIR := ./networking
 
 OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_DIR)/maze.o $(OUTPUT_DIR)/client.o $(OUTPUT_DIR)/server.o $(OUTPUT_DIR)/helper.o  $(OUTPUT_DIR)/gui.o $(OUTPUT_DIR)/character.o $(OUTPUT_DIR)/teamView.o $(OUTPUT_DIR)/score.o
 
@@ -26,6 +27,10 @@ $(OUTPUT_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 # src/utils -> cpp
 $(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(UTILS_DIR)/%.cpp 
+	$(CC) $< -c -o $@ $(COMMON_FLAGS)
+
+# src/networking -> cpp
+$(OUTPUT_DIR)/%.o: $(SRC_DIR)/$(NETWORK_DIR)/%.cpp 
 	$(CC) $< -c -o $@ $(COMMON_FLAGS)
 
 clean:

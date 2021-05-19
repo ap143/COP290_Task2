@@ -210,9 +210,9 @@ void Game::render()
     else if (state == 7)
     {
         game_maze->show(renderer, window);
-        myScore->show();
         myTeam->show();
         opponentTeam->show();
+        myScore->show();
     }
     else if (state == 99)
     {

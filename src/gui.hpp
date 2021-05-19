@@ -2,7 +2,7 @@
 #define GUI
 
 #include "./utils/draw.hpp"
-#include "network.hpp"
+#include "./networking/network.hpp"
 #include <vector>
 #include <string>
 #include <fstream>

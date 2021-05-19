@@ -11,7 +11,7 @@ Score::Score(SDL_Renderer *renderer, Maze *maze)
 
     // Initializing timers
     king_deploy_time = 10;
-    countdown = 40;
+    countdown = 120;
     mil_sec = 60;
 
     // Setting up positions for timer, score, text boxes and play again button
