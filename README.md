@@ -14,7 +14,7 @@
 
 **Run on Linux**
 * First build game using ``make`` command on terminal.
-* Rune using ``./MazeWars`` .
+* Run using ``./MazeWars`` .
 
 **Resources**
 * Character sprites Source: https://forums.rpgmakerweb.com/index.php?threads/marvel-characters-sets-sv-battlers-avengers-spider-man-x-men-more-updated-3-19-2021.101244/
