@@ -16,6 +16,8 @@
 **Run on Linux**
 * First build game using ``make`` command on terminal.
 * Run using ``./MazeWars`` .
+* Use ``make clean`` for cleaning the output directory
+* Use ``make again`` for reinstalling the game
 
 **Resources**
 * Character sprites Source: https://forums.rpgmakerweb.com/index.php?threads/marvel-characters-sets-sv-battlers-avengers-spider-man-x-men-more-updated-3-19-2021.101244/
