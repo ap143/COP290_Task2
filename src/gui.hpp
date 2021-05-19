@@ -15,8 +15,6 @@ class Gui
 {
 
 private:
-    SDL_Texture *gui_bg;
-
     SDL_Window *window;
     SDL_Renderer *renderer;
 
@@ -120,6 +118,8 @@ private:
     static int runGame(void* a);
 
 public:
+    SDL_Texture *gui_bg;
+
     Gui(SDL_Window *window, SDL_Renderer *renderer);
 
     ~Gui();

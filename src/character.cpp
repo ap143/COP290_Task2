@@ -117,6 +117,20 @@ void Character::deploy(int i, int j)
     
     attackW = posRect.w / 1.2;
     attackH = posRect.h / 1.2;
+
+
+    if (level == 0)
+    {
+        Mix_PlayChannel(-1, king_deploy, 0);
+    }
+    else if (isMyTeam)
+    {
+        Mix_PlayChannel(-1, friend_deploy, 0);
+    }
+    else
+    {
+        Mix_PlayChannel(-1, enemy_deploy, 0);
+    }
 }
 
 void Character::update()
@@ -279,6 +293,7 @@ void Character::attack(int power)
         if (level == 0)
         {
             game_over = true;
+            Mix_PlayChannel(-1, king_die, 0);
         }
 
         int points = (int) std::round((prop.power / 10.0 + prop.health / 3000.0 + prop.speed / 10.0) / 3.0 * 10);

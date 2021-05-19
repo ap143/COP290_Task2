@@ -47,6 +47,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height)
     gui = new Gui(window, renderer);
 
     loadAllTextures();
+    loadAllSounds();
 
     isRunning = true;
 }
@@ -68,17 +69,28 @@ void Game::handleEvents()
         }
         isRunning = false;
         state = -1;
-
-        if (gui->isHost && serv != nullptr)
-        {
-            serv->end();
-        }
-        else if (!gui->isHost && client != nullptr)
-        {
-            client->end();
-        }
-
         return;
+    }
+
+    if (event.type == SDL_KEYDOWN && (SDL_GetModState() & (SDLK_RSHIFT | SDLK_LSHIFT)) && event.key.keysym.sym == SDLK_m)
+    {
+        if (Mix_VolumeMusic(0) == 0)
+        {
+            Mix_VolumeMusic(MIX_MAX_VOLUME);
+        }
+        else
+        {
+            Mix_VolumeMusic(0);
+        }
+
+        if (Mix_Volume(0, 0) == 0)
+        {
+            Mix_Volume(-1, MIX_MAX_VOLUME);
+        }
+        else
+        {
+            Mix_Volume(-1, 0);
+        }
     }
 
     if (state < 4)
@@ -95,7 +107,6 @@ void Game::handleEvents()
 
 void Game::update()
 {
-
     if (state == 4)
     {
         if (gui->isHost)
@@ -171,7 +182,6 @@ void Game::update()
 
         myScore->update();
     }
-    
 }
 
 void Game::render()
@@ -212,7 +222,24 @@ void Game::render()
 
 void Game::playSound()
 {
-    
+    if (state < 4)
+    {
+        if (!Mix_PlayingMusic())
+        {
+            Mix_PlayMusic(bgm, -1);
+        }
+    }
+    else if (state < 7)
+    {
+        Mix_HaltMusic();
+    }
+    else if (state == 7)
+    {
+        if (!Mix_PlayingMusic())
+        {
+            Mix_PlayMusic(war_music, -1);
+        }
+    }
 }
 
 void Game::sendData()
@@ -229,7 +256,7 @@ void Game::sendData()
     }
     else if (client != nullptr)
     {
-       while (!game->waitQueue.empty())
+        while (!game->waitQueue.empty())
         {
             message = game->waitQueue.front();
             game->waitQueue.pop();
@@ -240,15 +267,42 @@ void Game::sendData()
 
 void Game::clean()
 {
-    delete myTeam;
-    delete opponentTeam;
+    if (gui->isHost && serv != nullptr)
+    {
+        serv->end();
+    }
+    else if (!gui->isHost && client != nullptr)
+    {
+        client->end();
+    }
+
+    if (myTeam != nullptr) delete myTeam;
+    if (opponentTeam != nullptr) delete opponentTeam;
+    
     delete game_maze;
-    delete myScore;
-    delete gui;
+    
+    if (myScore != nullptr) delete myScore;
+    if (gui != nullptr) delete gui;
+
+    SDL_DestroyTexture(exit_text);
+    SDL_DestroyTexture(exit_image);
+
+    Mix_HaltMusic();
+    Mix_HaltChannel(-1);
+
+    Mix_FreeMusic(bgm);
+    Mix_FreeMusic(war_music);
+
+    Mix_FreeChunk(enemy_deploy);
+    Mix_FreeChunk(king_deploy);
+    Mix_FreeChunk(friend_deploy);
+    Mix_FreeChunk(king_die);
 
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 
+    Mix_Quit();
+    TTF_Quit();
     SDL_Quit();
 
     std::cout << "Game cleaned!" << std::endl;
@@ -274,11 +328,31 @@ void Game::restartGame()
 
     state = 2;
 
+    if (Mix_PlayingMusic())
+    {
+        Mix_HaltMusic();
+    }
+
+    Mix_PlayMusic(bgm, -1);
+
     std::cout << "Game Restart!" << std::endl;
+}
+
+void Game::loadAllSounds()
+{
+    bgm = Mix_LoadMUS("./assets/sounds/bg_music.mp3");
+    war_music = Mix_LoadMUS("./assets/sounds/war_music.mp3");
+
+    enemy_deploy = Mix_LoadWAV("./assets/sounds/enemy_deploy.wav");
+    friend_deploy = Mix_LoadWAV("./assets/sounds/friend_deploy.wav");
+    king_deploy = Mix_LoadWAV("./assets/sounds/king_deploy.wav");
+    king_die = Mix_LoadWAV("./assets/sounds/king_die.wav");
 }
    
 void Game::loadAllTextures()
 {
+    exit_image = loadTexture("assets/images/exit.png", renderer);
+
     game_maze->wall = loadTexture("assets/images/wall.png", renderer);
     if (game_maze->wall == NULL) {std::cout << "Failed loading texture" << std::endl;}
 
@@ -312,9 +386,14 @@ void Game::drawMazeLoad()
 
 void Game::drawExitState()
 {
-    static SDL_Texture *txt = text(renderer, opponent_name + " doesn't wants to play... *LUDO Vibes* ;-)");
+    if (exit_text == nullptr)
+    {
+        color(renderer, 255);
+        exit_text = text(renderer, opponent_name + " doesn't wants to play... *LUDO Vibes* ;-)", 36 * scale);
+    }
 
-    imageCenter(renderer, txt, gui_width / 2, gui_height / 2);
+    backgroundImage(renderer, exit_image);
+    imageCenter(renderer, exit_text, gui_width / 2, gui_height / 2);
 }
 
 void Game::deployKing()
@@ -322,7 +401,9 @@ void Game::deployKing()
     int i = game_maze->n - 1;
     int j = game_maze->n - 1;
     myTeam->characters[0][0]->deploy(i, j);
+
     sendMessage(DEPLOY + std::string("00") + ((i < 10) ? "0" : "") + std::to_string(i) + ((j < 10) ? "0" : "") + std::to_string(j));
+    
     myTeam->activeLevel = -1;
     myTeam->deployingNow = false;
     myTeam->count[0] = 0;
