@@ -302,15 +302,15 @@ void Score::show()
 
         if (draw)
         {
-            imageCenter(renderer, draw, NULL, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, game_maze->grid_length / 2, game_maze->grid_length / 4);   
+            imageCenter(renderer, draw, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2); 
         }
         else if (win)
         {
-            imageCenter(renderer, winner, NULL, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, game_maze->grid_length / 2, game_maze->grid_length / 4);
+            imageCenter(renderer, winner, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2);
         }
         else
         {
-            imageCenter(renderer, loser, NULL, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, game_maze->grid_length / 2, game_maze->grid_length / 4);
+            imageCenter(renderer, loser, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2);
         }
     }
 }
