@@ -18,9 +18,18 @@ int teamNum = -1;
 int opponentTeamNum = -2;
 
 bool game_over = false;
+bool recieving_messages = true;
 
 int myTeamScore = 0;
 int opponentTeamScore = 0;
+
+Mix_Music *bgm;
+Mix_Music *war_music;
+
+Mix_Chunk *enemy_deploy;
+Mix_Chunk *king_deploy;
+Mix_Chunk *friend_deploy;
+Mix_Chunk *king_die;
 
 int main(int argc, char* argv[])
 {
@@ -35,6 +44,11 @@ int main(int argc, char* argv[])
     {
         std::cerr << "Error initializing..." << std::endl;
         exit(-1);
+    }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2 ,2048) < 0)
+    {
+        std::cout << "Error: " << Mix_GetError() << std::endl;
     }
 
     SDL_DisplayMode DM;
@@ -65,6 +79,7 @@ int main(int argc, char* argv[])
         game->update();
         game->render();
         game->sendData();
+        game->playSound();
 
         frameTime = SDL_GetTicks() - frameStart;
 

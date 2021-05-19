@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #include <iostream>
 #include "helper.hpp"
 
@@ -33,10 +34,18 @@ extern int teamNum;
 extern int opponentTeamNum;
 
 extern bool game_over;
+extern bool recieving_messages;
 
 extern int myTeamScore;
 extern int opponentTeamScore;
 
+extern Mix_Music *bgm;
+extern Mix_Music *war_music;
+
+extern Mix_Chunk *enemy_deploy;
+extern Mix_Chunk *king_deploy;
+extern Mix_Chunk *friend_deploy;
+extern Mix_Chunk *king_die;
 
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 void color(SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b);

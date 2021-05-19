@@ -15,8 +15,6 @@ class Gui
 {
 
 private:
-    SDL_Texture *gui_bg;
-
     SDL_Window *window;
     SDL_Renderer *renderer;
 
@@ -101,10 +99,10 @@ private:
 
     const float bar_length = gui_width / 16;
     const float bar_width = text_size / 10;
-    int max_power = 10;
-    int max_health = 3000;
-    int max_speed = 10;
-    int max_heal = 10;
+    float max_power = 10;
+    float max_health = 3000;
+    float max_speed = 10;
+    float max_heal = 3;
 
     bool movedLeft;
     bool movedRight;
@@ -120,6 +118,8 @@ private:
     static int runGame(void* a);
 
 public:
+    SDL_Texture *gui_bg;
+
     Gui(SDL_Window *window, SDL_Renderer *renderer);
 
     ~Gui();

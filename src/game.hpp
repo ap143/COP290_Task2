@@ -46,21 +46,27 @@ public:
     void render();
     void clean();
     void sendData();
+    void playSound();
 
     bool running() { return isRunning; };
-
-    void loadAllTextures();
 
 private:
 
     SDL_Window *window;
     SDL_Renderer *renderer;
 
+    SDL_Texture *exit_text = nullptr;
+    SDL_Texture *exit_image = nullptr;
+
     Gui *gui;
 
     void drawMazeLoad();
     void deployKing();
     void restartGame();
+    void drawExitState();
+
+    void loadAllTextures();
+    void loadAllSounds();
 
     float font_size = 24 * scale;
     float loading_width = gui_width * 2 / 3;

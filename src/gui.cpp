@@ -302,7 +302,7 @@ void Gui::show_teamselect()
 
     float scl = std::abs(animate_extent) / max_extent;
     float cx;
-    float cy = gui_height / 2;
+    float cy = gui_height / 1.9;
     float len;
 
     // New Box
