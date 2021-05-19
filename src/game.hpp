@@ -29,9 +29,11 @@ public:
 
     std::queue<std::string> waitQueue;
 
+    // Team view object of my and opponent team
     Teamview *myTeam = nullptr;
     Teamview *opponentTeam = nullptr;
 
+    // Scoreboard object
     Score *myScore = nullptr;
 
     int state;
@@ -48,12 +50,16 @@ public:
 
     void init(const char *title, int xpos, int ypos, int width, int height);
 
+    // Game controllers according to states
     void handleEvents();
     void update();
     void render();
-    void clean();
-    void sendData();
     void playSound();
+
+    void clean();
+
+    // Sends the message queue to the opponent
+    void sendData();
 
     bool running() { return isRunning; };
 
@@ -62,22 +68,34 @@ private:
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    SDL_Texture *exit_text = nullptr;
-    SDL_Texture *exit_image = nullptr;
-
     Gui *gui;
 
+    // Maze load display
     void drawMazeLoad();
-    void deployKing();
-    void restartGame();
-    void drawExitState();
-
-    void loadAllTextures();
-    void loadAllSounds();
-
+    // Loading bar dimensions
     float font_size = 24 * scale;
     float loading_width = gui_width * 2 / 3;
     float loading_height;
+
+    // Force deploy of king
+    void deployKing();
+
+    // Deleting all objects and start game from team selection -> state = 2
+    void restartGame();
+
+    // A player leaves game
+    void drawExitState();
+    // Background image and text in exit state
+    SDL_Texture *exit_text = nullptr;
+    SDL_Texture *exit_image = nullptr;
+
+
+    // Loads all textures
+    void loadAllTextures();
+
+    // Loads all sounds for game
+    void loadAllSounds();
+
 };
 
 extern Game *game;

@@ -54,9 +54,8 @@ public:
     // Kings deploy time
     int king_deploy_time;
 
-    // Winner of game -> true if my team wins
-    bool win = false;
-    bool match_draw = false;
+    // Winner of game
+    int match_result = -1;
 
     // Play Again Request sent
     bool play_again = false;

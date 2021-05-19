@@ -4,14 +4,14 @@ Score::Score(SDL_Renderer *renderer, Maze *maze)
 {
     // Openeing required fonts
     font1 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", font_size);
-    font2 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", 2 * font_size / 3);
+    font2 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", font_size / 2);
 
     this->renderer = renderer;
     this->game_maze = maze;
 
     // Initializing timers
     king_deploy_time = 10;
-    countdown = 120;
+    countdown = 40;
     mil_sec = 60;
 
     // Setting up positions for timer, score, text boxes and play again button
@@ -164,7 +164,7 @@ void Score::update()
                 text_to_display = text(renderer, message, font1);
             }
         }
-        else
+        else if (countdown == 0)
         {
             color(renderer, 255, 0, 0, 255);
             if (text_to_display != NULL)
@@ -177,16 +177,20 @@ void Score::update()
 
             if (myTeamScore > opponentTeamScore)
             {
-                win = true;
+                match_result = 0;
             }
             else if (myTeamScore == opponentTeamScore)
             {
-                match_draw = true;
+                match_result = 1;
             }
             else
             {
-                win = false;
+                match_result = 2;
             }
+        }
+        else
+        {
+
         }
 
         // Updating score
@@ -304,15 +308,15 @@ void Score::show()
         imageCenter(renderer, play_again_text, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2);
 
         // Game Result
-        if (match_draw)
+        if (match_result == 0)
         {
-            imageCenter(renderer, draw, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2); 
+            imageCenter(renderer, winner, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2); 
         }
-        else if (win)
+        else if (match_result == 1)
         {
-            imageCenter(renderer, winner, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2);
+            imageCenter(renderer, draw, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2);
         }
-        else
+        else if (match_result == 2)
         {
             imageCenter(renderer, loser, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2);
         }

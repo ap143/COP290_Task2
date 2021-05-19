@@ -175,11 +175,11 @@ void Game::update()
 
         if (game_over && myTeam->characters[0][0]->dead)
         {
-            myScore->win = false;
+            myScore->match_result = 2;
         }
-        else if (game_over)
+        else if (game_over && !myTeam->characters[0][0]->dead && opponentTeam->characters[0][0]->dead)
         {
-            myScore->win = true;
+            myScore->match_result = 0;
         }
 
         myScore->update();
@@ -210,9 +210,9 @@ void Game::render()
     else if (state == 7)
     {
         game_maze->show(renderer, window);
+        myScore->show();
         myTeam->show();
         opponentTeam->show();
-        myScore->show();
     }
     else if (state == 99)
     {
