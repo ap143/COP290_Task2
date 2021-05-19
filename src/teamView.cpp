@@ -4,13 +4,16 @@ Teamview::Teamview(SDL_Renderer *rend, Maze *maze, int teamN, bool self)
 {
     renderer = rend;
     game_maze = maze;
+
     team = teamN;
     isMyTeam = self;
 
+    // Deploying range of king
     deployRange = game_maze->n * 2 / 5;
 
     std::vector<Character *> v[4];
 
+    // Initializing characters of my team
     v[0].push_back(new Character(renderer, maze, team, 0, self));
 
     for (int i = 0; i < 4; i++)
@@ -29,6 +32,8 @@ Teamview::Teamview(SDL_Renderer *rend, Maze *maze, int teamN, bool self)
     {
         characters.push_back(v[i]);
     }
+
+    // Team tiles dimensions and textures
 
     block_ox = game_maze->ox + game_maze->grid_length * 1.05;
     block_oy = 5 * gui_height / 8;

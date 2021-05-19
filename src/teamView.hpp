@@ -62,6 +62,9 @@ public:
     SDL_Texture *count_text[4] = {nullptr, nullptr, nullptr, nullptr};
     int count_text_size = 20 * scale;
 
+    // Enemy team details
+    Teamview *enemyTeam;
+
     Teamview(SDL_Renderer *renderer, Maze *maze, int teamNum, bool self);
     ~Teamview();
 
@@ -95,9 +98,6 @@ private:
     SDL_Rect src;
     SDL_FRect tiles[4];
     SDL_Texture *tile_tex = nullptr;
-
-    // Enemy team details
-    Teamview *enemyTeam;
 
     // For Setting next Destination of a player using shortest path algorithm
     void setNextDest(Character *c, int level, int cnt);

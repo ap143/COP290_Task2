@@ -12,14 +12,20 @@ public:
     Game();
     ~Game();
 
+    // Maze of current game play
     Maze *game_maze;
+
+    // Maze Row while sending data to client
     int curRowToSend;
+
+    // Opponent ready when received maze
     bool opponentReady = false;
+
+    // Game is running
     bool isRunning;
 
+    // If game is to be restarted
     bool restart = false;
-
-    static std::map<int, properties> charProp;
 
     std::queue<std::string> waitQueue;
 

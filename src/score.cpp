@@ -304,7 +304,7 @@ void Score::show()
         imageCenter(renderer, play_again_text, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2);
 
         // Game Result
-        if (draw)
+        if (match_draw)
         {
             imageCenter(renderer, draw, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2); 
         }
