@@ -10,6 +10,9 @@ OBJS := $(OUTPUT_DIR)/main.o $(OUTPUT_DIR)/game.o $(OUTPUT_DIR)/draw.o $(OUTPUT_
 
 COMMON_FLAGS := `pkg-config --cflags --libs sdl2` -lSDL2_ttf -lSDL2_image -lSDL2_mixer -Wall
 
+all:
+	mkdir -p output && make build
+
 # output
 build: $(OBJS)
 	$(CC) -o $(OUT) $^ $(COMMON_FLAGS)

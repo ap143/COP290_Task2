@@ -459,7 +459,7 @@ void Teamview::setNextDest(Character *c, int level, int cnt)
             }
             else
             {
-                newDist = game_maze->wall_health;
+                newDist = (int) std::round(game_maze->wall_health * (float) c->prop.speed / c->prop.power);
             }
 
             if (graph[i][j]->dist > newDist + p->dist)
