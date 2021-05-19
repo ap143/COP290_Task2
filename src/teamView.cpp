@@ -673,7 +673,7 @@ void Teamview::attackWall(int i, int j, int dir, int power)
     {
         game_maze->maze_health[index + game_maze->n * 4 - 2] -= power;
     }
-    else if (dir == 3 && i > 0)
+    else if (dir == 3 && j > 0)
     {
         game_maze->maze_health[index - 4 - 2] -= power;
     }
@@ -693,7 +693,7 @@ void Teamview::attackWall(int i, int j, int dir, int power)
         {
             game_maze->maze[i + 1][j][0] = true;
         }
-        else if (dir == 3 && i > 0)
+        else if (dir == 3 && j > 0)
         {
             game_maze->maze[i][j - 1][1] = true;
         }
