@@ -242,6 +242,13 @@ void Game::playSound()
             Mix_PlayMusic(war_music, -1);
         }
     }
+    else if (state == 99)
+    {
+        if (Mix_PlayingMusic())
+        {
+            Mix_HaltMusic();
+        }
+    }
 }
 
 void Game::sendData()

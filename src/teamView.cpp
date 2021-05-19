@@ -159,17 +159,17 @@ void Teamview::show()
                 rectCenter(renderer, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 1.05, true);
             }
 
-            // Text
-            color(renderer, 255, 255, 255, 255);
-            rectCenter(renderer, tiles[i].x, tiles[i].y, 20, 20, 1, true);
-            imageCenter(renderer, count_text[i], NULL, tiles[i].x, tiles[i].y, (float)20, (float)20);
-
             if (count[i] == 0)
             {
                 // Shade when count of a level = 0
                 color(renderer, 0, 160);
                 rectCenter(renderer, tiles[i].x + tile_height / 2, tiles[i].y + tile_height / 2, tile_height, tile_height, 0.95, true);
             }
+
+            // Count text
+            color(renderer, 255, 255, 255, 255);
+            rectCenter(renderer, tiles[i].x, tiles[i].y, 20, 20, 1, true);
+            imageCenter(renderer, count_text[i], NULL, tiles[i].x, tiles[i].y, (float)20, (float)20);
         }
     }
 
