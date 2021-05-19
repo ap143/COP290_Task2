@@ -3,17 +3,20 @@
 ---
  
 **Structure**
-* Directory contains following directories - assets, src and output. It also contains Makefile and README.md
+* Main directory contains following directories - assets, src and output. It also contains Makefile and README.md
 * ``src`` contains all the cpp and hpp files. 
 * ``assets`` contain all the images, fonts and sounds used in game. It also contain a csv files with properties of each character.
 
 
 **Compile**
 * You need a C++11 compatible compiler, libsdl2-dev lib installed on your PC.
+* Install library using ``sudo apt-get install -y libsdl2-dev.`` on terminal. This will include all the packages required for game.
 
-**Rune on Linus/Mac**
+**Run on Linux**
 * First build game using ``make`` command on terminal.
 * Rune using ``./MazeWars`` .
 
-**Run on Windows**
-* For compiling on windows, use commands specified in `Makefile`. First generate object files one-by-one. Then link them all to a single executable. For running the code, the commands are same as linux.
+**Resources**
+* Character sprites Source: https://forums.rpgmakerweb.com/index.php?threads/marvel-characters-sets-sv-battlers-avengers-spider-man-x-men-more-updated-3-19-2021.101244/
+* Sounds source: https://mixkit.co/free-sound-effects/game/
+
