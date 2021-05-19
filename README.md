@@ -10,7 +10,7 @@
 
 **Compile**
 * You need a C++11 compatible compiler, libsdl2-dev lib, make installed on your PC.
-* Install library using ``sudo apt-get install -y libsdl2-dev.`` on terminal. This will include all the packages required for game.
+* Install library using ``sudo apt-get install libsdl2-dev.`` on terminal. This will include all the packages required for game.
 * The game is tested on Linux OS
 
 **Run on Linux**
