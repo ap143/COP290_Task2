@@ -43,9 +43,9 @@ public:
 
     // Health of each wall in maze
     std::vector<int> maze_health;
+    const int wall_health = 5;
 
 private:
-    const int wall_health = 5;
     // Max Wall Health
     int max_health;
 

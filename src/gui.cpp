@@ -5,10 +5,12 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     this->window = window;
     this->renderer = renderer;
 
+    // Loading background
     gui_bg = loadTexture("./assets/images/bg.png", renderer);
 
     live_text = "";
 
+    // Opening required fonts
     font1 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", live_text_font);
     font2 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", 2 * live_text_font / 3);
     font3 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", live_text_font / 2);
@@ -35,6 +37,7 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
         teams.push_back(loadTexture(("./assets/images/characters/t" + std::to_string(i + 1) + ".png").c_str(), renderer));
     }
 
+    // Creating texts textures for player names and their count
     color(renderer, 255);
     for (int i = 0; i < 4; i++)
     {
@@ -42,11 +45,16 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
         player_counts.push_back(text(renderer, num_players[i], font3));
     }
 
+    // Team selection view textures
     power = text(renderer, "Power", font2);
     health = text(renderer, "Health", font2);
     speed = text(renderer, "Speed", font2);
     heal = text(renderer, "Heal", font2);
 
+    selected = loadTexture("./assets/images/selected.png", renderer);
+
+    // Reading prorperties of each character form csv file
+    // Setting max values of each properties
     std::ifstream data("./assets/character_data.csv");
 
     data >> Character::total_teams;
@@ -65,8 +73,6 @@ Gui::Gui(SDL_Window *window, SDL_Renderer *renderer)
     }
 
     data.close();
-
-    selected = loadTexture("./assets/images/selected.png", renderer);
 }
 
 Gui::~Gui()
@@ -149,6 +155,7 @@ Gui::~Gui()
 
 void Gui::event(SDL_Event event, int &state)
 {
+    // Event handling according to state
     switch (state)
     {
     case 0:
@@ -167,6 +174,7 @@ void Gui::event(SDL_Event event, int &state)
 
 void Gui::show(int state)
 {
+    // Rendering according to state
     switch (state)
     {
     case 0:
@@ -256,6 +264,7 @@ void Gui::show_codecheck()
 
 void Gui::team_select_update()
 {
+    // animating scrolling between teams
     animate_extent += animate_direction;
 
     if (animate_extent == max_extent)
@@ -306,7 +315,6 @@ void Gui::show_teamselect()
     float len;
 
     // New Box
-
     if (animate_extent < 0)
     {
         color(renderer, 0, 150);
@@ -433,6 +441,8 @@ void Gui::show_randomplace()
 
 void Gui::event_username(SDL_Event event, int &state)
 {
+    // Text changes in text box
+
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_BACKSPACE)
     {
         if (live_text.length() > 0)
@@ -506,6 +516,8 @@ void Gui::event_codecheck(SDL_Event event, int &state)
         return;
     }
 
+    // Text changes in text box 
+
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_BACKSPACE)
     {
         if (passCode.length() > 0)
@@ -536,6 +548,7 @@ void Gui::event_codecheck(SDL_Event event, int &state)
 
 void Gui::event_teamselect(SDL_Event event, int &state)
 {
+    // Animation when scrolled
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
     {
         animate_direction = -1;
@@ -550,6 +563,8 @@ void Gui::event_teamselect(SDL_Event event, int &state)
         {
             return;
         }
+
+        // Team Selected
         if (currTeam != opponentTeamNum)
         {
             teamNum = currTeam;

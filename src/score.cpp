@@ -286,8 +286,11 @@ void Score::show()
     rectCenter(renderer, text_box.x + text_box.w / 2, text_box.y + text_box.h / 2, text_box.w * (float)0.9, text_box.h, 1, true);
     imageCenter(renderer, text_to_display, text_box.x + text_box.w / 2, text_box.y + text_box.h / 2);
 
+    // game over
+
     if (game_over)
     {
+        // Play Again Button
         if (hovered)
         {
             color(renderer, 217, 179, 11, 255);
@@ -300,6 +303,7 @@ void Score::show()
         }
         imageCenter(renderer, play_again_text, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2);
 
+        // Game Result
         if (draw)
         {
             imageCenter(renderer, draw, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2); 

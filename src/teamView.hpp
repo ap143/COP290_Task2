@@ -30,7 +30,7 @@ struct Point
 
 struct Compare
 {
-    bool operator()(Point* const& p1, Point* const& p2)
+    bool operator()(Point *const &p1, Point *const &p2)
     {
         return p1->dist > p2->dist;
     }
@@ -39,61 +39,70 @@ struct Compare
 class Teamview
 {
 public:
+    // Characters of my Team
+    std::vector<std::vector<Character *>> characters;
 
-    std::vector<std::vector<Character*>> characters;
-
+    // Number of plyers of each level
     int count[4] = {1, 4, 2, 1};
 
+    // Active Level in player deploying
     int activeLevel = -1;
 
+    // Assertes when king of my team and opponent team deployed
     bool kingDeployed = false;
     bool opponentKingDeployed = false;
 
+    // Deplroy Range of King
     int deployRange;
+
+    // When Active level != -1 and a cell is to be selected in the maze to deplroy character
     bool deployingNow = false;
 
-    SDL_Texture* count_text[4] = {nullptr, nullptr, nullptr, nullptr};
+    // Textures for number of player remaing of each level in my team
+    SDL_Texture *count_text[4] = {nullptr, nullptr, nullptr, nullptr};
     int count_text_size = 20 * scale;
 
-    Teamview *enemyTeam;
-    
-    Teamview(SDL_Renderer* renderer, Maze* maze, int teamNum, bool self);
+    Teamview(SDL_Renderer *renderer, Maze *maze, int teamNum, bool self);
     ~Teamview();
 
     void show();
     void update();
     void handleEvent(SDL_Event event);
-    void deploy(int level, int count, int i, int j); 
+    void deploy(int level, int count, int i, int j);
     void attackWall(int i, int j, int dir, int power);
 
 private:
+    SDL_Renderer *renderer;
 
-    SDL_Renderer* renderer;
+    Maze *game_maze;
 
-    Maze *game_maze; 
-
+    // team number
     int team;
+    // Asserted when this is my team
     bool isMyTeam;
 
+    // Team Details display dimensions
     float block_ox;
     float block_oy;
     float block_width;
     float block_height;
-
-    SDL_Rect src;
 
     float tile_height;
     float bar_height;
     float bar_width;
     float bar_fill;
 
+    SDL_Rect src;
     SDL_FRect tiles[4];
-    SDL_Texture* tile_tex = nullptr;
+    SDL_Texture *tile_tex = nullptr;
 
-    int max[4] = {6, 12, 8, 6};
-    int color_comb[4][3] = {{0, 0, 255}, {255, 0, 0}, {255, 242, 0}, {149, 0, 255}};
+    // Enemy team details
+    Teamview *enemyTeam;
 
-    void setNextDest(Character* c, int level, int cnt);
+    // For Setting next Destination of a player using shortest path algorithm
+    void setNextDest(Character *c, int level, int cnt);
+
+    // When king attacks
     void kingAttack(Character *c);
 };
 
