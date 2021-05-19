@@ -39,10 +39,11 @@ public:
     *   0: Get user name
     *   1: Generate/Check passcode => connect
     *   2: Connected state: Select team => Load all character textures and make objects
-    *   3: Show random place to match => Generate maze and draw it
     *   4: Generate Maze
     *   5: Send Maze
     *   6: Load characters
+    *   7: Game play
+    *   99: Exit state
     */
 
     void init(const char *title, int xpos, int ypos, int width, int height);

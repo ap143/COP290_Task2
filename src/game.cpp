@@ -91,6 +91,8 @@ void Game::handleEvents()
         {
             Mix_Volume(-1, 0);
         }
+        
+        return;
     }
 
     if (state < 4)
@@ -326,6 +328,8 @@ void Game::restartGame()
 
     loadAllTextures();
 
+    myTeamScore = opponentTeamScore = 0;
+
     state = 2;
 
     if (Mix_PlayingMusic())
@@ -351,8 +355,6 @@ void Game::loadAllSounds()
    
 void Game::loadAllTextures()
 {
-    exit_image = loadTexture("assets/images/exit.png", renderer);
-
     game_maze->wall = loadTexture("assets/images/wall.png", renderer);
     if (game_maze->wall == NULL) {std::cout << "Failed loading texture" << std::endl;}
 
@@ -390,6 +392,11 @@ void Game::drawExitState()
     {
         color(renderer, 255);
         exit_text = text(renderer, opponent_name + " doesn't wants to play... *LUDO Vibes* ;-)", 36 * scale);
+    }
+
+    if (exit_image == nullptr)
+    {
+        exit_image = loadTexture("assets/images/exit.png", renderer);
     }
 
     backgroundImage(renderer, exit_image);

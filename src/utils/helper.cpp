@@ -8,7 +8,6 @@ void print(std::string str)
 void error(std::string message)
 {
     std::cerr << message << std::endl;
-    exit(-1);
 }
 
 bool inRect(float x, float y, float rx, float ry, float width, float height)

@@ -4,16 +4,28 @@
 #include "character.hpp"
 #include <queue>
 
+// Struct for the use in Dijkstra
 struct Point
 {
+    // Index i and j in the 2D array, i -> row and j -> column
     int i, j;
+
+    // Dist of the point from the source
     long long int dist;
+
+    // Variables to store if their is an enemy on the maze and to check if the point is visited
     bool enemy, visited;
 
+    // Previous point in the path from source
     Point *pre;
+
+    // Enemy character on the point in the maze
     Character *e;
+
+    // Level and count of the enemy character
     int lvl, cnt;
 
+    // Constructor
     Point(int i, int j, int dist, bool enemy, bool visited)
     {
         this->i = i;
@@ -28,6 +40,7 @@ struct Point
     }
 };
 
+// Compare operator for comparing two points in Dijkstra
 struct Compare
 {
     bool operator()(Point *const &p1, Point *const &p2)
@@ -36,6 +49,7 @@ struct Compare
     }
 };
 
+// Class that contains everything
 class Teamview
 {
 public:
@@ -68,19 +82,31 @@ public:
     Teamview(SDL_Renderer *renderer, Maze *maze, int teamNum, bool self);
     ~Teamview();
 
+    // To render characters and selection zone
     void show();
+
+    // Update function
     void update();
+
+    // To handle event
     void handleEvent(SDL_Event event);
+    
+    // To deploy a player on the maze
     void deploy(int level, int count, int i, int j);
+    
+    // To attack a wall on the map
     void attackWall(int i, int j, int dir, int power);
 
 private:
+    // Renderer
     SDL_Renderer *renderer;
 
+    // Game maze
     Maze *game_maze;
 
-    // team number
+    // Team number
     int team;
+
     // Asserted when this is my team
     bool isMyTeam;
 
