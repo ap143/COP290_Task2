@@ -2,14 +2,19 @@
 
 Score::Score(SDL_Renderer *renderer, Maze *maze)
 {
+    // Openeing required fonts
     font1 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", font_size);
     font2 = TTF_OpenFont("./assets/fonts/CONSOLAB.TTF", 2 * font_size / 3);
+
     this->renderer = renderer;
     this->game_maze = maze;
 
+    // Initializing timers
     king_deploy_time = 10;
     countdown = 120;
     mil_sec = 60;
+
+    // Setting up positions for timer, score, text boxes and play again button
 
     timer_board = {.x = game_maze->ox + game_maze->grid_length * (float)1.01, .y = (float)gui_height / 8, .w = gui_width - game_maze->ox - game_maze->grid_length, .h = (float)gui_height / 12};
 
@@ -19,7 +24,7 @@ Score::Score(SDL_Renderer *renderer, Maze *maze)
 
     play_again_box = {.x = game_maze->ox + game_maze->grid_length * (float)1.01 + (gui_width - game_maze->ox - game_maze->grid_length) / 6, .y = text_box.y + text_box.h * (float)1.05, .w = (gui_width - game_maze->ox - game_maze->grid_length) * 2 / 3, .h = (float)gui_height / 12};
 
-    length_displayed = {.x = 0, .y = 0};
+    // Initial loading of  all textures for texts 
 
     color(renderer, 255, 255, 255, 255);
     timer = text(renderer, std::to_string(king_deploy_time), font1);
@@ -38,6 +43,7 @@ Score::Score(SDL_Renderer *renderer, Maze *maze)
 
     winner = loadTexture("./assets/images/Winner.png", renderer);
     loser = loadTexture("./assets/images/Loser.png", renderer);
+    draw = loadTexture("./assets/images/Draw.png", renderer);
 }
 
 Score::~Score()
@@ -73,6 +79,8 @@ Score::~Score()
 
 void Score::handleEvent(SDL_Event event)
 {
+    // If game over then handling events of play again button
+
     if (game_over)
     {
         float x = event.button.x;
@@ -98,9 +106,11 @@ void Score::handleEvent(SDL_Event event)
 
 void Score::update()
 {
-    // countdown
+    // Updating countdown
     if (!game_over)
     {
+        // If both Kings not deployed then king deploy timer else game begins then normal game countdown begins
+        // If count down equals zero then game overs
         if (!kingDeployed)
         {
             if (king_deploy_time != 0)
@@ -119,17 +129,6 @@ void Score::update()
                     mil_sec = 60;
                 }
             }
-            // else
-            // {
-            //     color(renderer, 255, 0, 0, 255);
-            //     if (text_to_display != NULL)
-            //     {
-            //         SDL_DestroyTexture(text_to_display);
-            //     }
-            //     message = "Game Over";
-            //     text_to_display = text(renderer, "Game Over", font1);
-            //     game_over = true;
-            // }
         }
         else if (countdown != 0)
         {
@@ -180,13 +179,18 @@ void Score::update()
             {
                 win = true;
             }
+            else if (myTeamScore == opponentTeamScore)
+            {
+                match_draw = true;
+            }
             else
             {
                 win = false;
             }
         }
 
-        // score
+        // Updating score
+
         if (score != NULL)
         {
             SDL_DestroyTexture(score);
@@ -195,7 +199,7 @@ void Score::update()
         score = text(renderer, std::to_string(myTeamScore) + " - " + std::to_string(opponentTeamScore), font1);
     }
 
-    // Text Update
+    // Texts Update
 
     if (play_again_request && play_again)
     {
@@ -296,7 +300,11 @@ void Score::show()
         }
         imageCenter(renderer, play_again_text, play_again_box.x + play_again_box.w / 2, play_again_box.y + play_again_box.h / 2);
 
-        if (win)
+        if (draw)
+        {
+            imageCenter(renderer, draw, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2); 
+        }
+        else if (win)
         {
             imageCenter(renderer, winner, game_maze->ox + game_maze->grid_length / 2, game_maze->oy + game_maze->grid_length / 2, scale * 2);
         }
